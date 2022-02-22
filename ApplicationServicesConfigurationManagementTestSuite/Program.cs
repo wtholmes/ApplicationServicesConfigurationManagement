@@ -14,7 +14,7 @@ namespace ApplicationServicesConfigurationManagementTestSuite
             WindowsEventLogClient windowsEventLogClient = new WindowsEventLogClient("ApplicationServicesConfigurationManagement", "ApplicationServicesConfigurationManagement");
             windowsEventLogClient.AddEventDetail("UserprincipalName", "William");
             windowsEventLogClient.AddEventDetail("Affiliation", "Staff");
-            windowsEventLogClient.WriteEventLogEntry(System.Diagnostics.EventLogEntryType.Warning, 1000);
+            windowsEventLogClient.WriteEventLogEntry(System.Diagnostics.EventLogEntryType.Warning, 1000, "This is a message");
         
         }
     }
