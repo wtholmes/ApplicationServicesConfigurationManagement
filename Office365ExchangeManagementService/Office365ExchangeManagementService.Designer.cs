@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            // 
+            // Office365ExchangeManagementService
+            // 
+            this.ServiceName = "Office365ExchangeManagementService";
+
         }
 
         #endregion
