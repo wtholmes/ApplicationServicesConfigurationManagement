@@ -132,7 +132,7 @@ namespace Office365ExchangeManagementService
 
         #endregion ---- Service Control Methods ----
 
-        #region Service Functions
+        #region ---- Service Functions ----
 
         // Service Status Function.
         [DllImport("advapi32.dll", SetLastError = true)]
