@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationServicesConfigurationManagement", "ApplicationServicesConfigurationManagement\ApplicationServicesConfigurationManagement.csproj", "{940C4A03-641D-4796-86A2-BA532C6F7AEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamDynamixManagementService", "TeamDynamixManagementService\TeamDynamixManagementService.csproj", "{30E4F3D3-B6CF-4FD9-B667-E1C1FA544C2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveDirectoryManagementService", "ActiveDirectoryManagementService\ActiveDirectoryManagementService.csproj", "{331AABA0-8244-482C-A414-F9AE20C5D844}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Office365LicensingManagementService", "Office365LicensingManagementService\Office365LicensingManagementService.csproj", "{9C11CC21-3099-4C02-8437-54C2210C991D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnPremisesExchangeManagementService", "OnPremisesExchangeManagementService\OnPremisesExchangeManagementService.csproj", "{A3556562-38A2-4509-993C-5C3502EB5980}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Office365ExchangeManagementService", "Office365ExchangeManagementService\Office365ExchangeManagementService.csproj", "{498062F2-0E1B-4287-A24E-3BEEE39EC836}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceEventLoggingManager", "ServiceEventLoggingManager\ServiceEventLoggingManager.csproj", "{227B54E9-E0B8-4C63-812F-F16EB7FC3DC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationServicesConfigurationManagementTestSuite", "ApplicationServicesConfigurationManagementTestSuite\ApplicationServicesConfigurationManagementTestSuite.csproj", "{430254C2-4D42-4E6E-9E5F-369FA16220C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{940C4A03-641D-4796-86A2-BA532C6F7AEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{940C4A03-641D-4796-86A2-BA532C6F7AEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{940C4A03-641D-4796-86A2-BA532C6F7AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{940C4A03-641D-4796-86A2-BA532C6F7AEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30E4F3D3-B6CF-4FD9-B667-E1C1FA544C2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30E4F3D3-B6CF-4FD9-B667-E1C1FA544C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30E4F3D3-B6CF-4FD9-B667-E1C1FA544C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30E4F3D3-B6CF-4FD9-B667-E1C1FA544C2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{331AABA0-8244-482C-A414-F9AE20C5D844}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{331AABA0-8244-482C-A414-F9AE20C5D844}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{331AABA0-8244-482C-A414-F9AE20C5D844}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{331AABA0-8244-482C-A414-F9AE20C5D844}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C11CC21-3099-4C02-8437-54C2210C991D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C11CC21-3099-4C02-8437-54C2210C991D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C11CC21-3099-4C02-8437-54C2210C991D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C11CC21-3099-4C02-8437-54C2210C991D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3556562-38A2-4509-993C-5C3502EB5980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3556562-38A2-4509-993C-5C3502EB5980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3556562-38A2-4509-993C-5C3502EB5980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3556562-38A2-4509-993C-5C3502EB5980}.Release|Any CPU.Build.0 = Release|Any CPU
+		{498062F2-0E1B-4287-A24E-3BEEE39EC836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{498062F2-0E1B-4287-A24E-3BEEE39EC836}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{498062F2-0E1B-4287-A24E-3BEEE39EC836}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{498062F2-0E1B-4287-A24E-3BEEE39EC836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{227B54E9-E0B8-4C63-812F-F16EB7FC3DC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{227B54E9-E0B8-4C63-812F-F16EB7FC3DC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{227B54E9-E0B8-4C63-812F-F16EB7FC3DC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{227B54E9-E0B8-4C63-812F-F16EB7FC3DC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{430254C2-4D42-4E6E-9E5F-369FA16220C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{430254C2-4D42-4E6E-9E5F-369FA16220C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{430254C2-4D42-4E6E-9E5F-369FA16220C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{430254C2-4D42-4E6E-9E5F-369FA16220C0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D674A524-3B40-404D-9C5A-0F0246579204}
+	EndGlobalSection
+EndGlobal
