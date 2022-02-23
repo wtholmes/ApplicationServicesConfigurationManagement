@@ -1,5 +1,4 @@
-﻿using ApplicationServicesConfigurationManagementDatabaseAccess.DataModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +7,9 @@ using System.Threading.Tasks;
 namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
     /// <summary>
-    /// Class for managing Mangement Database Access
+    /// Derived Class for managing Office 365 Exchange Mangement Database Access
     /// </summary>
-    public class ConfigurationManagementDatabaseAccess
+    public class Office365ExchangeManagementDatabaseAccess : ConfigurationManagementDatabaseAccess
     {
         #region ---- Public Properties ----
 
@@ -20,11 +19,8 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
 
         #endregion
 
-        #region ---- Default Constructor ----
-        public ConfigurationManagementDatabaseAccess()
-        {
+        #region ---- Explicit Constructors ----
 
-        }
         #endregion
 
         #region ---- Public Methods ----
@@ -34,5 +30,7 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
         #region ---- Private Methods ----
 
         #endregion
+
+
     }
 }

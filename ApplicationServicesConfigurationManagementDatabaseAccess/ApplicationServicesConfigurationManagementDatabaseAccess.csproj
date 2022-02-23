@@ -50,13 +50,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveDirectoryManagementDatabaseAccess.cs" />
     <Compile Include="ConfigurationManagementDatabaseAccess.cs" />
     <Compile Include="DataModel\ActiveDirectoryDomainController.cs" />
     <Compile Include="DataModel\ApplicationServicesConfigurationManagementModel.cs" />
     <Compile Include="DataModel\ConfigurationTask.cs" />
     <Compile Include="DataModel\ConfigurationTaskOwner.cs" />
     <Compile Include="DataModel\ConfigurationTaskStatus.cs" />
+    <Compile Include="ListmanagerManagementDatabaseAccess.cs" />
+    <Compile Include="Office365ExchangeManagementDatabaseAccess.cs" />
+    <Compile Include="Office365LicensingManagementDatabaseAccess.cs" />
+    <Compile Include="OnPremisesExchangeManagementDatabaseAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TeamDynamixManagementDatabaseAccess.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
