@@ -37,9 +37,13 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -53,7 +57,7 @@
     <Compile Include="ActiveDirectoryManagementDatabaseAccess.cs" />
     <Compile Include="ConfigurationManagementDatabaseAccess.cs" />
     <Compile Include="DataModel\ActiveDirectoryDomainController.cs" />
-    <Compile Include="DataModel\ApplicationServicesConfigurationManagementModel.cs" />
+    <Compile Include="DataModel\ApplicationServicesConfigurationManagement.cs" />
     <Compile Include="DataModel\ConfigurationTask.cs" />
     <Compile Include="DataModel\ConfigurationTaskOwner.cs" />
     <Compile Include="DataModel\ConfigurationTaskStatus.cs" />
@@ -67,6 +71,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ActiveDirectoryAccess\ActiveDirectoryAccess.csproj">
+      <Project>{af53cb46-b914-43a1-86f8-c4fdced3cd43}</Project>
+      <Name>ActiveDirectoryAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

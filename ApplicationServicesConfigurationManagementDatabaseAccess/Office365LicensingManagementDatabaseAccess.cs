@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
@@ -11,26 +7,26 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
     /// </summary>
     public class Office365LicensingManagementDatabaseAccess : ConfigurationManagementDatabaseAccess
     {
-        #region ---- Public Properties ----
-
-        #endregion
-
-        #region ---- Private Properties ----
-
-        #endregion
-
         #region ---- Explicit Constructors ----
 
-        #endregion
+        public Office365LicensingManagementDatabaseAccess() : base()
+        {
+            // Configure the task subscription id.  We will only select tasks with this id.
+            this.ConfigurationTaskOwner_Id = this.database.ConfigurationTaskOwners
+                    .Where(t => t.TaskThreadName.Equals("Office365LicensingManagement",System.StringComparison.OrdinalIgnoreCase))
+                    .Select(t => t.ConfigurationTaskOwner_Id)
+                    .FirstOrDefault();
+        }
+
+        #endregion ---- Explicit Constructors ----
 
         #region ---- Public Methods ----
 
-        #endregion
+        public new void Dispose()
+        {
+            base.Dispose();
+        }
 
-        #region ---- Private Methods ----
-
-        #endregion
-
-
+        #endregion ---- Public Methods ----
     }
 }

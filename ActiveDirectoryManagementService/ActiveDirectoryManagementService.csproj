@@ -52,6 +52,9 @@
     </Compile>
     <Compile Include="ActiveDirectoryManagementServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceThreads\TemplateThread.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,14 +1,11 @@
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
-using System.Linq;
 
-namespace ApplicationServicesConfigurationManagementDatabaseAccess.DataModel
+namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
-    public partial class ApplicationServicesConfigurationManagementModel : DbContext
+    public partial class ApplicationServicesConfigurationManagement : DbContext
     {
-        public ApplicationServicesConfigurationManagementModel()
-            : base("name=ApplicationServicesConfigurationManagement")
+        public ApplicationServicesConfigurationManagement()
+            : base("data source=localhost;initial catalog=ApplicationServicesConfigurationManagement;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework")
         {
         }
 

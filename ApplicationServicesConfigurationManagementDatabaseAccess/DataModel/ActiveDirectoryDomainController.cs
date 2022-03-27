@@ -1,4 +1,4 @@
-namespace ApplicationServicesConfigurationManagementDatabaseAccess.DataModel
+namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess.DataModel
         public string Name { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(512)]
         public string IPAddresss { get; set; }
 
         [Required]
@@ -35,7 +35,6 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess.DataModel
         [StringLength(50)]
         public string SiteName { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string SubNet { get; set; }
     }

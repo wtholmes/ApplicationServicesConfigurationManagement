@@ -1,4 +1,4 @@
-namespace ApplicationServicesConfigurationManagementDatabaseAccess.DataModel
+namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
     using System;
     using System.Collections.Generic;
