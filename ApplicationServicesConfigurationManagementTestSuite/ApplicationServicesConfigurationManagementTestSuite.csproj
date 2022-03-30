@@ -54,7 +54,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TeamDynamixManagementDatabaseAccess.cs" />
     <Compile Include="TestSuite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -70,6 +69,10 @@
     <ProjectReference Include="..\ApplicationServicesConfigurationManagementDatabaseAccess\ApplicationServicesConfigurationManagementDatabaseAccess.csproj">
       <Project>{780ed095-a647-4f0b-a017-2979fa487e3e}</Project>
       <Name>ApplicationServicesConfigurationManagementDatabaseAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AuthenticationServices\AuthenticationServices.csproj">
+      <Project>{c410de20-c737-4fc9-9a30-daa8aed73acb}</Project>
+      <Name>AuthenticationServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServiceEventLoggingManager\ServiceEventLoggingManager.csproj">
       <Project>{227b54e9-e0b8-4c63-812f-f16eb7fc3dc2}</Project>

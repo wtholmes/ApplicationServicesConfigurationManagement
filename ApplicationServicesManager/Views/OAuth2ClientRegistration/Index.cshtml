@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AuthenticationServices.OAuth2ClientRegistration>
+﻿@model IEnumerable<AuthenticationServices.OAuth2ClientRegistrationViewModel>
 
 @{
     ViewBag.Title = "Index";
@@ -13,10 +13,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.RequestingUPN)
+            @Html.DisplayNameFor(model => model.ClientID)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.ClientSecret)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClientDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RequestingUPN)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.RequestTime)
@@ -24,22 +30,22 @@
         <th>
             @Html.DisplayNameFor(model => model.ExpirationTime)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ClientId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ClientSecret)
-        </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.RequestingUPN)
+            @Html.DisplayFor(modelItem => item.ClientID)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Description)
+            @Html.DisplayFor(modelItem => item.ClientSecret)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClientDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RequestingUPN)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.RequestTime)
@@ -48,15 +54,9 @@
             @Html.DisplayFor(modelItem => item.ExpirationTime)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.ClientId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClientSecret)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.OAuth2ClientRegistration_Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.OAuth2ClientRegistration_Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.OAuth2ClientRegistration_Id })
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
         </td>
     </tr>
 }

@@ -22,24 +22,28 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
 
         #region ---- Private Properties ----
 
-        private protected Int32 ConfigurationTaskOwner_Id ;
+        protected Int32 ConfigurationTaskOwner_Id;
 
-        #endregion
+        #endregion ---- Private Properties ----
 
         #region ---- Default Constructor ----
+
         static ConfigurationManagementDatabaseAccess()
         {
             var type = typeof(System.Data.Entity.SqlServer.SqlProviderServices);
             if (type == null)
                 throw new Exception("Do not remove, ensures static reference to System.Data.Entity.SqlServer");
         }
+
         public ConfigurationManagementDatabaseAccess()
         {
             database = new ApplicationServicesConfigurationManagement();
         }
-        #endregion
+
+        #endregion ---- Default Constructor ----
 
         #region ---- Public Methods ----
+
         public void Dispose()
         {
             database.Dispose();
@@ -65,8 +69,9 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
 
             return this.ConfigurationTasks;
         }
+
         /// <summary>
-        /// Get the configuration task specified by the 
+        /// Get the configuration task specified by the
         /// </summary>
         /// <param name="ConfigurationTask_Id"></param>
         /// <returns></returns>
@@ -86,12 +91,12 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
                 .Where(t => t.ConfigurationTask_Id.Equals(configurationTask_Id)
                     && t.ConfigurationTaskOwner_Id.Equals(this.ConfigurationTaskOwner_Id))
                 .FirstOrDefault();
-            if(cTask != null)
+            if (cTask != null)
             {
                 PropertyInfo[] propertiesInfo = configurationTask.GetType().GetProperties();
-                foreach(PropertyInfo propertyInfo in propertiesInfo)
+                foreach (PropertyInfo propertyInfo in propertiesInfo)
                 {
-                    if(!propertyInfo.Name.Equals("ConfigurationTask_Id"))
+                    if (!propertyInfo.Name.Equals("ConfigurationTask_Id"))
                     {
                         propertyInfo.SetValue(cTask, propertyInfo.GetValue(configurationTask));
                     }
@@ -127,10 +132,11 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
                 .Where(t => t.ConfigurationTask_Id.Equals(ConfigurationTask_Id)
                     && t.ConfigurationTaskOwner_Id.Equals(this.ConfigurationTaskOwner_Id))
                 .FirstOrDefault();
-            
+
             database.ConfigurationTasks.Remove(configurationTask);
             database.SaveChanges();
         }
-        #endregion
+
+        #endregion ---- Public Methods ----
     }
 }

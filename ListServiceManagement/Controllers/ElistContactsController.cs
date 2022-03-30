@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using ListServiceManagement.Models;
+﻿using ListServiceManagement.Models;
 using ListServiceManagement.ViewModels;
 using System;
 using System.Data.Entity;
@@ -10,7 +9,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
-using AuthenticationServices;
 
 namespace ListServiceManagement.Controllers
 {
@@ -202,7 +200,6 @@ namespace ListServiceManagement.Controllers
                     RequestURL = Request.RequestUri.ToString(),
                     RequestBody = updatedElistContact,
                     Entity = elistContact
-
                 };
                 return ResponseMessage(Request.CreateResponse<DetailedErrorMessage>(HttpStatusCode.MethodNotAllowed, detailedErrorMessage));
             }
@@ -219,7 +216,6 @@ namespace ListServiceManagement.Controllers
         [ResponseType(typeof(void))]
         public IHttpActionResult UpdateElistContact(String ListName, UpdatedElistContact updatedElistContact)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

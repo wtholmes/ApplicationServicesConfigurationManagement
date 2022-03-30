@@ -113,12 +113,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationServices.cs" />
-    <Compile Include="Models\OAuth2ClientRegistration.cs" />
-    <Compile Include="Models\OAuth2ClientRoleAssignment.cs" />
-    <Compile Include="Models\OAuth2ClientRole.cs" />
-    <Compile Include="Models\WebAPIAuthorizations.cs" />
+    <Compile Include="Model\OAuth2AuthenticationContext.cs" />
+    <Compile Include="Model\OAuth2ClientRegistration.cs" />
+    <Compile Include="Model\OAuth2ClientRole.cs" />
+    <Compile Include="Model\OAuth2ClientRoleToOAuth2ClientRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\CheckBoxViewModel.cs" />
     <Compile Include="ViewModels\LoginView.cs" />
+    <Compile Include="ViewModels\OAuth2ClientRegistrationViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Owin;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Security.Claims;
@@ -151,22 +152,31 @@ namespace AuthenticationServices
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            WebAPIAuthorizations db = new WebAPIAuthorizations();
-            List<OAuth2ClientRegistration> clientRegistrations = db.OAuth2ClientRegistrations.ToList();
+            OAuth2AuthenticationContext db = new OAuth2AuthenticationContext(); 
+
             Guid ClientID = Guid.Parse(context.UserName);
 
+
+            OAuth2ClientRegistration oAuth2ClientRegistration = db.OAuth2ClientRegistrations
+                .Where(c => c.ClientID.Equals(ClientID))
+                //.Include(r => r.OAuth2ClientRoles)
+                .FirstOrDefault();
+
+
             ClaimsIdentity identity = new ClaimsIdentity(context.Options.AuthenticationType);
-
-            OAuth2ClientRegistration oAuthClientRegistration = clientRegistrations.Where(r => r.ClientId.Equals(ClientID)).FirstOrDefault();
-
-            if (oAuthClientRegistration != null)
+            if (oAuth2ClientRegistration != null)
             {
-                if (context.Password.Equals(oAuthClientRegistration.ClientSecret))
+                if (context.Password.Equals(oAuth2ClientRegistration.ClientSecret))
                 {
-                    identity.AddClaim(new Claim(ClaimTypes.Role, "COEAWebAPIReadWrite"));
+                    /*
                     identity.AddClaim(new Claim("username", context.UserName));
-                    identity.AddClaim(new Claim(ClaimTypes.Name, "COEA WebAPI Read Write Access"));
+                    foreach (OAuth2ClientRole oAuth2ClientRole in oAuth2ClientRegistration.OAuth2ClientRoles)
+                    {
+                        identity.AddClaim(new Claim(ClaimTypes.Role, oAuth2ClientRole.RoleName));
+                        identity.AddClaim(new Claim(ClaimTypes.Name, oAuth2ClientRole.RoleDescription));
+                    }
                     context.Validated(identity);
+                    */
                 }
             }
             else if (context.UserName == "admin" && context.Password == "admin")

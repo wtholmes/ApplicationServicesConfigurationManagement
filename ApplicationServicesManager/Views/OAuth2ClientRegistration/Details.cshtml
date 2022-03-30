@@ -1,4 +1,4 @@
-﻿@model AuthenticationServices.OAuth2ClientRegistration
+﻿@model AuthenticationServices.OAuth2ClientRegistrationViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -8,23 +8,47 @@
 <h2>Details</h2>
 
 <div>
-    <h4>OAuth2ClientRegistration</h4>
+    <h4>OAuth2ClientRegistrationViewModel</h4>
     <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OAuth2ClientRegistrationID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OAuth2ClientRegistrationID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClientID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClientID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClientSecret)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClientSecret)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClientDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClientDescription)
+        </dd>
+
         <dt>
             @Html.DisplayNameFor(model => model.RequestingUPN)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.RequestingUPN)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
         </dd>
 
         <dt>
@@ -43,25 +67,9 @@
             @Html.DisplayFor(model => model.ExpirationTime)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ClientId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ClientId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ClientSecret)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ClientSecret)
-        </dd>
-
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.OAuth2ClientRegistration_Id }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

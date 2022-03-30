@@ -1,7 +1,9 @@
 ﻿using ActiveDirectoryAccess;
 using ApplicationServicesConfigurationManagementDatabaseAccess;
+using AuthenticationServices;
 using ServiceEventLoggingManager;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace ApplicationServicesConfigurationManagementTestSuite
@@ -11,6 +13,50 @@ namespace ApplicationServicesConfigurationManagementTestSuite
         private static void Main(string[] args)
         {
             if (true)
+            {
+                using (OAuth2AuthenticationContext context = new OAuth2AuthenticationContext())
+                {
+                    Boolean ProvisionRoles = true;
+
+                    if (ProvisionRoles)
+                    {
+                        List<String> Roles = new List<String>()
+                    {
+                        "COEAWebAPIReadWrite",
+                        "COEAWebAPIRead",
+                        "ListServiceWebAPIContactReadWrite",
+                        "ListServiceWebAPIContactRead",
+                        "ListServiceWebAPIOwnerTransfer"
+                    };
+
+                        List<String> RoleDescriptions = new List<String>()
+                    {
+                        "COEA WebAPI Read Write Access",
+                        "COEA WebAPI Read Access",
+                        "List Manager Service Contact Read Write Access",
+                        "List Manager Service Contact Read",
+                        "List Manager Service Owner Transfer"
+                    };
+
+                        for (int index = 0; index < Roles.Count; index++)
+                        {
+                            OAuth2ClientRole oAuth2ClientRole = new OAuth2ClientRole()
+                            {
+                                RoleName = Roles[index],
+                                RoleDescription = RoleDescriptions[index],
+                                WhenCreated = DateTime.UtcNow
+                            };
+
+                            context.OAuth2ClientRoles.Add(oAuth2ClientRole);
+                            context.SaveChanges();
+
+                        }
+                    }
+                }
+            }
+        
+    
+            if (false)
             {
                 while (true)
                 {
