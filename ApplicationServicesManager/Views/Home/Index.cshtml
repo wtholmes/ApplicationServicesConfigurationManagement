@@ -8,22 +8,33 @@
 
 <div class="row">
     <div class="col-md-4">
-        <h2>Getting started</h2>
+        <h2>Register a new client application</h2>
         <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
+            A Client Application ID and a Client Secret will be automatically generated. 
+            During registration you can select the appropriate access roles. This information 
+            is used by your application to obtain the appropriate oAuth2 tokens 
+            (refresh and session) to access the specified WebAPI methods.
         </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        <p><a class="btn btn-default" href="~/OAuth2ClientRegistration/Create">New Client Application &raquo;</a></p>
     </div>
     <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+        <h2>Update and existing client application</h2>
+        <p>
+            Update an exiting application's description and add or remove access roles. You should
+            only select roles that you application needs to perform its function. While you will see
+            a complete list of registered client applications, you can only modify or remove client
+            applications that you have registered.
+ 
+        </p>
+        <p><a class="btn btn-default" href="~/OAuth2ClientRegistration">Update Client Application &raquo;</a></p>
     </div>
     <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        <h2>Manage Roles</h2>
+        <p>
+            Manage the roles that may be assigned to a client application. This is normally an 
+            administrative function.  While you may add new roles they will only be consumed if 
+            they are referenced in a WebAPI that utilzes the Application Services Manager.
+        </p>
+        <p><a class="btn btn-default" href="~/OAuth2ClientRole">Manage Roles &raquo;</a></p>
     </div>
 </div>

@@ -1,12 +1,14 @@
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Spatial;
+
 namespace ListServiceManagement.Models
 {
-    using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
+
 
     /// <summary>
     /// Defines the provisioning of an Exchange Mail Contact for use by the List Manager Service. These Mail Contacts provide

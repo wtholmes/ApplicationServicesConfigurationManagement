@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -18,6 +19,7 @@ namespace AuthenticationServices
         [DisplayName("Client Secret")]
         public String ClientSecret { get; set; }
 
+        [Required]
         [DisplayName("Client Description")]
         public String ClientDescription { get; set; }
 

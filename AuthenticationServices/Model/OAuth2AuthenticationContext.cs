@@ -18,8 +18,6 @@ namespace AuthenticationServices
 
         public DbSet<OAuth2ClientRoleToOAuth2ClientRegistration> OAuth2ClientRoleToOAuth2ClientRegistrations { get; set; }
 
-
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

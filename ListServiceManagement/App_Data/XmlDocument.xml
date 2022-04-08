@@ -503,6 +503,20 @@
             </summary>
             <returns>A table of ElistContact</returns>
         </member>
+        <member name="M:ListServiceManagement.Controllers.ElistContactsController.GetElistContactsByOwner(System.String)">
+            <summary>
+            Get a table of type ElistContact of all Elist Contacts with the specfied owner.
+            </summary>
+            <param name="NetID">The owner NetID to search</param>
+            <returns>A table of ElistContact</returns>
+        </member>
+        <member name="M:ListServiceManagement.Controllers.ElistContactsController.GetElistContactsBySponsor(System.String)">
+            <summary>
+            Get a table of type ElistContact of all Elist Contacts with the specfied sponsor.
+            </summary>
+            <param name="NetID">The sponsor NetID to Search</param>
+            <returns>A table of ElistContact</returns>
+        </member>
         <member name="M:ListServiceManagement.Controllers.ElistContactsController.GetElistContact(System.Int32)">
             <summary>
             Get a contact (of type ElistContact) by the Elist Contact Id.
@@ -559,6 +573,46 @@
             Dispose Method
             </summary>
             <param name="disposing"></param>
+        </member>
+        <member name="T:ListServiceManagement.Controllers.ElistOwnerTransfersController">
+            <summary>
+            Manage Elist Owner Transfers
+            </summary>
+        </member>
+        <member name="M:ListServiceManagement.Controllers.ElistOwnerTransfersController.GetElistOwnerTransfers">
+            <summary>
+            Get a list of all owner transfers regardless of status.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ListServiceManagement.Controllers.ElistOwnerTransfersController.ApprovedElistOwnerTransfers">
+            <summary>
+            Get the list of approved owner list tranfers.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ListServiceManagement.Controllers.ElistOwnerTransfersController.CompleteElistOwnerTransfer(System.Int32,System.String)">
+            <summary>
+            Update the the list owner transfer status to complete.
+            </summary>
+            <param name="Id">The Id of an approved owner transfer request.</param>
+            <param name="RequestStatusDetail">Optional Status Detail Message</param>
+            <returns>ElistOwnerTransfer</returns>
+        </member>
+        <member name="M:ListServiceManagement.Controllers.ElistOwnerTransfersController.CancelElistOwnerTransfer(System.Int32,System.String)">
+            <summary>
+            Cancel the list owner transfer request.
+            </summary>
+            <param name="Id">The Id transfer request that is in a state that can be canceled: NEW, REQUESTED, PENDING, APPROVED</param>
+            <param name="RequestStatusDetail">Optional Status Detail Message</param>
+            <returns></returns>
+        </member>
+        <member name="M:ListServiceManagement.Controllers.ElistOwnerTransfersController.GetElistOwnerTransfer(System.Int32)">
+            <summary>
+            Get a list owner transfer by Id
+            </summary>
+            <param name="id">The Id of the List Owner Transfer request.</param>
+            <returns></returns>
         </member>
         <member name="T:ListServiceManagement.Models.ElistContact">
             <summary>
@@ -650,6 +704,183 @@
             <summary>
             Spefices when the contact was last modified. This will match the contact modification time in Active Directory.
             </summary>
+        </member>
+        <member name="T:ListServiceManagement.Models.ElistOwnerTransfer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.ElistOwnerTransfer_Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.RequestIdentifier">
+            <summary>
+            Unique Identifier for the request.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.ListName">
+            <summary>
+            The List name
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.CurrentOwner">
+            <summary>
+            The current List Owner
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.NewOwner">
+            <summary>
+             The  new List Owner
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.Status">
+            <summary>
+            The status of this request. (NEW, REQUESTED, PENDING, APPROVED, COMPLETE, CANCELED, OBSOLETE)
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.RequestTicketID">
+            <summary>
+            The Ticket ID associated with this request.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.AcceptTicketID">
+            <summary>
+            The Ticket ID associated with this request.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.RequestStatusDetail">
+            <summary>
+            Request Detail/Description
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.WhenCreated">
+            <summary>
+            A DateTime value indicating when this address was created.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer.WhenChanged">
+            <summary>
+            A DateTime value indicating when the address was modified.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.ElistOwnerTransferHistory_Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.Change">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.ChangeTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.ElistOwnerTransfer_Id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.RequestIdentifier">
+            <summary>
+            Unique Identifier for the request.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.ListName">
+            <summary>
+            The List name
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.CurrentOwner">
+            <summary>
+            The current List Owner
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.NewOwner">
+            <summary>
+             The  new List Owner
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.Status">
+            <summary>
+            The status of this request. (NEW, REQUESTED, PENDING, APPROVED, COMPLETE, CANCELED, OBSOLETE)
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.RequestTicketID">
+            <summary>
+            The Ticket ID associated with this request.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.AcceptTicketID">
+            <summary>
+            The Ticket ID associated with this request.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.RequestStatusDetail">
+            <summary>
+            Request Detail/Description
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.WhenCreated">
+            <summary>
+            A DateTime value indicating when this address was created.
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ElistOwnerTransfer_History.WhenChanged">
+            <summary>
+            A DateTime value indicating when the address was modified.
+            </summary>
+        </member>
+        <member name="T:ListServiceManagement.Models.ListServiceManagment">
+            <summary>
+                List Service Mangagement Database Context
+            </summary>
+        </member>
+        <member name="M:ListServiceManagement.Models.ListServiceManagment.#ctor">
+            <summary>
+            List Service Mangement Deatabase Context Constructor
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ListServiceManagment.ElistContacts">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ListServiceManagment.ElistContacts_History">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ListServiceManagment.ElistOwnerTransfers">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:ListServiceManagement.Models.ListServiceManagment.ElistOwnerTransfer_History">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ListServiceManagement.Models.ListServiceManagment.OnModelCreating(System.Data.Entity.DbModelBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="modelBuilder"></param>
+        </member>
+        <member name="T:ListServiceManagement.Models.ListServiceManagment.ListServiceManagmentDBInitializer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ListServiceManagement.Models.ListServiceManagment.ListServiceManagmentDBInitializer.Seed(ListServiceManagement.Models.ListServiceManagment)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
         </member>
         <member name="T:ListServiceManagement.ViewModels.DetailedErrorMessage">
             <summary>

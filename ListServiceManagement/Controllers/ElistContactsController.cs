@@ -24,7 +24,7 @@ namespace ListServiceManagement.Controllers
         /// </summary>
         /// <returns>A table of ElistContact</returns>
         // GET: api/ElistContacts
-        [Authorize(Roles = "COEAWebAPIReadWrite")]
+        [Authorize(Roles = "ListServiceContactWebAPIRead,ListServiceContactWebAPIReadWrite")]
         [HttpGet]
         [ResponseType(typeof(IQueryable<ElistContact>))]
         public IQueryable<ElistContact> GetElistContacts()
@@ -33,12 +33,38 @@ namespace ListServiceManagement.Controllers
         }
 
         /// <summary>
+        /// Get a table of type ElistContact of all Elist Contacts with the specfied owner.
+        /// </summary>
+        /// <param name="NetID">The owner NetID to search</param>
+        /// <returns>A table of ElistContact</returns>
+        [Authorize(Roles = "ListServiceContactWebAPIRead,ListServiceContactWebAPIReadWrite")]
+        [HttpGet]
+        [ResponseType(typeof(IQueryable<ElistContact>))]
+        public IQueryable<ElistContact> GetElistContactsByOwner(String NetID)
+        {
+            return db.ElistContacts.Where(c => c.OwnerNetID.Equals(NetID));
+        }
+
+        /// <summary>
+        /// Get a table of type ElistContact of all Elist Contacts with the specfied sponsor.
+        /// </summary>
+        /// <param name="NetID">The sponsor NetID to Search</param>
+        /// <returns>A table of ElistContact</returns>
+        [Authorize(Roles = "ListServiceContactWebAPIRead,ListServiceContactWebAPIReadWrite")]
+        [HttpGet]
+        [ResponseType(typeof(IQueryable<ElistContact>))]
+        public IQueryable<ElistContact> GetElistContactsBySponsor(String NetID)
+        {
+            return db.ElistContacts.Where(c => c.SponsorNetID.Equals(NetID));
+        }
+
+        /// <summary>
         /// Get a contact (of type ElistContact) by the Elist Contact Id.
         /// </summary>
         /// <param name="Id">The Id of the contact to get.</param>
         /// <returns>ElistContact</returns>
         // GET: api/ElistContacts/5
-        [Authorize(Roles = "COEAWebAPIReadWrite")]
+        [Authorize(Roles = "ListServiceContactWebAPIRead,ListServiceContactWebAPIReadWrite")]
         [HttpGet]
         [ResponseType(typeof(ElistContact))]
         public IHttpActionResult GetElistContact(int Id)
@@ -58,7 +84,7 @@ namespace ListServiceManagement.Controllers
         /// <param name="ListName">The ListName of the contact to get.</param>
         /// <returns>ElistContact</returns>
         // GET: api/ElistContacts/5
-        [Authorize(Roles = "COEAWebAPIReadWrite")]
+        [Authorize(Roles = "ListServiceContactWebAPIRead,ListServiceContactWebAPIReadWrite")]
         [HttpGet]
         [ResponseType(typeof(ElistContact))]
         public IHttpActionResult GetElistContact(string ListName)
@@ -80,6 +106,7 @@ namespace ListServiceManagement.Controllers
         /// <param name="newElistContact">A request body of type NewElistContact.</param>
         /// <returns></returns>
         // POST: api/ElistContacts
+        [Authorize(Roles = "ListServiceContactWebAPIReadWrite")]
         [HttpPost]
         [ResponseType(typeof(ElistContact))]
         public IHttpActionResult CreateElistContact(NewElistContact newElistContact)
@@ -126,6 +153,7 @@ namespace ListServiceManagement.Controllers
         /// <param name="updatedElistContact">A request body of type UpdatedElistContact</param>
         /// <returns></returns>
         // PATCH: api/ElistContacts/5
+        [Authorize(Roles = "ListServiceContactWebAPIReadWrite")]
         [HttpPatch]
         [ResponseType(typeof(void))]
         public IHttpActionResult UpdateElistContact(int Id, UpdatedElistContact updatedElistContact)
@@ -212,6 +240,7 @@ namespace ListServiceManagement.Controllers
         /// <param name="updatedElistContact">A request body of type UpdatedElistContact</param>
         /// <returns></returns>
         // PATCH: api/ElistContacts/5
+        [Authorize(Roles = "ListServiceContactWebAPIReadWrite")]
         [HttpPatch]
         [ResponseType(typeof(void))]
         public IHttpActionResult UpdateElistContact(String ListName, UpdatedElistContact updatedElistContact)
@@ -283,6 +312,7 @@ namespace ListServiceManagement.Controllers
         /// <param name="Id">The Id of the contact to be removed.</param>
         /// <returns></returns>
         // DELETE: api/ElistContacts/5
+        [Authorize(Roles = "ListServiceContactWebAPIReadWrite")]
         [HttpDelete]
         [ResponseType(typeof(ElistContact))]
         public IHttpActionResult DeleteElistContact(int Id)
@@ -305,6 +335,7 @@ namespace ListServiceManagement.Controllers
         /// <param name="ListName">The Listname of the contact to be removed.</param>
         /// <returns></returns>
         // DELETE: api/ElistContacts/5
+        [Authorize(Roles = "ListServiceContactWebAPIReadWrite")]
         [HttpDelete]
         [ResponseType(typeof(ElistContact))]
         public IHttpActionResult DeleteElistContact(string ListName)
@@ -338,6 +369,7 @@ namespace ListServiceManagement.Controllers
             base.Dispose(disposing);
         }
 
+        [Authorize(Roles = "ListServiceContactWebAPIRead,ListServiceContactWebAPIReadWrite")]
         private bool ElistContactExists(int id)
         {
             return db.ElistContacts.Count(e => e.ListContact_Id == id) > 0;

@@ -5,7 +5,6 @@ using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json;
 using Owin;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
@@ -152,31 +151,29 @@ namespace AuthenticationServices
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            OAuth2AuthenticationContext db = new OAuth2AuthenticationContext(); 
+            OAuth2AuthenticationContext db = new OAuth2AuthenticationContext();
 
             Guid ClientID = Guid.Parse(context.UserName);
 
-
             OAuth2ClientRegistration oAuth2ClientRegistration = db.OAuth2ClientRegistrations
                 .Where(c => c.ClientID.Equals(ClientID))
-                //.Include(r => r.OAuth2ClientRoles)
+                .Include(c => c.OAuth2ClientRoleToOAuth2ClientRegistrations)
                 .FirstOrDefault();
-
 
             ClaimsIdentity identity = new ClaimsIdentity(context.Options.AuthenticationType);
             if (oAuth2ClientRegistration != null)
             {
                 if (context.Password.Equals(oAuth2ClientRegistration.ClientSecret))
                 {
-                    /*
                     identity.AddClaim(new Claim("username", context.UserName));
-                    foreach (OAuth2ClientRole oAuth2ClientRole in oAuth2ClientRegistration.OAuth2ClientRoles)
+
+                    foreach (OAuth2ClientRoleToOAuth2ClientRegistration oAuth2ClientRoleToOAuth2ClientRegistration in oAuth2ClientRegistration.OAuth2ClientRoleToOAuth2ClientRegistrations)
                     {
+                        OAuth2ClientRole oAuth2ClientRole = oAuth2ClientRoleToOAuth2ClientRegistration.OAuth2ClientRole;
                         identity.AddClaim(new Claim(ClaimTypes.Role, oAuth2ClientRole.RoleName));
                         identity.AddClaim(new Claim(ClaimTypes.Name, oAuth2ClientRole.RoleDescription));
                     }
                     context.Validated(identity);
-                    */
                 }
             }
             else if (context.UserName == "admin" && context.Password == "admin")

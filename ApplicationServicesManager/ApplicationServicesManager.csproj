@@ -161,6 +161,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\OAuth2ClientRegistrationController.cs" />
+    <Compile Include="Controllers\OAuth2ClientRoleController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -205,16 +206,16 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
-    <Content Include="Views\OAuth2ClientRole\Create.cshtml" />
-    <Content Include="Views\OAuth2ClientRole\Delete.cshtml" />
-    <Content Include="Views\OAuth2ClientRole\Details.cshtml" />
-    <Content Include="Views\OAuth2ClientRole\Edit.cshtml" />
-    <Content Include="Views\OAuth2ClientRole\Index.cshtml" />
     <Content Include="Views\OAuth2ClientRegistration\Create.cshtml" />
     <Content Include="Views\OAuth2ClientRegistration\Delete.cshtml" />
     <Content Include="Views\OAuth2ClientRegistration\Details.cshtml" />
     <Content Include="Views\OAuth2ClientRegistration\Edit.cshtml" />
     <Content Include="Views\OAuth2ClientRegistration\Index.cshtml" />
+    <Content Include="Views\OAuth2ClientRole\Create.cshtml" />
+    <Content Include="Views\OAuth2ClientRole\Delete.cshtml" />
+    <Content Include="Views\OAuth2ClientRole\Details.cshtml" />
+    <Content Include="Views\OAuth2ClientRole\Edit.cshtml" />
+    <Content Include="Views\OAuth2ClientRole\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>OAuth2 Client Roles</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Client Role", "Create")
 </p>
 <table class="table">
     <tr>
@@ -21,7 +21,9 @@
         <th>
             @Html.DisplayNameFor(model => model.WhenCreated)
         </th>
-        <th></th>
+        <th>
+            Actions
+        </th>
     </tr>
 
 @foreach (var item in Model) {
@@ -37,8 +39,7 @@
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.OAuth2ClientRoleID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.OAuth2ClientRoleID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.OAuth2ClientRoleID })
+            @Html.ActionLink("Details", "Details", new { id=item.OAuth2ClientRoleID })
         </td>
     </tr>
 }

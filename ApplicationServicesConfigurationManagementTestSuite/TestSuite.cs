@@ -24,18 +24,42 @@ namespace ApplicationServicesConfigurationManagementTestSuite
                     {
                         "COEAWebAPIReadWrite",
                         "COEAWebAPIRead",
-                        "ListServiceWebAPIContactReadWrite",
-                        "ListServiceWebAPIContactRead",
-                        "ListServiceWebAPIOwnerTransfer"
+                        "TDXWorkflowCOEAWebAPI",
+                        "EmailRecipientManagementWebAPIReadWrite",
+                        "EmailRecipientWebAPIRead",
+                        "EmailSharedAccountsWebAPIReadWrite",
+                        "EmailSharedAccountWebAPIRead",
+                        "Office365ContactManagementWebAPIReadWrite",
+                        "Office365ContactManagementWebAPIRead",
+                        "Office365DistributionGroupsWebAPIReadWrite",
+                        "Office365DistributionWebAPIGroupsRead",
+                        "Office365LicensingWebAPIReadWrite",
+                        "Office365LicensingWebAPIRead",
+                        "ListServiceContactWebAPIReadWrite",
+                        "ListServiceContactWebAPIRead",
+                        "ListServiceOwnerTransferWebAPIReadWrite",
+                        "TDXWorkflowListServiceWebAPI"
                     };
 
                         List<String> RoleDescriptions = new List<String>()
                     {
                         "COEA WebAPI Read Write Access",
                         "COEA WebAPI Read Access",
+                        "COEA TDX Workflow Read Write Access",
+                        "Email Recipient Configuration Management Read Write Access",
+                        "Email Recipient Configuration Management Read Access",
+                        "Email Shared Account Management Read Write Access",
+                        "Email Shared Account Management Read Access",
+                        "Office 365 Contact Management Read Write Access",
+                        "Office 365 Contact Management Read Access",
+                        "Office 365 Distribution Group Management Read Write Access",
+                        "Office 365 Distribution Group Management Read Access",
+                        "Office 365 Licensing Read Write Access",
+                        "Office 365 Licensing Read Access",
                         "List Manager Service Contact Read Write Access",
                         "List Manager Service Contact Read",
-                        "List Manager Service Owner Transfer"
+                        "List Manager Service Owner Transfer",
+                        "List Manager Service TDX Workflow Read Write Access"
                     };
 
                         for (int index = 0; index < Roles.Count; index++)
