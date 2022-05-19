@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
@@ -11,15 +8,8 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
     /// </summary>
     public class Office365ExchangeManagementDatabaseAccess : ConfigurationManagementDatabaseAccess
     {
-        #region ---- Public Properties ----
-
-        #endregion
-
-        #region ---- Private Properties ----
-
-        #endregion
-
         #region ---- Explicit Constructors ----
+
         public Office365ExchangeManagementDatabaseAccess() : base()
         {
             // Configure the task subscription id.  We will only select tasks with this id.
@@ -28,20 +18,16 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
                     .Select(t => t.ConfigurationTaskOwner_Id)
                     .FirstOrDefault();
         }
-        #endregion
+
+        #endregion ---- Explicit Constructors ----
 
         #region ---- Public Methods ----
-        new public void Dispose()
+
+        public new void Dispose()
         {
             base.Dispose();
         }
 
-        #endregion
-
-        #region ---- Private Methods ----
-
-        #endregion
-
-
+        #endregion ---- Public Methods ----
     }
 }

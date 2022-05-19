@@ -14,7 +14,7 @@ namespace PowerShellRunspaceManager
         #endregion Constructors
 
         #region Public Methods
-        
+
         public DataSet GetAppAsDataSet(String Identity)
         {
             AsyncPSCommand asyncPSCommand = new AsyncPSCommand();
@@ -24,7 +24,6 @@ namespace PowerShellRunspaceManager
             asyncPSCommand.QueueCommand();
             return asyncPSCommand.CommandResults;
         }
-
 
         public DataSet GetMailboxAsDataSet(String Identity)
         {

@@ -138,7 +138,7 @@ namespace Office365ExchangeManagementService
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
-        #endregion Service Functions
+        #endregion ---- Service Functions ----
 
         #endregion ---- Service Class ----
     }

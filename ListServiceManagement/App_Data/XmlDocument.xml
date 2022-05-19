@@ -5,15 +5,15 @@
     </assembly>
     <members>
         <member name="T:ListServiceManagement.WebApiConfig">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:ListServiceManagement.WebApiConfig.Register(System.Web.Http.HttpConfiguration)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="config"></param>
+             </summary>
+             <param name="config"></param>
         </member>
         <member name="M:ListServiceManagement.Areas.HelpPage.ApiDescriptionExtensions.GetFriendlyId(System.Web.Http.Description.ApiDescription)">
             <summary>
@@ -327,7 +327,7 @@
         </member>
         <member name="M:ListServiceManagement.Areas.HelpPage.HelpPageSampleGenerator.GetSampleObject(System.Type)">
             <summary>
-            Gets the sample object that will be serialized by the formatters. 
+            Gets the sample object that will be serialized by the formatters.
             First, it will look at the <see cref="P:ListServiceManagement.Areas.HelpPage.HelpPageSampleGenerator.SampleObjects"/>. If no sample object is found, it will try to create
             one using <see cref="M:ListServiceManagement.Areas.HelpPage.HelpPageSampleGenerator.DefaultSampleObjectFactory(ListServiceManagement.Areas.HelpPage.HelpPageSampleGenerator,System.Type)"/> (which wraps an <see cref="T:ListServiceManagement.Areas.HelpPage.ObjectGenerator"/>) and other
             factories in <see cref="P:ListServiceManagement.Areas.HelpPage.HelpPageSampleGenerator.SampleObjectFactories"/>.
@@ -624,7 +624,7 @@
         </member>
         <member name="M:ListServiceManagement.Controllers.ElistOwnerTransfersController.CancelElistOwnerTransfer(System.Int32)">
             <summary>
-            Cancel the list owner transfer request. 
+            Cancel the list owner transfer request.
             </summary>
             <param name="Id">The Id transfer request that is in a state that can be canceled: NEW, REQUESTED, PENDING, APPROVED</param>
             <returns></returns>
@@ -728,7 +728,7 @@
         </member>
         <member name="P:ListServiceManagement.ViewModels.NewElistContact.CornellEntity">
             <summary>
-            The Cornell Entity 
+            The Cornell Entity
             </summary>
         </member>
         <member name="P:ListServiceManagement.ViewModels.NewElistContact.Enabled">
@@ -793,12 +793,12 @@
         </member>
         <member name="P:ListServiceManagement.ViewModels.UpdatedElistContact.CornellEntity">
             <summary>
-            The Cornell Entity 
+            The Cornell Entity
             </summary>
         </member>
         <member name="P:ListServiceManagement.ViewModels.UpdatedElistContact.Enabled">
             <summary>
-            Specifies if the Contact should be Mail Enabled. When disabled the contact will not process email. 
+            Specifies if the Contact should be Mail Enabled. When disabled the contact will not process email.
             </summary>
         </member>
         <member name="P:ListServiceManagement.ViewModels.UpdatedElistContact.Notes">

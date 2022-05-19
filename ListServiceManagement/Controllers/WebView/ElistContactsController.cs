@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ListServiceManagement.Models;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using ListServiceManagement.Models;
 
 namespace ListServiceManagement.Controllers.WebView
 {
-    [Authorize (Roles = "ElistServiceAdminRole")]
+    [Authorize(Roles = "ElistServiceAdminRole")]
     public class ElistContactsController : Controller
     {
         private ListServiceManagmentContext db = new ListServiceManagmentContext();
@@ -43,7 +40,7 @@ namespace ListServiceManagement.Controllers.WebView
         }
 
         // POST: ElistContacts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -75,7 +72,7 @@ namespace ListServiceManagement.Controllers.WebView
         }
 
         // POST: ElistContacts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]

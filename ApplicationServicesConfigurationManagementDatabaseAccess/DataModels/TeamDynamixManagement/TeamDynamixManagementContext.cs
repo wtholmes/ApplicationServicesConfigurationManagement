@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.SqlClient;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Data.Entity;
 
 namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
     public partial class TeamDynamixManagementContext : DbContext
     {
-
-        public TeamDynamixManagementContext() :base("name=TeamDynamixManagement")
+        public TeamDynamixManagementContext() : base("name=TeamDynamixManagement")
         {
-
         }
 
         public virtual DbSet<TeamDynamixIntegration> TeamDynamixIntegrations { get; set; }
@@ -41,7 +31,6 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
                .HasRequired(t => t.UpdatedTeamDynamixStatusClass)
                .WithMany()
                .WillCascadeOnDelete(false);
-
         }
     }
 }

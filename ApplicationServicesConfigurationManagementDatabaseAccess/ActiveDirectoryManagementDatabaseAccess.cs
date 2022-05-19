@@ -10,7 +10,7 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
     /// <summary>
     /// Derived Class for managing Active Directory Mangement Database Access
     /// </summary>
-    public class ActiveDirectoryManagementDatabaseAccess : ConfigurationManagementDatabaseAccess 
+    public class ActiveDirectoryManagementDatabaseAccess : ConfigurationManagementDatabaseAccess
     {
         #region ---- Public Properties ----
 
@@ -54,7 +54,7 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
 
         #region ---- Public Methods ----
 
-        new public void Dispose()
+        public new void Dispose()
         {
             this.DomainControllers.Clear();
             this.DomainControllerUSNQueryRanges.Clear();
@@ -145,12 +145,11 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
             return domainControllerUSNQueryRange;
         }
 
-
         public void CreateConfigurationTasksForActiveDirecoryObjects(List<dynamic> activeDirectoryEntities)
         {
             // Get the current list of task owners from the Configuration Management Database.
             List<ConfigurationTaskOwner> configurationTaskOwners = this.database.ConfigurationTaskOwners.ToList();
-            foreach(ActiveDirectoryEntity activeDirectoryEntity in activeDirectoryEntities)
+            foreach (ActiveDirectoryEntity activeDirectoryEntity in activeDirectoryEntities)
             {
                 Guid RequestIdentifier = Guid.NewGuid();
                 Int32 ConfigurationTaskStatusID = this.database.ConfigurationTaskStatuses
@@ -170,7 +169,6 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
                     // If there is not an existing new task for this owner create one.
                     if (existingTask == null)
                     {
-
                         ConfigurationTask configurationTask = new ConfigurationTask()
                         {
                             ConfigurationTaskOwner_Id = configurationTaskOwner.ConfigurationTaskOwner_Id,
@@ -188,11 +186,7 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
                 }
             }
             this.database.SaveChanges();
-
         }
-
-
-
 
         #endregion ---- Public Methods ----
     }

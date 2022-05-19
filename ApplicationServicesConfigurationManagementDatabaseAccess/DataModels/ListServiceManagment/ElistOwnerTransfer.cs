@@ -1,20 +1,16 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity.Spatial;
 
 namespace ListServiceManagement.Models
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class ElistOwnerTransfer
-    { 
+    {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Key]
         public int ElistOwnerTransfer_Id { get; set; }
@@ -37,7 +33,7 @@ namespace ListServiceManagement.Models
         /// <summary>
         ///  The  new List Owner
         /// </summary>
-        public String NewOwner{ get; set; }
+        public String NewOwner { get; set; }
 
         /// <summary>
         /// The new list owner's email address.
@@ -82,6 +78,5 @@ namespace ListServiceManagement.Models
         /// A DateTime value indicating when the address was modified.
         /// </summary>
         public DateTime WhenChanged { get; set; }
-
     }
 }

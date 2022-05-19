@@ -68,7 +68,6 @@ namespace ServiceEventLoggingManager
                 this.EventLogSource = "Application";
                 this.EventLogName = "Application";
             }
-            
 
             if (EventLog.SourceExists(this.EventLogSource))
             {
@@ -163,7 +162,7 @@ namespace ServiceEventLoggingManager
             }
 
             StringBuilder stringBuilder = new StringBuilder("No Details Available");
-            if(EventMessage != null)
+            if (EventMessage != null)
             {
                 stringBuilder.Clear();
                 stringBuilder.AppendFormat("\n{0}\n", EventMessage);

@@ -2,18 +2,14 @@
 // package to your project.
 ////#define Handle_PageResultOfT
 
+using ListServiceManagement.ViewModels;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Web;
 using System.Web.Http;
 
-using ListServiceManagement.ViewModels;
 #if Handle_PageResultOfT
 using System.Web.Http.OData;
 #endif
@@ -39,7 +35,7 @@ namespace ListServiceManagement.Areas.HelpPage
             config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/XmlDocument.xml")));
 
             //// Uncomment the following to use "sample string" as the sample for all actions that have string as the body parameter or return type.
-            //// Also, the string arrays will be used for IEnumerable<string>. The sample objects will be serialized into different media type 
+            //// Also, the string arrays will be used for IEnumerable<string>. The sample objects will be serialized into different media type
             //// formats by the available formatters.
             //config.SetSampleObjects(new Dictionary<Type, object>
             //{
@@ -75,12 +71,6 @@ namespace ListServiceManagement.Areas.HelpPage
 
                 config.SetSampleForType(string.Join("&", propExample), new MediaTypeHeaderValue("application/x-www-form-urlencoded"), t);
             }
-
-
-
-
-
-
 
             //// Uncomment the following to use "1234" directly as the request sample for media type "text/plain" on the controller named "Values"
             //// and action named "Put".

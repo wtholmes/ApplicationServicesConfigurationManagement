@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using ApplicationServicesConfigurationManagementDatabaseAccess;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using ApplicationServicesConfigurationManagementDatabaseAccess;
 
 namespace TeamDynamixManagement.Controllers
 {
@@ -42,7 +38,7 @@ namespace TeamDynamixManagement.Controllers
         }
 
         // POST: TeamDynamixStatusClasses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -74,7 +70,7 @@ namespace TeamDynamixManagement.Controllers
         }
 
         // POST: TeamDynamixStatusClasses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]

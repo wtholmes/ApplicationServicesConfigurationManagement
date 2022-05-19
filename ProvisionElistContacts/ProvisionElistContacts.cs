@@ -1,5 +1,4 @@
-﻿using ActiveDirectoryAccess;
-using ListServiceManagement.Models;
+﻿using ListServiceManagement.Models;
 using PowerShellRunspaceManager;
 using System;
 using System.Collections.Generic;
@@ -52,7 +51,7 @@ namespace ProvisionElistContacts
                         Thread.Sleep(new TimeSpan(0, 0, 5).Milliseconds);
                         try
                         {
-                            logfile.WriteLine("[{0} UTC]: Synchonizing Elist Contact: {1}",DateTime.UtcNow.ToString(), elistContact.ListName);
+                            logfile.WriteLine("[{0} UTC]: Synchonizing Elist Contact: {1}", DateTime.UtcNow.ToString(), elistContact.ListName);
                             Console.WriteLine("Synchonizing Elist Contact: {0}", elistContact.ListName);
                             Dictionary<String, String> DirectoryContactNames = new Dictionary<String, String>();
                             DirectoryContactNames.Add("ListContact", elistContact.ListName.Trim());
@@ -123,7 +122,7 @@ namespace ProvisionElistContacts
                             }
                             context.SaveChanges();
                         }
-                        catch(Exception exp)
+                        catch (Exception exp)
                         {
                             logfile.WriteLine("      %%%%%%% -An exception has occurred -%%%%%%\n\n");
                             logfile.WriteLine("{0}", exp);

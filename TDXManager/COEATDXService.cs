@@ -1,17 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
-using TeamDynamix.Api.Accounts;
 using TeamDynamix.Api.CustomAttributes;
-using TeamDynamix.Api.Apps;
-using TeamDynamix.Api.Feed;
-using TeamDynamix.Api.Forms;
-using TeamDynamix.Api.PriorityFactors;
-using TeamDynamix.Api.ServiceCatalog;
 using TeamDynamix.Api.Tickets;
 using TeamDynamix.Api.Users;
 
@@ -62,7 +52,7 @@ namespace TDXManager
                 RequestorUid = RequestingUser.UID,
                 TypeID = ((int)TicketClass.ServiceRequest),
                 Title = String.Format("Your COEA request for: {0} has been approved.", EmailAddress),
-                Description = String.Format("The Cornell Optional Email Alais (COEA) you requested: {0} has beeen approved. It will take up to one hour for this request to complete the provisioning process. ",EmailAddress),
+                Description = String.Format("The Cornell Optional Email Alais (COEA) you requested: {0} has beeen approved. It will take up to one hour for this request to complete the provisioning process. ", EmailAddress),
                 Attributes = customAttributes
             };
 
@@ -75,15 +65,13 @@ namespace TDXManager
             this.NotifyRequestor = true;
             UpdateTicket("The approved COEA request has been submitted for provisioning.");
 
-            Thread.Sleep(Convert.ToInt32(new TimeSpan(0,2,0).TotalMilliseconds));
+            Thread.Sleep(Convert.ToInt32(new TimeSpan(0, 2, 0).TotalMilliseconds));
 
             this.SetTicketStatusByName("Resolved");
             this.NotifyCreator = true;
             this.NotifyRequestor = true;
             UpdateTicket("Your COEA request has completed.");
-
         }
-
 
         public void NewCOEARequest(String UserPrincipalName, String EmailAddress)
         {
@@ -133,11 +121,6 @@ namespace TDXManager
 
             //this.SetTicketStatusByName("Resolved");
             //AddTicketFeedEntry("Your COEA request has completed.", true, true);
-
         }
-
-
-
-
     }
 }

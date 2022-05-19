@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
-using System.DirectoryServices;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -43,7 +42,7 @@ namespace PowerShellRunspaceManager
 
         protected Stopwatch stopwatch;
 
-        #endregion Protected Class Data
+        #endregion ---- Protected Properties ----
 
         #region ---- Class Constructors ----
 
@@ -58,7 +57,7 @@ namespace PowerShellRunspaceManager
             stopwatch = new Stopwatch();
         }
 
-        #endregion Class Constructors
+        #endregion ---- Class Constructors ----
 
         #region ---- Public Properties ----
 
@@ -158,7 +157,7 @@ namespace PowerShellRunspaceManager
             }
         }
 
-        #endregion Public Properties
+        #endregion ---- Public Properties ----
 
         #region ---- Public Methods ----
 
@@ -1087,7 +1086,7 @@ namespace PowerShellRunspaceManager
         }
     }
 
-    #endregion Public Methods
+    #endregion ---- Public Methods ----
 
     #endregion ---- Powershell Runspaces Class ----
 
@@ -1261,6 +1260,4 @@ namespace PowerShellRunspaceManager
     }
 
     #endregion ---- Serializable Dictionary Class ----
-
-    
 }

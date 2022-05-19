@@ -152,7 +152,7 @@ namespace ActiveDirectoryAccess
                 SearchResultCollection searchResults = directorySearcher.FindAll();
 
                 if (searchResults.Count > 0) // Save the results to the Dynamic Collection and Return.
-                { 
+                {
                     // Peform the search and save the result to the ActiveDirectory Entities Collection.
                     foreach (SearchResult searchResult in searchResults)
                     {

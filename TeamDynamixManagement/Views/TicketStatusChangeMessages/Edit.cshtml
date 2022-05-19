@@ -7,11 +7,10 @@
 
 <h2>Edit</h2>
 
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>TicketStatusChangeMessage</h4>
         <hr />
@@ -54,7 +53,7 @@
             @Html.Label("Insert Token", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
 
-                @Html.DropDownList("MessageToken", (List<SelectListItem>)ViewBag.MessageToken, new { id = "MessageToken", @class = "form-control" }) 
+                @Html.DropDownList("MessageToken", (List<SelectListItem>)ViewBag.MessageToken, new { id = "MessageToken", @class = "form-control" })
                 <button type="button" onclick="setTextToCurrentPos()" class="btn btn-default">Insert Token</button>
             </div>
         </div>
@@ -74,8 +73,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 
-
-     <script>
+    <script>
         function setTextToCurrentPos() {
             var messageTokenDropDown = document.getElementById("MessageToken")
             var curPos = document.getElementById("Message").selectionStart;

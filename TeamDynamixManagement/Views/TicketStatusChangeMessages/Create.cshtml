@@ -43,7 +43,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Message, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control", @rows=10, @id = "Message" } })
+                @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control", @rows = 10, @id = "Message" } })
                 @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -52,7 +52,7 @@
             @Html.Label("Insert Token", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
 
-                @Html.DropDownList("MessageToken", (List<SelectListItem>)ViewBag.MessageToken, new { id = "MessageToken", @class = "form-control" }) 
+                @Html.DropDownList("MessageToken", (List<SelectListItem>)ViewBag.MessageToken, new { id = "MessageToken", @class = "form-control" })
                 <button type="button" onclick="setTextToCurrentPos()" class="btn btn-default">Insert Token</button>
             </div>
         </div>

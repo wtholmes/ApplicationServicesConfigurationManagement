@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace AuthenticationServices
 {
@@ -31,6 +29,7 @@ namespace AuthenticationServices
 
         [DisplayName("Client Expiration Time")]
         public DateTime ExpirationTime { get; set; }
+
         [DisplayName("Client Roles")]
         public List<CheckBoxViewModel> OAuth2ClientRoles { get; set; }
     }

@@ -1,13 +1,10 @@
-﻿using System;
+﻿using ActiveDirectoryAccess;
+using ApplicationServicesConfigurationManagementDatabaseAccess;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using ActiveDirectoryAccess;
-using ApplicationServicesConfigurationManagementDatabaseAccess;
 
 namespace TeamDynamixManagement.Controllers
 {
@@ -15,15 +12,15 @@ namespace TeamDynamixManagement.Controllers
     public class TeamDynamixIntegrationsController : Controller
     {
         private TeamDynamixManagementContext db = new TeamDynamixManagementContext();
-        private ActiveDirectoryContext  ad = new ActiveDirectoryContext();
+        private ActiveDirectoryContext ad = new ActiveDirectoryContext();
 
         // GET: TeamDynamixIntegrations
         public ActionResult Index()
         {
             List<TeamDynamixIntegration> teamDynamixIntegrations = db.TeamDynamixIntegrations.Include(t => t.TeamDynamixForm)
                 .ToList();
-            
-            foreach(TeamDynamixIntegration teamDynamixIntegration in teamDynamixIntegrations)
+
+            foreach (TeamDynamixIntegration teamDynamixIntegration in teamDynamixIntegrations)
             {
                 ActiveDirectoryEntity activeDirectoryEntity = ad.SearchDirectory(teamDynamixIntegration.OwnerObjectGuid);
                 teamDynamixIntegration.UserPrincipalName = activeDirectoryEntity.userprincipalName;
@@ -66,7 +63,7 @@ namespace TeamDynamixManagement.Controllers
         }
 
         // POST: TeamDynamixIntegrations/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -100,7 +97,7 @@ namespace TeamDynamixManagement.Controllers
         }
 
         // POST: TeamDynamixIntegrations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]

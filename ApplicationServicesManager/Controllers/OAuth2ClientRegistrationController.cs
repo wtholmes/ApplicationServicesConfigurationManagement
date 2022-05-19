@@ -1,13 +1,11 @@
-﻿using System;
+﻿using AuthenticationServices;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Web;
 using System.Web.Mvc;
-using AuthenticationServices;
 
 namespace ApplicationServicesManager.Controllers
 {
@@ -20,8 +18,8 @@ namespace ApplicationServicesManager.Controllers
         [Authorize(Roles = "ApplicationServicesManagerAdminRole")]
         public ActionResult Index()
         {
-            List<OAuth2ClientRegistrationViewModel> oAuth2ClientRegistrations = new List<OAuth2ClientRegistrationViewModel>();   
-            foreach(OAuth2ClientRegistration oAuth2ClientRegistration in db.OAuth2ClientRegistrations)
+            List<OAuth2ClientRegistrationViewModel> oAuth2ClientRegistrations = new List<OAuth2ClientRegistrationViewModel>();
+            foreach (OAuth2ClientRegistration oAuth2ClientRegistration in db.OAuth2ClientRegistrations)
             {
                 OAuth2ClientRegistrationViewModel oAuth2ClientRegistrationViewModel = new OAuth2ClientRegistrationViewModel()
                 {
@@ -35,7 +33,7 @@ namespace ApplicationServicesManager.Controllers
                 };
                 oAuth2ClientRegistrations.Add(oAuth2ClientRegistrationViewModel);
             }
-            
+
             return View(oAuth2ClientRegistrations);
         }
 
@@ -56,15 +54,15 @@ namespace ApplicationServicesManager.Controllers
 
             OAuth2ClientRegistrationViewModel oAuth2ClientRegistrationViewModel = new OAuth2ClientRegistrationViewModel()
             {
-                OAuth2ClientRegistrationID =oAuth2ClientRegistration.OAuth2ClientRegistrationID,
-                ClientID=oAuth2ClientRegistration.ClientID,
-                ClientDescription=oAuth2ClientRegistration.ClientDescription,
-                RequestingUPN=oAuth2ClientRegistration.RequestingUPN,
-                RequestTime=oAuth2ClientRegistration.RequestTime,
-                ExpirationTime=oAuth2ClientRegistration.ExpirationTime
+                OAuth2ClientRegistrationID = oAuth2ClientRegistration.OAuth2ClientRegistrationID,
+                ClientID = oAuth2ClientRegistration.ClientID,
+                ClientDescription = oAuth2ClientRegistration.ClientDescription,
+                RequestingUPN = oAuth2ClientRegistration.RequestingUPN,
+                RequestTime = oAuth2ClientRegistration.RequestTime,
+                ExpirationTime = oAuth2ClientRegistration.ExpirationTime
             };
 
-            if(this.User.Identity.Name.Equals(oAuth2ClientRegistration.RequestingUPN))
+            if (this.User.Identity.Name.Equals(oAuth2ClientRegistration.RequestingUPN))
             {
                 oAuth2ClientRegistrationViewModel.ClientSecret = oAuth2ClientRegistration.ClientSecret;
             }
@@ -72,7 +70,7 @@ namespace ApplicationServicesManager.Controllers
             {
                 oAuth2ClientRegistrationViewModel.ClientSecret = String.Format("{0}.....", oAuth2ClientRegistration.ClientSecret.Substring(0, 6));
             }
-                
+
             return View(oAuth2ClientRegistrationViewModel);
         }
 
@@ -99,7 +97,7 @@ namespace ApplicationServicesManager.Controllers
                               };
 
             var MyCheckBoxList = new List<CheckBoxViewModel>();
-            foreach(var clientRole in ClientRoles)
+            foreach (var clientRole in ClientRoles)
             {
                 MyCheckBoxList.Add(
                     new CheckBoxViewModel
@@ -120,13 +118,12 @@ namespace ApplicationServicesManager.Controllers
                 ClientID = ClientId,
                 ClientSecret = ClientSecret,
                 OAuth2ClientRoles = MyCheckBoxList
-                
             };
             return View(newOAuth2ClientRegistrationViewModel);
         }
 
         // POST: OAuth2ClientRegistration/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -135,7 +132,6 @@ namespace ApplicationServicesManager.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 OAuth2ClientRegistration oAuth2ClientRegistration = new OAuth2ClientRegistration()
                 {
                     ClientID = oAuth2ClientRegistrationViewModel.ClientID,
@@ -148,13 +144,13 @@ namespace ApplicationServicesManager.Controllers
                 db.OAuth2ClientRegistrations.Add(oAuth2ClientRegistration);
                 db.SaveChanges();
 
-                if(oAuth2ClientRegistration.OAuth2ClientRegistrationID != 0)
+                if (oAuth2ClientRegistration.OAuth2ClientRegistrationID != 0)
                 {
                     List<OAuth2ClientRoleToOAuth2ClientRegistration> oAuth2ClientRoleToOAuth2ClientRegistrations = new List<OAuth2ClientRoleToOAuth2ClientRegistration>();
 
-                    foreach(CheckBoxViewModel checkBoxViewModel in oAuth2ClientRegistrationViewModel.OAuth2ClientRoles)
+                    foreach (CheckBoxViewModel checkBoxViewModel in oAuth2ClientRegistrationViewModel.OAuth2ClientRoles)
                     {
-                        if(checkBoxViewModel.IsChecked)
+                        if (checkBoxViewModel.IsChecked)
                         {
                             OAuth2ClientRoleToOAuth2ClientRegistration auth2ClientRoleToOAuth2ClientRegistration = new OAuth2ClientRoleToOAuth2ClientRegistration()
                             {
@@ -172,9 +168,8 @@ namespace ApplicationServicesManager.Controllers
 
             return View(oAuth2ClientRegistrationViewModel);
         }
-        [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")]  // This method requires authorization.
-        // GET: OAuth2ClientRegistration/Edit/5
 
+        [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")]  // This method requires authorization.
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -206,7 +201,7 @@ namespace ApplicationServicesManager.Controllers
                         OAuth2Role = clientRole.RoleName,
                         OAuth2RoleDescription = clientRole.RoleDescription,
                         IsChecked = ((from ab in db.OAuth2ClientRoleToOAuth2ClientRegistrations
-                                      where (ab.OAuth2ClientRegistrationID == id) 
+                                      where (ab.OAuth2ClientRegistrationID == id)
                                       && (ab.OAuth2ClientRoleID == clientRole.OAuth2ClientRoleID)
                                       select ab).Count() > 0)
                     }
@@ -237,7 +232,7 @@ namespace ApplicationServicesManager.Controllers
         }
 
         // POST: OAuth2ClientRegistration/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -259,7 +254,6 @@ namespace ApplicationServicesManager.Controllers
 
             // Update the client description if it has been changed.
             oAuth2ClientRegistration.ClientDescription = oAuth2ClientRegistrationViewModel.ClientDescription;
-
 
             foreach (CheckBoxViewModel checkBoxViewModel in oAuth2ClientRegistrationViewModel.OAuth2ClientRoles)
             {
@@ -285,7 +279,6 @@ namespace ApplicationServicesManager.Controllers
                     {
                         db.OAuth2ClientRoleToOAuth2ClientRegistrations.Remove(oAuth2ClientRoleToOAuth2ClientRegistration);
                     }
-
                 }
             }
             db.SaveChanges();
@@ -296,7 +289,6 @@ namespace ApplicationServicesManager.Controllers
         [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")]  // This method requires authorization.
         public ActionResult Delete(int? id)
         {
-
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -335,7 +327,7 @@ namespace ApplicationServicesManager.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             OAuth2ClientRegistration oAuth2ClientRegistration = db.OAuth2ClientRegistrations.Find(id);
-            if(oAuth2ClientRegistration == null)
+            if (oAuth2ClientRegistration == null)
             {
                 return HttpNotFound();
             }

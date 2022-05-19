@@ -139,7 +139,7 @@ namespace ApplicationServicesConfigurationManagementTestSuite
                                         Console.WriteLine("     --- Ticket Canceled: No new onwer provided.");
                                     }
 
-                                    #endregion ------ New Ticket Processing ------
+                                    #endregion ------ New TDX Request Ticket Processing ------
                                 }
 
                                 #region ------ Request Validation Checks ------
@@ -242,12 +242,11 @@ namespace ApplicationServicesConfigurationManagementTestSuite
 
                                 #endregion ------ Request Validation Checks ------
 
-
                                 #region ---- Automation Processing ----
+
                                 // ============
                                 // S154-ListOwnerTransferAutomationStatus indicates the current status of workflows in the request ticket.
                                 String AutomationStatus = ticket.Attributes.Where(a => a.Name.Equals("S154-ListOwnerTransferAutomationStatus")).Select(a => a.ValueText).FirstOrDefault();
-
 
                                 switch (AutomationStatus.ToUpper())
                                 {
@@ -490,7 +489,7 @@ namespace ApplicationServicesConfigurationManagementTestSuite
                                         #endregion ---- Automation Status Other ----
                                 }
 
-                                #endregion ---- Check Automation Status ----
+                                #endregion ---- Automation Processing ----
                             }
 
                             #region ---- Cancelation Conditions ----
@@ -499,11 +498,10 @@ namespace ApplicationServicesConfigurationManagementTestSuite
 
                             // The Elist Contact does not exist but there is already a valid transfer in progress.
                             else if (elistOwnerTransfer != null && elistContact == null)
-                            
+
                             {
                                 if (elistOwnerTransfer.Status.Equals("CANCELLED"))
                                 {
-
                                     tDXTicketManager.TDXTicket = ticket;
 
                                     String BackEndError = String.Format("The following Error Has Occurred:\n\n {0}", elistOwnerTransfer.RequestStatusDetail);
@@ -545,7 +543,6 @@ namespace ApplicationServicesConfigurationManagementTestSuite
                                 TicketUpdate = TicketUpdate.Replace("%%%-LISTNAME-%%%", ElistName);
                                 TicketUpdate = TicketUpdate.Replace("%%%-CREATORNETID-%%%", CreatedUser.UserName.Split('@')[0]);
                                 TicketUpdate = TicketUpdate.Replace("%%%-CURRENTOWNERNETID-%%%", "N/A");
-
 
                                 tDXTicketManager.TDXTicket = ticket;
                                 tDXTicketManager.NotificationEmails.Clear();

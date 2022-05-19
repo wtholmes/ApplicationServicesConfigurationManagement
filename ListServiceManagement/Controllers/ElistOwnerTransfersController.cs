@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ListServiceManagement.Models;
+using ListServiceManagement.ViewModels;
+using System;
 using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Description;
-using ListServiceManagement.Models;
-using ListServiceManagement.ViewModels;
 
 namespace ListServiceManagement.Controllers
 {
@@ -32,6 +27,7 @@ namespace ListServiceManagement.Controllers
         {
             return db.ElistOwnerTransfers;
         }
+
         // GET: api/ElistOwnerTransfers
         /// <summary>
         /// Get the list of approved owner list tranfers.
@@ -62,14 +58,14 @@ namespace ListServiceManagement.Controllers
                 return NotFound();
             }
 
-            if(elistOwnerTransfer.Status.Equals("APPROVED"))
+            if (elistOwnerTransfer.Status.Equals("APPROVED"))
             {
                 elistOwnerTransfer.Status = "COMPLETE";
                 elistOwnerTransfer.WhenChanged = DateTime.UtcNow;
 
-                if(updatedElistOwnerTransfer.RequestStatusDetail !=null)
+                if (updatedElistOwnerTransfer.RequestStatusDetail != null)
                 {
-                    if(updatedElistOwnerTransfer.RequestStatusDetail.Length > 0)
+                    if (updatedElistOwnerTransfer.RequestStatusDetail.Length > 0)
                     {
                         elistOwnerTransfer.RequestStatusDetail = updatedElistOwnerTransfer.RequestStatusDetail;
                     }
@@ -113,9 +109,6 @@ namespace ListServiceManagement.Controllers
             return Ok(elistOwnerTransfer);
         }
 
-
-
-
         /// <summary>
         ///  Update the the list owner transfer status to complete.
         /// </summary>
@@ -135,7 +128,7 @@ namespace ListServiceManagement.Controllers
             elistOwnerTransfer.Status = "COMPLETE";
             elistOwnerTransfer.WhenChanged = DateTime.UtcNow;
             db.SaveChanges();
-            
+
             return Ok(elistOwnerTransfer);
         }
 
@@ -157,7 +150,7 @@ namespace ListServiceManagement.Controllers
                 return NotFound();
             }
 
-            if (!Regex.Match(@"(OBSOLETE|CANCELLED|COMPLETE)",elistOwnerTransfer.Status).Success)
+            if (!Regex.Match(@"(OBSOLETE|CANCELLED|COMPLETE)", elistOwnerTransfer.Status).Success)
             {
                 elistOwnerTransfer.Status = "CANCELLED";
                 elistOwnerTransfer.WhenChanged = DateTime.UtcNow;
@@ -175,11 +168,10 @@ namespace ListServiceManagement.Controllers
             {
                 return BadRequest(String.Format("This request can not be canceled because its status is: {0}", elistOwnerTransfer.Status));
             }
-
         }
 
         /// <summary>
-        /// Cancel the list owner transfer request. 
+        /// Cancel the list owner transfer request.
         /// </summary>
         /// <param name="Id">The Id transfer request that is in a state that can be canceled: NEW, REQUESTED, PENDING, APPROVED</param>
         /// <returns></returns>
@@ -205,8 +197,8 @@ namespace ListServiceManagement.Controllers
             {
                 return BadRequest(String.Format("This request can not be canceled because its status is: {0}", elistOwnerTransfer.Status));
             }
-
         }
+
         // GET: api/ElistOwnerTransfers/5
         /// <summary>
         /// Get a list owner transfer by Id
@@ -227,7 +219,6 @@ namespace ListServiceManagement.Controllers
             return Ok(elistOwnerTransfer);
         }
 
- 
         protected override void Dispose(bool disposing)
         {
             if (disposing)

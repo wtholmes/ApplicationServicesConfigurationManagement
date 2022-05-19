@@ -99,7 +99,7 @@ namespace TeamDynamixManagement.Controllers
             }
 
             //Assigning generic list to ViewBag
-            ViewBag.MessageToken = ObjList ;
+            ViewBag.MessageToken = ObjList;
             return View(ticketStatusChangeMessage);
         }
 

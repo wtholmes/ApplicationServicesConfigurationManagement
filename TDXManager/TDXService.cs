@@ -1,4 +1,5 @@
-﻿using Marvin.JsonPatch;
+﻿using ApplicationServicesConfigurationManagementDatabaseAccess;
+using Marvin.JsonPatch;
 using Marvin.JsonPatch.Dynamic;
 using Newtonsoft.Json;
 using System;
@@ -20,8 +21,6 @@ using TeamDynamix.Api.Reporting;
 using TeamDynamix.Api.ServiceCatalog;
 using TeamDynamix.Api.Tickets;
 using TeamDynamix.Api.Users;
-using ApplicationServicesConfigurationManagementDatabaseAccess;
-
 
 namespace TDXManager
 {
@@ -32,8 +31,10 @@ namespace TDXManager
         private HttpClient oHttpClientX;
 
         private String sLocationOrigin = "https://tdx.cornell.edu/";
+
         //private String sWebApiBasePathname = "SBTDWebApi/api/";
         private String sWebApiBasePathname = "TDWebApi/api/";
+
         private String ApplicationID = "32";
         private String sUsername = "messagingteam-api-01@cornell.edu";
         private String sPassword = "+o}Q6$(uE5Dj";
@@ -45,7 +46,6 @@ namespace TDXManager
 
         #region ---- Public Class Properties ---
 
-
         #region ---- List or MultiValue Properties ----
 
         public Dictionary<String, User> TDXUserCache;
@@ -56,12 +56,14 @@ namespace TDXManager
         public List<Ticket> TDXTickets { get; private set; }
         public List<Form> TDXTicketForms { get; private set; }
         public List<Exception> Exceptions { get; private set; }
+
         public Exception LastException
         { get { return Exceptions.LastOrDefault(); } }
 
-        #endregion
+        #endregion ---- List or MultiValue Properties ----
 
         #region ---- Ticket Specific Properties ----
+
         public Ticket TDXTicket
         {
             get
@@ -101,8 +103,6 @@ namespace TDXManager
 
         public CustomAttribute TDXTicketCustomAttribute { get; private set; }
 
-
-
         public Form TDXTicketForm { get; private set; }
 
         public List<ItemUpdate> TDXItemUpdates { get; private set; }
@@ -138,8 +138,7 @@ namespace TDXManager
 
         public User TDXUser { get; private set; }
 
-        #endregion
-
+        #endregion ---- Ticket Specific Properties ----
 
         #endregion ---- Public Class Properties ---
 
@@ -316,8 +315,6 @@ namespace TDXManager
                 Exceptions.Add(exp);
             }
         }
-
-
 
         /// <summary>
         /// Get the list of reports from TeamDynamix
@@ -679,28 +676,27 @@ namespace TDXManager
                     {
                         int customAttributeID = customAttribute.ID;
 
-                            // Create a patch document.
-                            JsonPatchDocument jsonPatchDocument = new JsonPatchDocument();
-                            jsonPatchDocument.Replace(String.Format("/attributes/{0}", customAttributeID), AttributeValue);
-                            HttpMethod method = new HttpMethod("PATCH");
-                            HttpRequestMessage httpRequestMessage = new HttpRequestMessage(method, ApiUri)
-                            {
-                                Content = new StringContent(JsonConvert.SerializeObject(jsonPatchDocument), Encoding.Unicode, "application/json")
-                            };
-                            HttpResponseMessage httpResponseMessage = oHttpClientX.SendAsync(httpRequestMessage).Result;
-                            if (httpResponseMessage.IsSuccessStatusCode)
-                            {
-                                String httpResponseMessageContent = httpResponseMessage.Content.ReadAsStringAsync().Result;
-                                _TDXTicket = JsonConvert.DeserializeObject<Ticket>(httpResponseMessageContent);
-                            }
-                            else
-                            {
-                                String httpResponseMessageContent = httpResponseMessage.Content.ReadAsStringAsync().Result;
-                            }
-
-                            return _TDXTicket;
+                        // Create a patch document.
+                        JsonPatchDocument jsonPatchDocument = new JsonPatchDocument();
+                        jsonPatchDocument.Replace(String.Format("/attributes/{0}", customAttributeID), AttributeValue);
+                        HttpMethod method = new HttpMethod("PATCH");
+                        HttpRequestMessage httpRequestMessage = new HttpRequestMessage(method, ApiUri)
+                        {
+                            Content = new StringContent(JsonConvert.SerializeObject(jsonPatchDocument), Encoding.Unicode, "application/json")
+                        };
+                        HttpResponseMessage httpResponseMessage = oHttpClientX.SendAsync(httpRequestMessage).Result;
+                        if (httpResponseMessage.IsSuccessStatusCode)
+                        {
+                            String httpResponseMessageContent = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                            _TDXTicket = JsonConvert.DeserializeObject<Ticket>(httpResponseMessageContent);
                         }
-                    
+                        else
+                        {
+                            String httpResponseMessageContent = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                        }
+
+                        return _TDXTicket;
+                    }
                 }
             }
             catch (Exception exp)
@@ -709,7 +705,6 @@ namespace TDXManager
             }
             return null;
         }
-
 
         /// <summary>
         /// Updates the selected choice in a custom dropdown custom attribute.
@@ -781,7 +776,6 @@ namespace TDXManager
                 {
                     String ApiUri = String.Format("{0}/tickets/{1}?notifyNewResponsible=false", ApplicationID, _TDXTicket.ID);
 
-
                     JsonPatchDocument<Ticket> jsonPatchDocument = new JsonPatchDocument<Ticket>();
 
                     jsonPatchDocument.Replace(g => g.ResponsibleGroupID, GroupID);
@@ -823,7 +817,6 @@ namespace TDXManager
                 if (_TDXTicket != null)
                 {
                     String ApiUri = String.Format("{0}/tickets/{1}?notifyNewResponsible=false", ApplicationID, _TDXTicket.ID);
-  
 
                     JsonPatchDocument<Ticket> jsonPatchDocument = new JsonPatchDocument<Ticket>();
 
@@ -866,7 +859,6 @@ namespace TDXManager
                 if (_TDXTicket != null)
                 {
                     String ApiUri = String.Format("{0}/tickets/{1}?notifyNewResponsible=false", ApplicationID, _TDXTicket.ID);
-                   
 
                     JsonPatchDocument<Ticket> jsonPatchDocument = new JsonPatchDocument<Ticket>();
                     jsonPatchDocument.Replace(t => t.Description, TicketDescription);
@@ -934,7 +926,6 @@ namespace TDXManager
                     {
                         jsonPatchDocument.Replace(property.Name, PropertyValue);
                     }
-
                 }
             }
 
@@ -943,7 +934,6 @@ namespace TDXManager
                 if (_TDXTicket != null)
                 {
                     String ApiUri = String.Format("{0}/tickets/{1}?notifyNewResponsible=false", ApplicationID, _TDXTicket.ID);
-                   
 
                     //jsonPatchDocument.Replace(t => t.Description, TicketDescription);
                     HttpMethod method = new HttpMethod("PATCH");
@@ -1023,7 +1013,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Update the current TDX ticket by adding a new ticket feed entry, set the 
+        /// Update the current TDX ticket by adding a new ticket feed entry, set the
         /// status and specify the update as public or private.
         /// </summary>
         /// <param name="Comments">The ticket comment to tadd to the feed.</param>
@@ -1078,7 +1068,6 @@ namespace TDXManager
                     }
                     catch
                     {
-
                     }
                 }
 
@@ -1288,7 +1277,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="UserPrincipalName"></param>
         /// <returns></returns>
@@ -1300,7 +1289,7 @@ namespace TDXManager
                     .Where(u => u.UserPrincipalName.Equals(UserPrincipalName, StringComparison.OrdinalIgnoreCase))
                     .FirstOrDefault();
 
-                if(cachedUser != null)
+                if (cachedUser != null)
                 {
                     User user = JsonConvert.DeserializeObject<User>(cachedUser.UserAsJSON);
                     return user;
@@ -1326,7 +1315,7 @@ namespace TDXManager
                         {
                             TDXUser = TDXUsers[0];
 
-                            if(!TDXUserCache.ContainsKey(TDXUser.UID.ToString()))
+                            if (!TDXUserCache.ContainsKey(TDXUser.UID.ToString()))
                             {
                                 TDXUserCache.Add(TDXUser.UID.ToString(), TDXUser);
                             }
@@ -1342,7 +1331,6 @@ namespace TDXManager
                                 teamDynamixManagementContext.TeamDynamixUsers.Add(newCachedUser);
                                 teamDynamixManagementContext.SaveChanges();
                             }
-
 
                             return TDXUser;
                         }
@@ -1378,12 +1366,11 @@ namespace TDXManager
                     .Where(u => u.Uid == userGuid)
                     .FirstOrDefault();
 
-                if(cachedUser != null)
+                if (cachedUser != null)
                 {
                     User user = JsonConvert.DeserializeObject<User>(cachedUser.UserAsJSON);
                     return user;
                 }
-
 
                 if (TDXUserCache.ContainsKey(Uid))
                 {
@@ -1404,7 +1391,7 @@ namespace TDXManager
                             user = JsonConvert.DeserializeObject<User>(httpResponseMessageContent);
                             TDXUserCache.Add(Uid, user);
 
-                            if(cachedUser == null)
+                            if (cachedUser == null)
                             {
                                 TeamDynamixUser newCachedUser = new TeamDynamixUser
                                 {

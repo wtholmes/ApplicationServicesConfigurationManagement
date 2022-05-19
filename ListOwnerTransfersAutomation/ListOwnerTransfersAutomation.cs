@@ -153,7 +153,7 @@ namespace ListOwnerTransfersAutomation
                                 // ============
                                 // Check if the Request Creator is the current Elist owner.
                                 String CreatedUserCompare = "";
-                                if(CreatedUser.UserName.Length > 0)
+                                if (CreatedUser.UserName.Length > 0)
                                 {
                                     CreatedUserCompare = CreatedUser.UserName;
                                 }
@@ -202,9 +202,7 @@ namespace ListOwnerTransfersAutomation
                                 }
                                 catch (Exception exp)
                                 {
-
                                 }
-
 
                                 // ============
                                 // Check if the current owner's affiliation is a student if so it can be transferred by any academic, faculty, or staff.
@@ -223,12 +221,12 @@ namespace ListOwnerTransfersAutomation
                                             {
                                                 PrimaryAffiliation = currentOwnerDirectoryEntity[0].directoryProperties["cornelleduPrimaryAffiliation"].ToString();
                                             }
-                                            
+
                                             Regex trasferableFromRegex = new Regex(@"^(alumni|applicant|associate|exception|former postdoc|retired faculty|retiree|student|NONE)$", RegexOptions.IgnoreCase);
                                             if (trasferableFromRegex.IsMatch(PrimaryAffiliation))
                                             {
                                                 String CreatedUserLookupName = "";
-                                                if(CreatedUser.UserName.Length !=0)
+                                                if (CreatedUser.UserName.Length != 0)
                                                 {
                                                     CreatedUserLookupName = CreatedUser.UserName;
                                                 }
@@ -252,13 +250,11 @@ namespace ListOwnerTransfersAutomation
                                                     }
                                                 }
                                             }
-                                            
                                         }
                                     }
                                 }
                                 catch (Exception exp)
                                 {
-
                                 }
 
                                 // ============
@@ -267,7 +263,7 @@ namespace ListOwnerTransfersAutomation
                                 try
                                 {
                                     String LookupUserName = "";
-                                    if(NewOwner.UserName.Length > 0)
+                                    if (NewOwner.UserName.Length > 0)
                                     {
                                         LookupUserName = NewOwner.UserName;
                                     }
@@ -297,11 +293,9 @@ namespace ListOwnerTransfersAutomation
                                         }
                                     }
                                 }
-                                catch(Exception exp)
+                                catch (Exception exp)
                                 {
-
                                 }
-                            
 
                                 #endregion ------ Request Validation Checks ------
 
@@ -312,7 +306,6 @@ namespace ListOwnerTransfersAutomation
 
                                 switch (AutomationStatus.ToUpper())
                                 {
-
                                     #region ---- Automation Status New ----
 
                                     case "NEW":
@@ -368,7 +361,7 @@ namespace ListOwnerTransfersAutomation
                                             }
                                             else
                                             {
-                                                TicketUpdate = TicketUpdate.Replace("%%%-CURRENTOWNERNETID-%%%", elistContact.OwnerNetID);  
+                                                TicketUpdate = TicketUpdate.Replace("%%%-CURRENTOWNERNETID-%%%", elistContact.OwnerNetID);
                                             }
                                             TicketUpdate = TicketUpdate.Replace("%%%-CREATORFULLNAME-%%% ", CreatedUser.FullName);
                                             tDXTicketManager.NotificationEmails.Clear();
@@ -376,7 +369,6 @@ namespace ListOwnerTransfersAutomation
                                             tDXTicketManager.NotifyRequestor = true;
                                             tDXTicketManager.UpdateTicket(TicketUpdate, "Cancelled");
                                             tDXTicketManager.UpdateResponsibleGroup(45);
-
 
                                             logfile.WriteLine("     --- Invalid request. Requestor is not authorized. Cancelling the request and sending notifications.");
                                             Console.WriteLine("     --- Invalid request. Requestor is not authorized. Cancelling the request and sending notifications.");
@@ -536,7 +528,6 @@ namespace ListOwnerTransfersAutomation
                                                 default:
                                                     break;
                                             }
-
                                         }
                                         break;
 
@@ -592,9 +583,7 @@ namespace ListOwnerTransfersAutomation
                                     TicketUpdate = TicketUpdate.Replace("%%%-CURRENTOWNERNETID-%%%", "N/A");
                                     TicketUpdate = TicketUpdate.Replace("%%%-REQUESTSTATUSDETAIL-%%%", elistOwnerTransfer.RequestStatusDetail);
 
-
                                     //Todo:  Investigate removing the workflow at this stage.
-
 
                                     tDXTicketManager.NotificationEmails.Clear();
                                     tDXTicketManager.AddNotificationEmail(tDXTicketManager.GetTDXUserByUID(NewElistOwnerID).PrimaryEmail, true);
@@ -619,7 +608,6 @@ namespace ListOwnerTransfersAutomation
                             // The Elist Contact does not exist but a valid request was never created.
                             else if (!AutomationStatus.Equals("NEW", StringComparison.OrdinalIgnoreCase) && elistContact == null)
                             {
-
                                 String TicketUpdate = File.ReadAllText(@".\Messages\ListHasBeenRemoveAfterRequest.txt");
                                 TicketUpdate = TicketUpdate.Replace("%%%-LISTNAME-%%%", ElistName);
                                 TicketUpdate = TicketUpdate.Replace("%%%-CREATORNETID-%%%", CreatedUser.UserName.Split('@')[0]);

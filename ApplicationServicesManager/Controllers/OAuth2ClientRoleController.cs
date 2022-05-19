@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AuthenticationServices;
+using System;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using AuthenticationServices;
 
 namespace ApplicationServicesManager.Controllers
 {
@@ -47,7 +45,7 @@ namespace ApplicationServicesManager.Controllers
         }
 
         // POST: OAuth2ClientRole/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
@@ -81,7 +79,7 @@ namespace ApplicationServicesManager.Controllers
         }
 
         // POST: OAuth2ClientRole/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
@@ -121,9 +119,7 @@ namespace ApplicationServicesManager.Controllers
             {
                 return View(oAuth2ClientRole);
             }
-
         }
-
 
         // POST: OAuth2ClientRole/Delete/5
         [Authorize]
@@ -154,7 +150,6 @@ namespace ApplicationServicesManager.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-  
         }
 
         protected override void Dispose(bool disposing)

@@ -13,7 +13,7 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
         {
             // Configure the task subscription id.  We will only select tasks with this id.
             this.ConfigurationTaskOwner_Id = this.database.ConfigurationTaskOwners
-                    .Where(t => t.TaskThreadName.Equals("Office365LicensingManagement",System.StringComparison.OrdinalIgnoreCase))
+                    .Where(t => t.TaskThreadName.Equals("Office365LicensingManagement", System.StringComparison.OrdinalIgnoreCase))
                     .Select(t => t.ConfigurationTaskOwner_Id)
                     .FirstOrDefault();
         }

@@ -38,35 +38,35 @@
         </th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ListName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OwnerNetID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OwnerDisplayName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ListDomainName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Purpose)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SponsorNetID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Enabled)
-        </td>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ListName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerNetID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerDisplayName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ListDomainName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Purpose)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SponsorNetID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Enabled)
+            </td>
 
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ListContact_Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ListContact_Id }) 
-        </td>
-    </tr>
-}
-
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ListContact_Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ListContact_Id })
+            </td>
+        </tr>
+    }
 </table>

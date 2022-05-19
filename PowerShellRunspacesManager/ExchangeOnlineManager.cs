@@ -83,7 +83,6 @@ namespace PowerShellRunspaceManager
             psCredential = new PSCredential(UserName, O365SessionPass);
             connectionInfo = new WSManConnectionInfo(exchangeURI, powerShellSchema, psCredential);
 
-
             // ------
             // Set connection parameters
             // ------

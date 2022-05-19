@@ -33,7 +33,5 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
 
         [ForeignKey("TicketStatusChangeMessage")]
         public virtual ICollection<TicketStatusChangeMessage> TicketStatusChangeMessages { get; set; }
-    
-    
     }
 }

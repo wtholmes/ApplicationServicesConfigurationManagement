@@ -8,7 +8,6 @@ using System.Security.Principal;
 
 namespace ActiveDirectoryAccess
 {
-
     public class ActiveDirectoryEntity : DynamicObject
     {
         #region Constructors
@@ -133,7 +132,7 @@ namespace ActiveDirectoryAccess
                     PropertyInfo NamedProperty = this.GetType().GetProperties().Where(p => p.Name.Equals(ElementKey, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                     // The named property in the class so update the named property
-                    // value as well as the directory properties dictionary. 
+                    // value as well as the directory properties dictionary.
                     if (NamedProperty != null)
                     {
                         if (value.GetType().Equals(NamedProperty.PropertyType))
@@ -148,7 +147,6 @@ namespace ActiveDirectoryAccess
                     {
                         directoryProperties[ElementKey] = value;
                     }
-
                 }
                 // The requested index does not exist just create a new value in the dictionary.
                 else
@@ -187,7 +185,7 @@ namespace ActiveDirectoryAccess
 
         public string displayName { get; set; }
 
-        public string distinguishedName{ get; set; }
+        public string distinguishedName { get; set; }
 
         public Int32 groupType { get; set; }
 

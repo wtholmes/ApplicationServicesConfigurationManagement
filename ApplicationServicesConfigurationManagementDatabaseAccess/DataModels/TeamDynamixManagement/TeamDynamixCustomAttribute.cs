@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,7 +22,6 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
 
         public bool IsActive { get; set; }
 
-        public virtual ICollection<TeamDynamixForm> TeamDynamixForms{ get; set; }
-
+        public virtual ICollection<TeamDynamixForm> TeamDynamixForms { get; set; }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Microsoft.Owin.Security;
+﻿using AuthenticationServices;
+using Microsoft.Owin.Security;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
-using AuthenticationServices;
 
 namespace ListServiceManagement.Controllers.WebView
 {

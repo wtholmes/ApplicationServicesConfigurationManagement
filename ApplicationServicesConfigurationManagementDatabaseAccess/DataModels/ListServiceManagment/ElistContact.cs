@@ -112,7 +112,6 @@ namespace ListServiceManagement.Models
         [Column("MetaData")]
         public string SerializedMetaData
         {
-
             get { return JsonConvert.SerializeObject(MetaData); }
             set
             {
@@ -124,7 +123,7 @@ namespace ListServiceManagement.Models
                     }
                     catch
                     {
-                        MetaData= new Dictionary<string, object>();
+                        MetaData = new Dictionary<string, object>();
                     }
                 }
                 else

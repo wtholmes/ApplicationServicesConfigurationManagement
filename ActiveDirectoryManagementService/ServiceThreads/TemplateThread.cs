@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ActiveDirectoryManagementService
 {
@@ -37,23 +33,10 @@ namespace ActiveDirectoryManagementService
 
                     try
                     {
-                        #region Worker Initialization
-
-                        
-
-                        #endregion Worker Initialization
-
-                        #region --- Proccess Configuration Management Tasks ----
-
-                       
-                        
-
-                        #endregion Process OnPrem Configuration Updates
-
                         // Thread Actions Completed Sleep for One Minute.
                         Thread.Sleep(new TimeSpan(0, 1, 0));
                     }
-                    // General Exception 
+                    // General Exception
                     catch (Exception exp)
                     {
                         //Todo: Implement General Exception Action,
@@ -77,7 +60,7 @@ namespace ActiveDirectoryManagementService
                 // Log the thread state when the service goes into a stop pending state.
                 if (serviceStatus.dwCurrentState.Equals(ServiceState.SERVICE_STOP_PENDING))
                 {
-                   // Todo: Implement Log Actions.
+                    // Todo: Implement Log Actions.
                 }
 
                 // Wait here while the service is in stop pending state.
@@ -90,10 +73,9 @@ namespace ActiveDirectoryManagementService
                 // Log the thread state when the service goes into a stopped state.
                 if (serviceStatus.dwCurrentState.Equals(ServiceState.SERVICE_STOPPED))
                 {
-                   // Todo: Implement Log Actions.
+                    // Todo: Implement Log Actions.
                 }
             }
         }
     }
-
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Entity;
 
 namespace AuthenticationServices
 {
@@ -12,6 +7,7 @@ namespace AuthenticationServices
         public OAuth2AuthenticationContext()
     : base("OAuth2ClientAuthorization")
         { }
+
         public DbSet<OAuth2ClientRegistration> OAuth2ClientRegistrations { get; set; }
 
         public DbSet<OAuth2ClientRole> OAuth2ClientRoles { get; set; }

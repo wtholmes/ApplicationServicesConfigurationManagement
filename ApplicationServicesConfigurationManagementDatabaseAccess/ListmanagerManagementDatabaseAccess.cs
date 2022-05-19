@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
@@ -12,14 +9,6 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
 
     public class ListmanagerManagementDatabaseAccess : ConfigurationManagementDatabaseAccess
     {
-        #region ---- Public Properties ----
-
-        #endregion
-
-        #region ---- Private Properties ----
-
-        #endregion
-
         #region ---- Explicit Constructors ----
 
         public ListmanagerManagementDatabaseAccess() : base()
@@ -31,20 +20,15 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
                 .FirstOrDefault();
         }
 
-        #endregion
+        #endregion ---- Explicit Constructors ----
 
         #region ---- Public Methods ----
-        new public void Dispose()
+
+        public new void Dispose()
         {
             base.Dispose();
         }
 
-        #endregion
-
-        #region ---- Private Methods ----
-
-        #endregion
-
-
+        #endregion ---- Public Methods ----
     }
 }
