@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ApplicationServicesConfigurationManagementDatabaseAccess.Models;
 
 namespace ApplicationServicesConfigurationManagementDatabaseAccess
 {
@@ -12,7 +13,7 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
     {
         #region ---- Public Properties ----
 
-        public ApplicationServicesConfigurationManagement database { get; private set; }
+        public ApplicationServicesConfigurationManagementContext database { get; private set; }
 
         public String TaskThreadName { get; private set; }
 
@@ -37,7 +38,7 @@ namespace ApplicationServicesConfigurationManagementDatabaseAccess
 
         public ConfigurationManagementDatabaseAccess()
         {
-            database = new ApplicationServicesConfigurationManagement();
+            database = new ApplicationServicesConfigurationManagementContext();
         }
 
         #endregion ---- Default Constructor ----

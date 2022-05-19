@@ -1,0 +1,161 @@
+﻿@model ListServiceManagement.Models.ElistContact
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ElistContact</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ListName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ListName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ListDisplayName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ListDisplayName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerNetID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OwnerNetID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerEMailAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OwnerEMailAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerDisplayName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OwnerDisplayName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ListDomainName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ListDomainName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Purpose)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Purpose)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SponsorNetID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SponsorNetID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CornellEntity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CornellEntity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ListContactDirectory_Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ListContactDirectory_Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RequestContactDirectory_Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RequestContactDirectory_Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerContactDirectory_Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OwnerContactDirectory_Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Enabled)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Enabled)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SerializedMetaData)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SerializedMetaData)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Notes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Notes)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WhenCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WhenCreated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WhenModified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WhenModified)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

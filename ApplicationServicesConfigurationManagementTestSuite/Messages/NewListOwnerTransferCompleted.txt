@@ -1,0 +1,21 @@
+﻿Hello %%%-LISTOWNERFULLNAME-%%%,
+
+The ownership transfer of the elist %%%-LISTNAME-%%% to you (%%%-NETID-%%%) has been completed. Your Lyris List Manager user name is %%%-NETID-%%%@cornell.edu.
+
+To ensure that you have administrative access to this e-list please set or reset your Lyris List Manager password by visiting %%%-LISTINSTANCEURL-%%% . Click the 'If you have forgotten your password, click here' and following the instructions.
+
+If you would like to administer your e-list via a different email address, follow this procedure for adding an administrator https://it.cornell.edu/lyris/add-change-or-remove-e-list-admins-lyris .
+
+Please review the administrators of your list and adjust as appropriate.  You may want to remove the previous owner and administrators.
+
+Also, you may adjust the web interface information-only 'Contact' setting to be your name by in List Manager %%%-LISTINSTANCEURL-%%%  . Select your list, then in the left hand column select:     
+Utilities
+        : List Settings
+          : Discussion Forum Interface
+            : Information About Your List
+              : Contact Info
+
+
+If you encounter any problems, please contact us at https://it.cornell.edu/support.
+
+Cornell Email Team

@@ -108,7 +108,17 @@ namespace ActiveDirectoryAccess
                 directoryFilter.Append(String.Format(@"\{0}", guidByte.ToString("x2")));
             }
             directoryFilter.Append("))");
-            return SearchDirectory(directoryFilter.ToString()).FirstOrDefault();
+            return SearchDirectory(directoryFilter.ToString(), false, null).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Search the Active Directory using the UserPrincipalName
+        /// </summary>
+        /// <param name="UserPrincipalName"></param>
+        public ActiveDirectoryEntity SearchDirectory(String UserPrincipalName)
+        {
+            String directorySearchFilter = String.Format("(&(userPrincipalName={0}))", UserPrincipalName);
+            return SearchDirectory(directorySearchFilter, false, null).FirstOrDefault();
         }
 
         /// <summary>
@@ -118,32 +128,44 @@ namespace ActiveDirectoryAccess
         /// <param name="Value"></param>
         public List<dynamic> SearchDirectory(String Property, String Value)
         {
-            return SearchDirectory(String.Format("(&({0}={1}))", Property, Value));
+            return SearchDirectory(String.Format("(&({0}={1}))", Property, Value), true, null);
         }
 
         /// <summary>
         /// Search the Active Directory using the SearchFilter
         /// </summary>
         /// <param name="SearchFilter"></param>
-        public List<dynamic> SearchDirectory(string SearchFilter)
+        public List<dynamic> SearchDirectory(string SearchFilter, Boolean ReturnMany, Int32? MaxResults)
         {
             activeDirectoryEntities.Clear();
 
             using (DirectorySearcher directorySearcher = new DirectorySearcher(activeDirectory))
             {
+                if (!ReturnMany) { directorySearcher.SizeLimit = 1; }
+                else { if (MaxResults != null) { directorySearcher.SizeLimit = Convert.ToInt32(MaxResults); } }
                 directorySearcher.PageSize = 1000;
                 directorySearcher.ServerPageTimeLimit = TimeSpan.FromSeconds(4);
-                directorySearcher.CacheResults = false;
+                directorySearcher.CacheResults = true;
                 directorySearcher.Filter = SearchFilter;
 
-                // Peform the search and save the result to the ActiveDirectory Entities Collection.
-                foreach (SearchResult searchResult in directorySearcher.FindAll())
+                // Peform the search and save the result.
+                SearchResultCollection searchResults = directorySearcher.FindAll();
+
+                if (searchResults.Count > 0) // Save the results to the Dynamic Collection and Return.
+                { 
+                    // Peform the search and save the result to the ActiveDirectory Entities Collection.
+                    foreach (SearchResult searchResult in searchResults)
+                    {
+                        dynamic activeDirectoryEntity = PopulateEntity(searchResult);
+                        activeDirectoryEntities.Add(activeDirectoryEntity);
+                    }
+                    return activeDirectoryEntities;
+                }
+                else // No results return Null.
                 {
-                    dynamic activeDirectoryEntity = PopulateEntity(searchResult);
-                    activeDirectoryEntities.Add(activeDirectoryEntity);
+                    return null;
                 }
             }
-            return activeDirectoryEntities;
         }
 
         public List<dynamic> SearchDirectory(DomainControllerUSNQueryRange domainControllerUSNQueryRange)
@@ -159,15 +181,25 @@ namespace ActiveDirectoryAccess
                     directorySearcher.CacheResults = false;
                     directorySearcher.Filter = domainControllerUSNQueryRange.ADearchFilter;
 
-                    // Peform the search and save the result to the ActiveDirectory Entities Collection.
-                    foreach (SearchResult searchResult in directorySearcher.FindAll())
+                    // Peform the search and save the result.
+                    SearchResultCollection searchResults = directorySearcher.FindAll();
+
+                    if (searchResults.Count > 0) // Save the results to the Dynamic Collection and Return.
                     {
-                        dynamic activeDirectoryEntity = PopulateEntity(searchResult);
-                        activeDirectoryEntities.Add(activeDirectoryEntity);
+                        // Peform the search and save the result to the ActiveDirectory Entities Collection.
+                        foreach (SearchResult searchResult in searchResults)
+                        {
+                            dynamic activeDirectoryEntity = PopulateEntity(searchResult);
+                            activeDirectoryEntities.Add(activeDirectoryEntity);
+                        }
+                        return activeDirectoryEntities;
+                    }
+                    else // No results return Null.
+                    {
+                        return null;
                     }
                 }
             }
-            return activeDirectoryEntities;
         }
 
         #endregion ---- Public Methods ----

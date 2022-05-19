@@ -1,0 +1,1 @@
+﻿The e-list ownership transfer request for %%%-LISTNAME-%%% is in progress. A request to accept ownership has been sent %%%-NETID-%%%@cornell.edu. This request is currently awaiting their acceptance.

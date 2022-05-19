@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ListServiceManagement.Models.ElistContact>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ListName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OwnerNetID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OwnerEMailAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ListDomainName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Purpose)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SponsorNetID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Enabled)
+        </th>
+        <th>
+            Actions
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ListName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OwnerNetID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OwnerDisplayName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ListDomainName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Purpose)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SponsorNetID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Enabled)
+        </td>
+
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ListContact_Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ListContact_Id }) 
+        </td>
+    </tr>
+}
+
+</table>

@@ -17,7 +17,7 @@ namespace ListServiceManagement.Controllers
     /// </summary>
     public class ElistContactsController : ApiController
     {
-        private ListServiceManagment db = new ListServiceManagment();
+        private ListServiceManagmentContext db = new ListServiceManagmentContext();
 
         /// <summary>
         /// Get a table (of type ElistContact) of all Elist Contacts.
@@ -116,38 +116,69 @@ namespace ListServiceManagement.Controllers
                 return BadRequest(ModelState);
             }
 
+            ElistContact existingContact = db.ElistContacts
+                .Where(c => c.ListName.Equals(newElistContact.ListName, System.StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();
+
+            if (existingContact != null)
+            {
+                HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.Conflict);
+                httpResponseMessage.ReasonPhrase = String.Format("[DuplicateListName]: {0} - ListName must be unique.", newElistContact.ListName);
+                return ResponseMessage(httpResponseMessage);
+            }
+
             // Create a new ElistContact and get is list of properies.
             ElistContact elistContact = new ElistContact();
             PropertyInfo[] elistContactProperties = elistContact.GetType().GetProperties();
 
-            // Copy any updated properties from the updated List Contact to the ElistContact;
-            PropertyInfo[] newElistContactProperties = newElistContact.GetType().GetProperties();
-
-            foreach (PropertyInfo elistContactProperty in elistContactProperties)
+            // Map the ViewModel properties to the DataModel Properties
+            try
             {
-                PropertyInfo newElistContactProperty = newElistContactProperties
-                    .Where(p => p.Name.Equals(elistContactProperty.Name))
-                    .FirstOrDefault();
-                if (newElistContactProperty != null)
+                // Copy any updated properties from the updated List Contact to the ElistContact;
+                PropertyInfo[] newElistContactProperties = newElistContact.GetType().GetProperties();
+
+                foreach (PropertyInfo elistContactProperty in elistContactProperties)
                 {
-                    object propertyValue = newElistContactProperty.GetValue(newElistContact, null);
-                    if (propertyValue != null)
+                    PropertyInfo newElistContactProperty = newElistContactProperties
+                        .Where(p => p.Name.Equals(elistContactProperty.Name))
+                        .FirstOrDefault();
+                    if (newElistContactProperty != null)
                     {
-                        elistContactProperty.SetValue(elistContact, propertyValue);
+                        object propertyValue = newElistContactProperty.GetValue(newElistContact, null);
+                        if (propertyValue != null)
+                        {
+                            elistContactProperty.SetValue(elistContact, propertyValue);
+                        }
                     }
                 }
+                elistContact.WhenCreated = System.DateTime.UtcNow;
+                elistContact.WhenModified = System.DateTime.UtcNow;
             }
-
-            elistContact.WhenCreated = System.DateTime.UtcNow;
-            elistContact.WhenModified = System.DateTime.UtcNow;
-            db.ElistContacts.Add(elistContact);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = elistContact.ListContact_Id }, elistContact);
+            // Property mapping exception.
+            catch (Exception ex)
+            {
+                HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                httpResponseMessage.ReasonPhrase = String.Format("[ViewModelMappingError]: {0} - Error mapping Viewmodel properties.", ex.Message);
+                return ResponseMessage(httpResponseMessage);
+            }
+            // Add the new Entity to the DataModel and write it to the Database.
+            try
+            {
+                db.ElistContacts.Add(elistContact);
+                db.SaveChanges();
+                return CreatedAtRoute("DefaultApi", new { id = elistContact.ListContact_Id }, elistContact);
+            }
+            // Database Exception.
+            catch (Exception ex)
+            {
+                HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                httpResponseMessage.ReasonPhrase = String.Format("[DatabaseError]: {0} - Error creating List Contact.", ex.Message);
+                return ResponseMessage(httpResponseMessage);
+            }
         }
 
         /// <summary>
-        /// Update an Elist Contact specified by its Id using a Request Body of type UpdatedElistContact.
+        ///     Update an Elist Contact specified by its Id using a Request Body of type UpdatedElistContact.
         /// </summary>
         /// <param name="Id">The Id of the contact to be updated.</param>
         /// <param name="updatedElistContact">A request body of type UpdatedElistContact</param>
@@ -238,7 +269,7 @@ namespace ListServiceManagement.Controllers
         /// </summary>
         /// <param name="ListName">The ListName of the contact to be updated.</param>
         /// <param name="updatedElistContact">A request body of type UpdatedElistContact</param>
-        /// <returns></returns>
+        /// <returns>ElistContact</returns>
         // PATCH: api/ElistContacts/5
         [Authorize(Roles = "ListServiceContactWebAPIReadWrite")]
         [HttpPatch]
@@ -302,7 +333,7 @@ namespace ListServiceManagement.Controllers
             }
             else
             {
-                return BadRequest();
+                return Ok(elistContact);
             }
         }
 

@@ -101,8 +101,13 @@ namespace AuthenticationServices
                 identity.AddClaim(new Claim(ClaimTypes.Email, userPrincipal.EmailAddress));
             }
 
-            // Todo: Add any additional claims you may need here...
+            // Add Active Directory Group Based Roles Here.
+            PrincipalSearchResult<Principal> GroupPrincipals = userPrincipal.GetGroups();
 
+            if (GroupPrincipals.Where(p => p.Name.Equals("ApplicationServicesManagerAdminRole")).FirstOrDefault() != null) { identity.AddClaim(new Claim(ClaimTypes.Role, "ApplicationServicesManagerAdminRole")); }
+            if (GroupPrincipals.Where(p => p.Name.Equals("ApplicationServicesManagerAdminCreateRegistrationRole")).FirstOrDefault() != null) { identity.AddClaim(new Claim(ClaimTypes.Role, "ApplicationServicesManagerAdminCreateRegistrationRole")); }
+            if (GroupPrincipals.Where(p => p.Name.Equals("ElistServiceAdminRole")).FirstOrDefault() != null) { identity.AddClaim(new Claim(ClaimTypes.Role, "ElistServiceAdminRole")); }
+            
             return identity;
         }
     }

@@ -1,0 +1,1 @@
+﻿The e-list ownership transfer request for "%%%-LISTNAME-%%%" has been cancelled. %%%-NEWOWNERFULLNAME-%%% (%%%-NETID-%%%) is not authorized to own an E-List based on their current affiliation.

@@ -16,13 +16,43 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("List Services Manager", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("Manage Elist Contacts", "Index", "ElistContacts", new { area = "" }, null)</li>
                 </ul>
+                <form class="navbar-nav navbar-right mr-auto" role="search">
+                    @using ListServiceManagement.Extensions;
+                    @using (Html.BeginForm("Index", Request.Url.LocalPath.Split('/')[1]))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        var queryOptions = (QueryOptions)ViewBag.QueryOptions;
+
+                        if (queryOptions != null)
+                        {
+                            <div class="input-group mb-auto">
+                                @{
+                                    if (queryOptions.SearchString != null)
+                                    {
+                                        @Html.TextBox("SearchString", queryOptions.SearchString, new { @class = "form-control", title = "To search for a specific account enter a search string and click the search button" });
+                                    }
+                                    else
+                                    {
+                                        <input title="To search for a specific account enter a search string and click the search button" type="text" name="SearchString" id="SearchString" class="form-control" placeholder="Search">
+                                    }
+                                }
+                                <div class="input-group-append">
+                                    <input title="Clicking here will search for accounts that match the given search string" type="submit" name="Search" , value="Search" class="form-control btn btn-secondary" />
+                                </div>
+                            </div>
+                        }
+                    }
+                </form>
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>

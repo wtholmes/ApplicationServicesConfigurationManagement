@@ -37,8 +37,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -56,11 +56,23 @@
   <ItemGroup>
     <Compile Include="ActiveDirectoryManagementDatabaseAccess.cs" />
     <Compile Include="ConfigurationManagementDatabaseAccess.cs" />
-    <Compile Include="DataModel\ActiveDirectoryDomainController.cs" />
-    <Compile Include="DataModel\ApplicationServicesConfigurationManagement.cs" />
-    <Compile Include="DataModel\ConfigurationTask.cs" />
-    <Compile Include="DataModel\ConfigurationTaskOwner.cs" />
-    <Compile Include="DataModel\ConfigurationTaskStatus.cs" />
+    <Compile Include="DataModels\ApplicationServicesConfigurationManagement\ActiveDirectoryDomainController.cs" />
+    <Compile Include="DataModels\ApplicationServicesConfigurationManagement\ApplicationServicesConfigurationManagementContext.cs" />
+    <Compile Include="DataModels\ApplicationServicesConfigurationManagement\ConfigurationTask.cs" />
+    <Compile Include="DataModels\ApplicationServicesConfigurationManagement\ConfigurationTaskOwner.cs" />
+    <Compile Include="DataModels\ApplicationServicesConfigurationManagement\ConfigurationTaskStatus.cs" />
+    <Compile Include="DataModels\ListServiceManagment\ElistContact.cs" />
+    <Compile Include="DataModels\ListServiceManagment\ElistContacts_History.cs" />
+    <Compile Include="DataModels\ListServiceManagment\ElistOwnerTransfer.cs" />
+    <Compile Include="DataModels\ListServiceManagment\ElistOwnerTransfer_History.cs" />
+    <Compile Include="DataModels\ListServiceManagment\ListServiceManagmentContext.cs" />
+    <Compile Include="DataModels\TeamDynamixManagement\TeamDynamixCustomAttribute.cs" />
+    <Compile Include="DataModels\TeamDynamixManagement\TeamDynamixManagementContext.cs" />
+    <Compile Include="DataModels\TeamDynamixManagement\TeamDynamixUser.cs" />
+    <Compile Include="DataModels\TeamDynamixManagement\TicketStatusChangeMessage.cs" />
+    <Compile Include="DataModels\TeamDynamixManagement\TeamDynamixForm.cs" />
+    <Compile Include="DataModels\TeamDynamixManagement\TeamDynamixIntegration.cs" />
+    <Compile Include="DataModels\TeamDynamixManagement\TeamDynamixStatusClass.cs" />
     <Compile Include="ListmanagerManagementDatabaseAccess.cs" />
     <Compile Include="Office365ExchangeManagementDatabaseAccess.cs" />
     <Compile Include="Office365LicensingManagementDatabaseAccess.cs" />

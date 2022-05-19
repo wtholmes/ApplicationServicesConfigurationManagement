@@ -1,0 +1,5 @@
+﻿The ownership transfer of the e-list "%%%-LISTNAME-%%%", initiated by %%%-CREATORFULLNAME-%%%, has been completed. %%%-CURRENTOWNERFULLNAME-%%% is no longer the owner of "%%%-LISTNAME-%%%". Any management requests for "%%%-LISTNAME-%%%" should now be sent to %%%-LISTOWNERFULLNAME-%%% <%%%-NETID-%%%@cornell.edu>.
+
+If you are notified of any problems or have any questions, please contact us at https://it.cornell.edu/support.
+
+Cornell Email Team

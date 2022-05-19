@@ -11,11 +11,13 @@ using AuthenticationServices;
 
 namespace ApplicationServicesManager.Controllers
 {
+    [Authorize(Roles = "ApplicationServicesManagerAdminRole")]
     public class OAuth2ClientRegistrationController : Controller
     {
         private OAuth2AuthenticationContext db = new OAuth2AuthenticationContext();
 
         // GET: OAuth2ClientRegistration
+        [Authorize(Roles = "ApplicationServicesManagerAdminRole")]
         public ActionResult Index()
         {
             List<OAuth2ClientRegistrationViewModel> oAuth2ClientRegistrations = new List<OAuth2ClientRegistrationViewModel>();   
@@ -38,7 +40,7 @@ namespace ApplicationServicesManager.Controllers
         }
 
         // GET: OAuth2ClientRegistration/Details/5
-        [Authorize] // This method requires authorization.
+        [Authorize(Roles = "ApplicationServicesManagerAdminRole")] // This method requires authorization.
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -75,7 +77,7 @@ namespace ApplicationServicesManager.Controllers
         }
 
         // GET: OAuth2ClientRegistration/Create
-        [Authorize] // This method requires authorization.
+        [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")] // This method requires authorization.
         public ActionResult Create()
         {
             ViewBag.ExpandClientRoles = true;
@@ -128,7 +130,7 @@ namespace ApplicationServicesManager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize] // This method requires authorization.
+        [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")]  // This method requires authorization.
         public ActionResult Create(OAuth2ClientRegistrationViewModel oAuth2ClientRegistrationViewModel)
         {
             if (ModelState.IsValid)
@@ -170,7 +172,7 @@ namespace ApplicationServicesManager.Controllers
 
             return View(oAuth2ClientRegistrationViewModel);
         }
-        [Authorize] // This method requires authorization.
+        [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")]  // This method requires authorization.
         // GET: OAuth2ClientRegistration/Edit/5
 
         public ActionResult Edit(int? id)
@@ -239,7 +241,7 @@ namespace ApplicationServicesManager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize] // This method requires authorization.
+        [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")]  // This method requires authorization.
         public ActionResult Edit([Bind(Include = "ID,OAuth2ClientRegistrationID,ClientID,ClientSecret,ClientDescription,RequestingUPN,RequestTime,ExpirationTime,OAuth2ClientRoles")] OAuth2ClientRegistrationViewModel oAuth2ClientRegistrationViewModel)
         {
             if (ModelState.IsValid)
@@ -291,7 +293,7 @@ namespace ApplicationServicesManager.Controllers
         }
 
         // GET: OAuth2ClientRegistration/Delete/5
-        [Authorize] // This method requires authorization.
+        [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")]  // This method requires authorization.
         public ActionResult Delete(int? id)
         {
 
@@ -329,7 +331,7 @@ namespace ApplicationServicesManager.Controllers
         // POST: OAuth2ClientRegistration/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize] // This method requires authorization.
+        [Authorize(Roles = "ApplicationServicesManagerAdminCreateRegistrationRole")]  // This method requires authorization.
         public ActionResult DeleteConfirmed(int id)
         {
             OAuth2ClientRegistration oAuth2ClientRegistration = db.OAuth2ClientRegistrations.Find(id);

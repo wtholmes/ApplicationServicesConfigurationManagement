@@ -76,8 +76,5 @@ namespace ListServiceManagement.ViewModels
         /// A general notes field.
         /// </summary>
         public string Notes { get; set; }
-        /// <summary>
-        /// Specifies when the contact was created. This will match the contact creation time in Active Directory.
-        /// </summary>
     }
 }

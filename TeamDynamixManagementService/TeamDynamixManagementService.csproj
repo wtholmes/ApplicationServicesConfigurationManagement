@@ -64,5 +64,11 @@
   <ItemGroup>
     <Folder Include="ServiceThreads\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationServicesConfigurationManagementDatabaseAccess\ApplicationServicesConfigurationManagementDatabaseAccess.csproj">
+      <Project>{780ed095-a647-4f0b-a017-2979fa487e3e}</Project>
+      <Name>ApplicationServicesConfigurationManagementDatabaseAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

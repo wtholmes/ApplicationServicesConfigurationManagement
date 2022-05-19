@@ -1,0 +1,3 @@
+﻿The e-list ownership transfer request for "%%%-LISTNAME-%%%" has been cancelled.  %%%-LISTNAME-%%% may have been deleted by the owner while this request was in flight.
+
+If this e-list is still needed please submit a request to create the e-list via https://it.cornell.edu/lyris/overview-create-e-list-lyris

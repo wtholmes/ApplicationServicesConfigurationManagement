@@ -1,0 +1,3 @@
+﻿The e-list ownership transfer request for "%%%-LISTNAME-%%%" has been cancelled.  
+
+%%%-BACKENDSTATUSMESSAGE-%%%

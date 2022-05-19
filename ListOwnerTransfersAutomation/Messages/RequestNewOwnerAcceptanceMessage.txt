@@ -1,0 +1,1 @@
+﻿%%%-LISTOWNERFULLNAME-%%% has accepted ownership of e-list "%%%-LISTNAME-%%%". You will be notified when the owner transfer has been completed. This could take up to 4 business hours to complete.

@@ -1,0 +1,3 @@
+﻿%%%-LISTOWNERFULLNAME-%%%, 
+
+Please accept or decline ownership of the e-list "%%%-LISTNAME-%%%" being offered to you by %%%-CREATORFULLNAME-%%%. To accept or decline please use the buttons on the webpage at the Workflow link above. If you have questions about this offer please contact %%%-CREATORFULLNAME-%%% <%%%-CREATORNETID-%%%@cornell.edu>.

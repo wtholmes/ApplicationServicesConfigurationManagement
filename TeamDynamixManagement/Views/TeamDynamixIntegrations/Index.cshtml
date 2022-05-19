@@ -1,0 +1,55 @@
+﻿@model IEnumerable<ApplicationServicesConfigurationManagementDatabaseAccess.TeamDynamixIntegration>
+
+@{
+    ViewBag.Title = "TeamDynamix Integrations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TeamDynamix Integrations</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IntegrationName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TeamDynamixForm.FormName)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserPrincipalName)
+        </th>
+
+        <th>Actions</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.IntegrationName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TeamDynamixForm.FormName)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserPrincipalName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.TeamDynamixIntegration_Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.TeamDynamixIntegration_Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.TeamDynamixIntegration_Id })
+        </td>
+    </tr>
+}
+
+</table>

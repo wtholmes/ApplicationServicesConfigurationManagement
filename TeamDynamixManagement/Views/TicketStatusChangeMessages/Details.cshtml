@@ -1,0 +1,51 @@
+﻿@model ApplicationServicesConfigurationManagementDatabaseAccess.TicketStatusChangeMessage
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TicketStatusChangeMessage</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.CurrentTeamDynamixStatusClass.TicketStatusName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CurrentTeamDynamixStatusClass.TicketStatusName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeamDynamixIntegration.IntegrationName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeamDynamixIntegration.IntegrationName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UpdatedTeamDynamixStatusClass.TicketStatusName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UpdatedTeamDynamixStatusClass.TicketStatusName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Message)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Message)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.TicketStatusChangeMessage_Id }) |
+    @Html.ActionLink("Back to List", "Index", new { id = Model.IntegrationID })
+</p>

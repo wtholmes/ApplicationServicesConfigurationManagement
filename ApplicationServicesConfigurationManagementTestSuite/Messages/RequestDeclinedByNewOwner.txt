@@ -1,0 +1,1 @@
+﻿The e-list ownership transfer request, initiated by %%%-CREATORFULLNAME-%%%, for "%%%-LISTNAME-%%%" has been cancelled. The proposed new owner, %%%-LISTOWNERFULLNAME-%%%, has declined the ownership transfer.  %%%-CURRENTOWNERFULLNAME-%%% is still the owner of this list.

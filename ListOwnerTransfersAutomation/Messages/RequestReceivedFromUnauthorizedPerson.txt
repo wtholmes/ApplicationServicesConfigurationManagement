@@ -1,0 +1,1 @@
+﻿The e-list ownership transfer request for "%%%-LISTNAME-%%%" has been cancelled. %%%-CREATORFULLNAME-%%% (%%%-CREATORNETID-%%%) is not the current owner or sponsor for this e-list. Please contact the current owner %%%-CURRENTOWNERNETID-%%%@cornell.edu, to request this transfer.

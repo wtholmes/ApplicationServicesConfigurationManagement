@@ -1,0 +1,1 @@
+﻿E-List Ownership Transfer Request of: %%%-LISTNAME-%%%  to: %%%-NETID-%%%

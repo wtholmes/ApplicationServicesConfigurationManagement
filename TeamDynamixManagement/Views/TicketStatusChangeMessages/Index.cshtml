@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ApplicationServicesConfigurationManagementDatabaseAccess.TicketStatusChangeMessage>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("New Ticket Status Change Message", "Create", "TicketStatusChangeMessages", new { id = ViewBag.IntegrationID }, null)
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TeamDynamixIntegration.IntegrationName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentStatusID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UpdatedStatusID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Message)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TeamDynamixIntegration.IntegrationName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CurrentTeamDynamixStatusClass.TicketStatusName)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.UpdatedTeamDynamixStatusClass.TicketStatusName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Message)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.TicketStatusChangeMessage_Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.TicketStatusChangeMessage_Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.TicketStatusChangeMessage_Id })
+        </td>
+    </tr>
+}
+
+</table>

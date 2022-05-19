@@ -1,0 +1,1 @@
+﻿The e-list ownership transfer request for "%%%-LISTNAME-%%%" has been cancelled. "%%%-LISTNAME-%%%" is not a valid e-list name. Please check the name and submit a new request.
