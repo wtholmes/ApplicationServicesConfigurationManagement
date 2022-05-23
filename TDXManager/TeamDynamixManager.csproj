@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="COEATDXService.cs" />
+    <Compile Include="ListOwnerTransferTDXService.cs" />
     <Compile Include="TDXService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -75,6 +76,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ActiveDirectoryAccess\ActiveDirectoryAccess.csproj">
+      <Project>{af53cb46-b914-43a1-86f8-c4fdced3cd43}</Project>
+      <Name>ActiveDirectoryAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ApplicationServicesConfigurationManagementDatabaseAccess\ApplicationServicesConfigurationManagementDatabaseAccess.csproj">
       <Project>{780ed095-a647-4f0b-a017-2979fa487e3e}</Project>
       <Name>ApplicationServicesConfigurationManagementDatabaseAccess</Name>

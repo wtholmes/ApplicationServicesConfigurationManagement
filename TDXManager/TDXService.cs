@@ -1,4 +1,5 @@
-﻿using ApplicationServicesConfigurationManagementDatabaseAccess;
+﻿using ActiveDirectoryAccess;
+using ApplicationServicesConfigurationManagementDatabaseAccess;
 using Marvin.JsonPatch;
 using Marvin.JsonPatch.Dynamic;
 using Newtonsoft.Json;
@@ -1464,4 +1465,120 @@ namespace TDXManager
 
         #endregion ---- Public Methods ----
     }
+
+    #region ---- TDX Domain User ----
+
+    public class TDXDomainUser
+    {
+        #region ---- Public Properties ----
+
+        public String UserID { get { return UserPrincipalName.Split('@')[0]; } }
+
+        public String UserPrincipalName { get; private set; }
+
+        public String DisplayNmae { get; private set; }
+
+        public String EmailAddress { get; private set; }
+
+        public String PrimaryAffiliation { get; private set; }
+
+        public List<String> Affiliations { get; private set; }
+
+        public List<String> Entitlements { get; private set; }
+
+        public List<String> ProvAccts { get; private set; }
+
+        public Guid ActiveDirectoryObjectGUID { get; private set; }
+
+        public String ManagerUserPrincipalName { get; private set; }
+
+        public Guid TDXUserUID { get; private set; }
+
+        public String TDXPrimaryEmail { get; private set; }
+
+        public List<Exception> Exceptions { get; private set; }
+
+        public Exception LastException
+        { get { if (Exceptions.Count > 0) { return Exceptions.Last(); } else { return null; } } }
+
+        #endregion ---- Public Properties ----
+
+        #region --- Class Constructor ---
+
+        public TDXDomainUser(TeamDynamix.Api.Users.User tdxUser)
+        {
+            Exceptions = new List<Exception>();
+
+            using (ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext())
+            {
+                String userPrincipalName = tdxUser.UserName;
+                if (UserPrincipalName.Length == 0)
+                {
+                    userPrincipalName = tdxUser.PrimaryEmail;
+                }
+                if (UserPrincipalName.Length > 0)
+                {
+                    try
+                    {
+                        ActiveDirectoryEntity activeDirectoryEntity = activeDirectoryContext.SearchDirectory(userPrincipalName);
+                        if (activeDirectoryEntity != null)
+                        {
+                            // Cornell Primary Affiliation
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduPrimaryAffiliation"))
+                            {
+                                PrimaryAffiliation = activeDirectoryEntity.directoryProperties["cornelleduPrimaryAffiliation"].ToString();
+                            }
+                            // Cornell Affiliations
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduAffiliation"))
+                            {
+                                Affiliations = activeDirectoryEntity.directoryProperties["cornelleduAffiliation"] as List<String>;
+                            }
+
+                            // Cornell Entitlments
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduEntitlements"))
+                            {
+                                Entitlements = activeDirectoryEntity.directoryProperties["cornelleduEntitlements"] as List<String>;
+                            }
+
+                            // Cornell ProvAccounts
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduProvAccts"))
+                            {
+                                ProvAccts = activeDirectoryEntity.directoryProperties["cornelleduProvAccts"] as List<String>;
+                            }
+
+                            // Manager
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("manager"))
+                            {
+                                ActiveDirectoryEntity managerEntity = activeDirectoryContext.SearDirectoryByDN(activeDirectoryEntity.directoryProperties["manager"].ToString());
+                                if (managerEntity != null)
+                                {
+                                    ManagerUserPrincipalName = managerEntity.userprincipalName;
+                                }
+                            }
+
+                            // Active Directory Object GUID [Must Exist]
+                            ActiveDirectoryObjectGUID = activeDirectoryEntity.objectGUID;
+
+                            // Active Directory Display Name
+                            DisplayNmae = activeDirectoryEntity.displayName;
+
+                            // TDX UID [Must Exist]
+                            TDXUserUID = tdxUser.UID;
+
+                            // TDX Primary Email [Must Exist]
+                            TDXPrimaryEmail = TDXPrimaryEmail;
+                        }
+                    }
+                    catch (Exception exp)
+                    {
+                        Exceptions.Add(exp);
+                    }
+                }
+            }
+        }
+    }
+
+    #endregion --- Class Constructor ---
+
+    #endregion ---- TDX Domain User ----
 }

@@ -122,6 +122,18 @@ namespace ActiveDirectoryAccess
         }
 
         /// <summary>
+        /// Search the Active Directory using the Distinguished Name.
+        /// </summary>
+        /// <param name="DistinguishedName"></param>
+        /// <returns></returns>
+        public ActiveDirectoryEntity SearDirectoryByDN(String DistinguishedName)
+        {
+            String directorySearchFilter = String.Format("(&(distinguishedName={0}))", DistinguishedName);
+            return SearchDirectory(directorySearchFilter, false, null).FirstOrDefault();
+        }
+
+
+        /// <summary>
         /// Search the Active Directory for a Property equal to Value
         /// </summary>
         /// <param name="Property"></param>

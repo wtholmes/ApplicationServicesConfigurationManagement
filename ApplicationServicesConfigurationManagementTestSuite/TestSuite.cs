@@ -22,6 +22,13 @@ namespace ApplicationServicesConfigurationManagementTestSuite
             Boolean DoNotRun = false;
             Regex InactiveTicketsRegex = new Regex(@"(Reopened|Resolved|Closed|Canceled)", RegexOptions.IgnoreCase);
 
+            if(Run)
+            {
+                ListOwnerTransferTDXService listOwnerTransferTDXService = new ListOwnerTransferTDXService();
+            }
+
+
+
             if (DoNotRun)
             {
                 while (true)
