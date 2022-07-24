@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Net;
@@ -58,6 +59,10 @@ namespace ActiveDirectoryAccess
                 return results;
             }
         }
+        /// <summary>
+        /// List of active directory properties to load.
+        /// </summary>
+        public List<String> PropertiesToLoad { get; set; }
 
         /// <summary>
         /// Include Group Membership for all entities.
@@ -122,6 +127,18 @@ namespace ActiveDirectoryAccess
         }
 
         /// <summary>
+        /// Search the Active Directory using the Distinguished Name.
+        /// </summary>
+        /// <param name="DistinguishedName"></param>
+        /// <returns></returns>
+        public ActiveDirectoryEntity SearDirectoryByDN(String DistinguishedName)
+        {
+            String directorySearchFilter = String.Format("(&(distinguishedName={0}))", DistinguishedName);
+            return SearchDirectory(directorySearchFilter, false, null).FirstOrDefault();
+        }
+
+
+        /// <summary>
         /// Search the Active Directory for a Property equal to Value
         /// </summary>
         /// <param name="Property"></param>
@@ -141,8 +158,38 @@ namespace ActiveDirectoryAccess
 
             using (DirectorySearcher directorySearcher = new DirectorySearcher(activeDirectory))
             {
-                if (!ReturnMany) { directorySearcher.SizeLimit = 1; }
-                else { if (MaxResults != null) { directorySearcher.SizeLimit = Convert.ToInt32(MaxResults); } }
+                if(PropertiesToLoad != null)
+                {
+                    PropertyInfo[] EntityProperties = typeof(ActiveDirectoryEntity).GetProperties();
+                    foreach (PropertyInfo EntityProperty in EntityProperties)
+                    {
+                        String PropertyName = EntityProperty.Name;
+                        if(!PropertyName.Equals("directoryProperties"))
+                        {
+                            if(!PropertiesToLoad.Contains(PropertyName, StringComparer.OrdinalIgnoreCase))
+                            {
+                                PropertiesToLoad.Add(PropertyName);
+                            }
+                        }
+                    }
+                    if (PropertiesToLoad.Count > 0)
+                    {
+                        directorySearcher.PropertiesToLoad.AddRange(PropertiesToLoad.ToArray());
+                    }
+                }
+
+
+                if (ReturnMany) 
+                {
+                    if (MaxResults != null)
+                    {
+                        directorySearcher.SizeLimit = Convert.ToInt32(MaxResults);
+                    }
+                }
+                else 
+                {
+                    directorySearcher.SizeLimit = 1;
+                }
                 directorySearcher.PageSize = 1000;
                 directorySearcher.ServerPageTimeLimit = TimeSpan.FromSeconds(4);
                 directorySearcher.CacheResults = true;
@@ -263,16 +310,35 @@ namespace ActiveDirectoryAccess
 
                             if (IncludeNestedGroupMembership)
                             {
-                                using (DirectorySearcher directorySearcher = new DirectorySearcher(activeDirectory))
+
+                                List<String> NestedGroups = new List<String>();
+
+                                UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(
+                                                    new PrincipalContext(ContextType.Domain), directoryEntry.Properties["userprincipalName"][0].ToString());
+                                if (userPrincipal != null)
                                 {
-                                    directorySearcher.PageSize = 1000;
-                                    directorySearcher.ServerPageTimeLimit = TimeSpan.FromSeconds(2);
-                                    directorySearcher.CacheResults = false;
-                                    directorySearcher.Filter = String.Format("(member:1.2.840.113556.1.4.1941:={0})", directoryEntry.Properties["distinguishedName"][0].ToString());
-                                    SearchResultCollection memberOfSearchResults = directorySearcher.FindAll();
-                                    foreach (SearchResult searchResult in memberOfSearchResults)
+                                    foreach (Principal group in userPrincipal.GetGroups())
                                     {
-                                        activeDirectoryEntity.memberOf.Add(PopulateEntity(searchResult.GetDirectoryEntry()));
+                                        NestedGroups.Add(group.SamAccountName);
+                                    }
+                                }
+                                EntityProperty.SetValue(activeDirectoryEntity, NestedGroups);
+
+
+
+                                if (false)
+                                {
+                                    using (DirectorySearcher directorySearcher = new DirectorySearcher(activeDirectory))
+                                    {
+                                        directorySearcher.PageSize = 1000;
+                                        directorySearcher.ServerPageTimeLimit = TimeSpan.FromSeconds(2);
+                                        directorySearcher.CacheResults = false;
+                                        directorySearcher.Filter = String.Format("(member:1.2.840.113556.1.4.1941:={0})", directoryEntry.Properties["distinguishedName"][0].ToString());
+                                        SearchResultCollection memberOfSearchResults = directorySearcher.FindAll();
+                                        foreach (SearchResult searchResult in memberOfSearchResults)
+                                        {
+                                            activeDirectoryEntity.memberOf.Add(PopulateEntity(searchResult.GetDirectoryEntry()));
+                                        }
                                     }
                                 }
                             }
@@ -293,6 +359,7 @@ namespace ActiveDirectoryAccess
                         default:
                             if (directoryEntryProperty.Count > 0)
                             {
+                                
                                 // Multi-Value Properties.
                                 if (EntityProperty.PropertyType.UnderlyingSystemType.IsGenericType)
                                 {
@@ -307,24 +374,34 @@ namespace ActiveDirectoryAccess
                             break;
                     }
                 }
-                else
+
+                
+                switch (EntityProperty.Name)
                 {
-                    switch (EntityProperty.Name)
-                    {
-                        case "objectType":
-                            activeDirectoryEntity.objectType = GetObjectType(directoryEntry);
-                            break;
+                    case "objectType":
+                        activeDirectoryEntity.objectType = GetObjectType(directoryEntry);
+                        break;
 
-                        case "directoryProperties":
+                    case "directoryProperties":
 
-                            foreach (String PropertyName in directoryEntry.Properties.PropertyNames)
+                        foreach (PropertyValueCollection propertyValueCollection in directoryEntry.Properties)
+                        {
+                            String PropertyName = propertyValueCollection.PropertyName;
+
+                            List<Object> propertyValue = new List<Object>();
+                            foreach(Object o in directoryEntry.Properties[PropertyName])
                             {
-                                Object propertyValue = directoryEntry.Properties[PropertyName].Value;
-                                activeDirectoryEntity.directoryProperties.Add(PropertyName, propertyValue);
+                                propertyValue.Add(o);
                             }
-                            break;
-                    }
+
+
+                            //Object propertyValue = directoryEntry.Properties[PropertyName].Value;
+                            activeDirectoryEntity.directoryProperties.Add(PropertyName, propertyValue);
+                            
+                        }
+                        break;
                 }
+                
             }
             return activeDirectoryEntity;
         }

@@ -17,7 +17,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -76,6 +76,10 @@
     <ProjectReference Include="..\AuthenticationServices\AuthenticationServices.csproj">
       <Project>{c410de20-c737-4fc9-9a30-daa8aed73acb}</Project>
       <Name>AuthenticationServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PowerShellRunspacesManager\PowerShellRunspacesManager.csproj">
+      <Project>{9cb6e7de-b915-4730-b6f0-84804e6a00c6}</Project>
+      <Name>PowerShellRunspacesManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServiceEventLoggingManager\ServiceEventLoggingManager.csproj">
       <Project>{227b54e9-e0b8-4c63-812f-f16eb7fc3dc2}</Project>

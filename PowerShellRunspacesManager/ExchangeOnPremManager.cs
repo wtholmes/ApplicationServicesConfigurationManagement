@@ -234,7 +234,13 @@ namespace PowerShellRunspaceManager
         {
             return DataSetToJSON(GetMailContactAsDataSet(Identity));
         }
-
+        /// <summary>
+        /// Create a mail contact
+        /// </summary>
+        /// <param name="ExternalEmailAddress"></param>
+        /// <param name="DisplayName"></param>
+        /// <param name="OrganizationalUnit"></param>
+        /// <returns></returns>
         public DataSet NewMailContact(String ExternalEmailAddress, String DisplayName, String OrganizationalUnit)
         {
             ObjectProvisioningState objectProvisioningState = new ObjectProvisioningState();
@@ -272,6 +278,11 @@ namespace PowerShellRunspaceManager
             return GetMailContactAsDataSet(ExternalEmailAddress);
         }
 
+        /// <summary>
+        /// Remove a mail contact
+        /// </summary>
+        /// <param name="ExternalEmailAddress"></param>
+        /// <returns></returns>
         public ObjectProvisioningState RemoveMailContact(String ExternalEmailAddress)
         {
             ObjectProvisioningState objectProvisioningState = new ObjectProvisioningState();
@@ -307,6 +318,11 @@ namespace PowerShellRunspaceManager
             return objectProvisioningState;
         }
 
+        /// <summary>
+        /// Hides the specified mail contact from the address book.
+        /// </summary>
+        /// <param name="ExternalEmailAddress"></param>
+        /// <returns></returns>
         public ObjectProvisioningState SetMailContactHidden(String ExternalEmailAddress)
         {
             ObjectProvisioningState objectProvisioningState = new ObjectProvisioningState();
@@ -342,6 +358,12 @@ namespace PowerShellRunspaceManager
             return objectProvisioningState;
         }
 
+        /// <summary>
+        /// Sets the Maximum allowed message size for the specified email contact.
+        /// </summary>
+        /// <param name="ExternalEmailAddress"></param>
+        /// <param name="MaxMessageSize"></param>
+        /// <returns></returns>
         public ObjectProvisioningState SetMailContactMaxMessageSize(String ExternalEmailAddress, String MaxMessageSize)
         {
             ObjectProvisioningState objectProvisioningState = new ObjectProvisioningState();
@@ -375,6 +397,13 @@ namespace PowerShellRunspaceManager
             return objectProvisioningState;
         }
 
+        /// <summary>
+        /// Sets a the external email address for an existing mail contact and optionally retains the current external email address as a proxy address.
+        /// </summary>
+        /// <param name="Identity"></param>
+        /// <param name="NewExternalEmailAddress"></param>
+        /// <param name="RetainCurrentAddressAsProxy"></param>
+        /// <returns></returns>
         public ObjectProvisioningState SetMailContactNewExternalEmailAddress(String Identity, String NewExternalEmailAddress, Boolean RetainCurrentAddressAsProxy)
         {
             ObjectProvisioningState objectProvisioningState = new ObjectProvisioningState();
@@ -415,6 +444,71 @@ namespace PowerShellRunspaceManager
 
             return objectProvisioningState;
         }
+
+        /// <summary>
+        /// Enables an existing mail contact specified by its identity and sets its external email address as specified by the ExternalEmailAddress
+        /// </summary>
+        /// <param name="Identity"></param>
+        /// <param name="ExternalEmailAddress"></param>
+        /// <returns></returns>
+        public ObjectProvisioningState EnableMailContact (String Identity, String ExternalEmailAddress)
+        {
+            ObjectProvisioningState objectProvisioningState = new ObjectProvisioningState();
+            objectProvisioningState.RecordTime = DateTime.UtcNow;
+            objectProvisioningState.DesiredState = "None";
+
+            PowerShellCommand powerShellCommand;
+            powerShellCommand = new PowerShellCommand("Enable-MailContact");
+            powerShellCommand.AddCommandParameter("Identity", Identity);
+            powerShellCommand.AddCommandParameter("ExternalEmailAddress", ExternalEmailAddress);
+            this.ClearExceptions();
+            this.ClearLoggedMessages();
+            Collection<PSObject> MailContacts = InvokeCommand(powerShellCommand);
+            LogProcessMessages(true, true);
+
+            if (MailContacts.Count == 1)
+            {
+                objectProvisioningState.CurrentState = "MailContact";
+            }
+            else
+            {
+                objectProvisioningState.CurrentState = "None";
+            }
+
+            return objectProvisioningState;
+        }
+        /// <summary>
+        ///  Disables the mailcontact specified by by identity
+        /// </summary>
+        /// <param name="Identity"></param>
+        /// <returns></returns>
+        public ObjectProvisioningState DisableMailContact(String Identity)
+        {
+            ObjectProvisioningState objectProvisioningState = new ObjectProvisioningState();
+            objectProvisioningState.RecordTime = DateTime.UtcNow;
+            objectProvisioningState.DesiredState = "None";
+
+            PowerShellCommand powerShellCommand;
+            powerShellCommand = new PowerShellCommand("Disable-MailContact");
+            powerShellCommand.AddCommandParameter("Identity", Identity);
+            powerShellCommand.AddCommandParameter("Confirm", false);
+            this.ClearExceptions();
+            this.ClearLoggedMessages();
+            Collection<PSObject> MailContact = InvokeCommand(powerShellCommand);
+            LogProcessMessages(true, true);
+
+            if (MailContact.Count == 1)
+            {
+                objectProvisioningState.CurrentState = "Contact";
+            }
+            else
+            {
+                objectProvisioningState.CurrentState = "None";
+            }
+
+            return objectProvisioningState;
+        }
+
 
         /// <summary>
         /// Enable the specified Active Directory User as a RemoteMailbox.

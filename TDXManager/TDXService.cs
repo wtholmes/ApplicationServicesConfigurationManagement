@@ -1,4 +1,5 @@
-﻿using ApplicationServicesConfigurationManagementDatabaseAccess;
+﻿using ActiveDirectoryAccess;
+using ApplicationServicesConfigurationManagementDatabaseAccess;
 using Marvin.JsonPatch;
 using Marvin.JsonPatch.Dynamic;
 using Newtonsoft.Json;
@@ -32,8 +33,8 @@ namespace TDXManager
 
         private String sLocationOrigin = "https://tdx.cornell.edu/";
 
-        //private String sWebApiBasePathname = "SBTDWebApi/api/";
-        private String sWebApiBasePathname = "TDWebApi/api/";
+        private String sWebApiBasePathname = "SBTDWebApi/api/";
+        //private String sWebApiBasePathname = "TDWebApi/api/";
 
         private String ApplicationID = "32";
         private String sUsername = "messagingteam-api-01@cornell.edu";
@@ -49,20 +50,32 @@ namespace TDXManager
         #region ---- List or MultiValue Properties ----
 
         public Dictionary<String, User> TDXUserCache;
+
         public List<Account> TDXAccounts { get; private set; }
+
         public List<OrgApplication> TDXOrgApplications { get; private set; }
+
         public List<Service> TDXServices { get; private set; }
+
         public List<Group> TDXGroups { get; private set; }
+
         public List<Ticket> TDXTickets { get; private set; }
+
+        public List<TDXAutomationTicket> TDXAutomationTickets { get; private set; }
+
+        public List<TDXDomainUser> TDXDomainUsers { get; private set; }
+
         public List<Form> TDXTicketForms { get; private set; }
+
         public List<Exception> Exceptions { get; private set; }
 
-        public Exception LastException
-        { get { return Exceptions.LastOrDefault(); } }
+        public Exception LastException { get { return Exceptions.LastOrDefault(); } }
 
         #endregion ---- List or MultiValue Properties ----
 
         #region ---- Ticket Specific Properties ----
+
+        public TDXAutomationTicket TDXAutomationTicket { get; private set; }
 
         public Ticket TDXTicket
         {
@@ -73,22 +86,19 @@ namespace TDXManager
             set
             {
                 _TDXTicket = value;
+                this.TDXAutomationTicket = new TDXAutomationTicket(_TDXTicket);
+                this.TDXAutomationTicket.SetTicketCreator(new TDXDomainUser(GetTDXUserByUID(_TDXTicket.CreatedUid.ToString())));
+                this.TDXAutomationTicket.SetTicketCreator(new TDXDomainUser(GetTDXUserByUID(_TDXTicket.RequestorUid.ToString())));  
                 this.NotifyCreator = false;
                 this.NotifyRequestor = false;
                 this.UpdateTicketStatus = false;
                 this.NotificationEmails.Clear();
-                CompletingUser = GetUserByUid(_TDXTicket.CompletedUid);
-                CreatingUser = GetUserByUid(_TDXTicket.CreatedUid);
-                ModifyingUser = GetUserByUid(_TDXTicket.ModifiedUid);
-                RequestingUser = GetUserByUid(_TDXTicket.RequestorUid);
-                RespondingUser = GetUserByUid(_TDXTicket.RespondedUid);
-                ResponsibleUser = GetUserByUid(_TDXTicket.ResponsibleUid);
-                ReviewingUser = GetUserByUid(_TDXTicket.ReviewerUid);
             }
         }
-
         public Service TDXService { get; private set; }
+
         public Account TDXAccount { get; private set; }
+
         public OrgApplication TDXOrgAppication { get; private set; }
 
         public Boolean NotifyCreator { get; set; }
@@ -110,6 +120,7 @@ namespace TDXManager
         public ItemUpdate TDXItemUpdate { get; private set; }
 
         public List<Priority> TDXTicketPriorities { get; private set; }
+
         public Priority TicketPriority { get; private set; }
 
         public List<Report> TDXReports { get; private set; }
@@ -117,7 +128,9 @@ namespace TDXManager
         public List<TicketSource> TDXTicketSources { get; private set; }
 
         public TicketSource TicketSource { get; private set; }
+
         public List<TicketStatus> TDXTicketStatuses { get; private set; }
+
         public TicketStatus TicketStatus { get; private set; }
 
         public User CreatingUser { get; private set; }
@@ -154,6 +167,8 @@ namespace TDXManager
             UpdateTicketStatus = false;
             TDXUserCache = new Dictionary<String, User>();
             teamDynamixManagementContext = new TeamDynamixManagementContext();
+            TDXAutomationTickets = new List<TDXAutomationTicket>();
+            TDXDomainUsers = new List<TDXDomainUser>();
 
             try
             {
@@ -494,6 +509,27 @@ namespace TDXManager
                 {
                     String httpResponseMessageContent = httpResponseMessage.Content.ReadAsStringAsync().Result;
                     TDXTickets = JsonConvert.DeserializeObject<List<Ticket>>(httpResponseMessageContent);
+                    TDXAutomationTickets.Clear();
+                    foreach (Ticket ticket in TDXTickets)
+                    {
+                        TDXAutomationTickets.Add(new TDXAutomationTicket(ticket));
+                        if (TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault() == null)
+                        {
+                            TDXDomainUsers.Add(new TDXDomainUser(GetUserByUid(ticket.CreatedUid)));
+                        }
+
+                        if (TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault() == null)
+                        {
+                            TDXDomainUsers.Add(new TDXDomainUser(GetUserByUid(ticket.RequestorUid)));
+                        }
+
+                        TDXAutomationTicket tDXAutomationTicket = new TDXAutomationTicket(ticket);
+                        TDXDomainUser CreatedTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault();
+                        if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(CreatedTDXDomainUser); }
+                        TDXDomainUser RequestorTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault();
+                        if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(RequestorTDXDomainUser); }
+                        TDXAutomationTickets.Add(tDXAutomationTicket);
+                    }
                 }
             }
             catch (Exception exp)
@@ -526,7 +562,25 @@ namespace TDXManager
                     foreach (Dictionary<String, Object> result in report.DataRows)
                     {
                         int ticketID = Convert.ToInt32(result["TicketID"].ToString());
-                        TDXTickets.Add(GetTicketByID(ticketID));
+                        Ticket ticket = GetTicketByID(ticketID);
+                        TDXTickets.Add(ticket);
+
+                        if (TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault() == null)
+                        {
+                            TDXDomainUsers.Add(new TDXDomainUser(GetUserByUid(ticket.CreatedUid)));
+                        }
+
+                        if (TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault() == null)
+                        {
+                            TDXDomainUsers.Add(new TDXDomainUser(GetUserByUid(ticket.RequestorUid)));
+                        }
+
+                        TDXAutomationTicket tDXAutomationTicket = new TDXAutomationTicket(ticket);
+                        TDXDomainUser CreatedTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault();
+                        if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(CreatedTDXDomainUser); }
+                        TDXDomainUser RequestorTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault();
+                        if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(RequestorTDXDomainUser); }
+                        TDXAutomationTickets.Add(tDXAutomationTicket);
                     }
                 }
             }
@@ -534,6 +588,74 @@ namespace TDXManager
             {
                 Exceptions.Add(exp);
             }
+        }
+
+        /// <summary>
+        /// Get all tickets from TDX that are included in the specified report whoes status do not match the spcified Regular Expression
+        /// </summary>
+        /// <param name="ReportName">The name of an existing report in TDX</param>
+        /// <param name="TicketStatusRegex">A Regex that matches the desired status names.</param>
+        public void GetTicketsUsingReport(String ReportName, System.Text.RegularExpressions.Regex IgnoredTicketStatusRegex)
+        {
+            try
+            {
+                String ApiUri = String.Format("reports/{0}?withData=true", this.TDXReports
+                                        .Where(r => r.Name.Equals(ReportName))
+                                        .Select(r => r.ID)
+                                        .FirstOrDefault());
+
+                HttpResponseMessage httpResponseMessage = oHttpClientX.GetAsync(ApiUri).Result;
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    this.TDXTickets = new List<Ticket>();
+                    String httpResponseMessageContent = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                    Report report = JsonConvert.DeserializeObject<Report>(httpResponseMessageContent);
+
+                    foreach (Dictionary<String, Object> result in report.DataRows)
+                    {
+                        int ticketID = Convert.ToInt32(result["TicketID"].ToString());
+                        Ticket ticket = GetTicketByID(ticketID);
+                        if (!IgnoredTicketStatusRegex.IsMatch(ticket.StatusName))
+                        {
+                            TDXTickets.Add(ticket);
+
+                            
+                            if (TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault() == null)
+                            {
+                                TDXDomainUsers.Add(new TDXDomainUser(GetUserByUid(ticket.CreatedUid)));
+                            }
+
+                            if (TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault() == null)
+                            {
+                                TDXDomainUsers.Add(new TDXDomainUser(GetUserByUid(ticket.RequestorUid)));
+                            }
+
+                            
+                            TDXAutomationTicket tDXAutomationTicket = new TDXAutomationTicket(ticket);
+                            TDXDomainUser CreatedTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault();
+                            if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(CreatedTDXDomainUser); }
+                            TDXDomainUser RequestorTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault();
+                            if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(RequestorTDXDomainUser); }
+                            TDXAutomationTickets.Add(tDXAutomationTicket);
+                        }
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Exceptions.Add(exp);
+            }
+        }
+        
+        /// <summary>
+        /// Set the current active ticket.
+        /// </summary>
+        /// <param name="Ticket"></param>
+        public void SetActiveTicket(Ticket Ticket)
+        {
+            _TDXTicket = TDXTickets.Where(t => t.ID.Equals(Ticket.ID)).FirstOrDefault();
+            TDXAutomationTicket = TDXAutomationTickets.Where(t => t.ID.Equals(Ticket.ID)).FirstOrDefault();
         }
 
         /// <summary>
@@ -1464,4 +1586,222 @@ namespace TDXManager
 
         #endregion ---- Public Methods ----
     }
+
+    #region ---- TDX Automation Ticket ----
+
+    public class TDXAutomationTicket : Ticket
+    {
+        // TDX Custom Attribute: (S111-AUTOMATIONID)
+        public String AutomationID { get; set; }
+
+        // TDX Custom Attribute: (S111-AUTOMATIONSTATUS)
+        public String AutomationStatus { get; set; }
+
+        // TDX Custom Attribute: (S111-AUTOMATIONDETAILS)
+        public String AutomationDetails { get; set; }
+
+        public TDXDomainUser TicketCreator { get; private set; }
+
+        public TDXDomainUser TicketRequestor { get; private set; }
+
+        public TDXAutomationTicket(Ticket ticket)
+        {
+            // Use reflection to copy the base ticket to the Automation Ticket.
+            PropertyInfo[] ticketProperties = ticket.GetType().GetProperties();
+            foreach (PropertyInfo ticketProperty in ticketProperties)
+            {
+                PropertyInfo AutomationTicketProperty = this.GetType().GetProperty(ticketProperty.Name);
+                AutomationTicketProperty.SetValue(this, ticketProperty.GetValue(ticket));
+            }
+
+            // Automation ID [TDX Custom Attribute: (S111-AUTOMATIONID)]
+            AutomationID = ticket.Attributes.Where(attrib => attrib.Name.Equals("S111-AUTOMATIONID")).Select(attrib => attrib.Value).FirstOrDefault();
+
+            // Automation Status [TDX Custom Attribute: (S111-AUTOMATIONSTATUS)]
+            AutomationStatus = ticket.Attributes.Where(a => a.Name.Equals("S111-AUTOMATIONSTATUS")).Select(a => a.ValueText).FirstOrDefault();
+
+            // Automation Status [TDX Custom Attribute: (S111-AUTOMATIONDETAILS)]
+            AutomationDetails = ticket.Attributes.Where(a => a.Name.Equals("S111-AUTOMATIONDETAILS")).Select(a => a.ValueText).FirstOrDefault();
+
+        }
+
+        public void SetTicketCreator(TDXDomainUser tDXDomainUser)
+        {
+            TicketCreator = tDXDomainUser;
+        }
+
+        public void SetTicketRequestor(TDXDomainUser tDXDomainUser)
+        {
+            TicketRequestor = tDXDomainUser;
+        }
+    }
+
+    #endregion ---- TDX Automation Ticket ----
+
+    #region ---- TDX Domain User ----
+
+    public class TDXDomainUser
+    {
+        #region ---- Public Properties ----
+
+        public String UserID
+        { get { return UserPrincipalName.Split('@')[0]; } }
+
+        public String UserPrincipalName { get; private set; }
+
+        public String DisplayName { get; private set; }
+
+        public String EmailAddress { get; private set; }
+
+        public String PrimaryAffiliation { get; private set; }
+
+        public List<String> Affiliations { get; private set; }
+
+        public List<String> Entitlements { get; private set; }
+
+        public List<String> ProvAccts { get; private set; }
+
+        public List<String> MemberOf { get; private set; }
+
+        public Guid ActiveDirectoryObjectGUID { get; private set; }
+
+        public String ManagerUserPrincipalName { get; private set; }
+
+        public String ManagerUserID
+        { get { if (ManagerUserPrincipalName != null) { return ManagerUserPrincipalName.Split('@')[0]; } else { return null; } } }
+
+        public Guid TDXUserUID { get; private set; }
+
+        public String TDXPrimaryEmail { get; private set; }
+
+        public List<Exception> Exceptions { get; private set; }
+
+        public Exception LastException
+        { get { if (Exceptions.Count > 0) { return Exceptions.Last(); } else { return null; } } }
+
+        #endregion ---- Public Properties ----
+
+        #region --- Class Constructor ---
+
+        public TDXDomainUser(TeamDynamix.Api.Users.User tdxUser)
+        {
+            Exceptions = new List<Exception>();
+
+            using (ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext())
+            {
+                activeDirectoryContext.IncludeNestedGroupMembership = true; 
+                activeDirectoryContext.PropertiesToLoad = new List<string>();
+                activeDirectoryContext.PropertiesToLoad.Add("cornelleduPrimaryAffiliation");
+                activeDirectoryContext.PropertiesToLoad.Add("cornelleduAffiliation");
+                activeDirectoryContext.PropertiesToLoad.Add("cornelleduEntitlements");
+                activeDirectoryContext.PropertiesToLoad.Add("cornelleduProvAccts");
+                activeDirectoryContext.PropertiesToLoad.Add("manager");
+
+                String userPrincipalName = tdxUser.UserName;
+                if (userPrincipalName.Length == 0)
+                {
+                    userPrincipalName = tdxUser.PrimaryEmail;
+                }
+                if (userPrincipalName.Length > 0)
+                {
+                    try
+                    {
+                        ActiveDirectoryEntity activeDirectoryEntity = activeDirectoryContext.SearchDirectory(userPrincipalName);
+                        if (activeDirectoryEntity != null)
+                        {
+                            // Cornell Primary Affiliation
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduPrimaryAffiliation"))
+                            {
+                                PrimaryAffiliation = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduPrimaryAffiliation"])
+                                    .Select(i => i.ToString())
+                                    .FirstOrDefault();
+                            }
+                            // Cornell Affiliations
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduAffiliation"))
+                            {
+                                Affiliations = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduAffiliation"])
+                                   .Select(i => i.ToString())
+                                   .ToList();
+                            }
+
+                            // Cornell Entitlments
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduEntitlements"))
+                            {
+                                Entitlements = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduEntitlements"])
+                                    .Select(i => i.ToString())
+                                    .ToList();
+                            }
+
+                            // Cornell ProvAccounts
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduProvAccts"))
+                            {
+                                ProvAccts = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduProvAccts"])
+                                    .Select(i => i.ToString())
+                                    .ToList();
+                            }
+
+                            // Group Membership
+
+                            MemberOf = activeDirectoryEntity.memberOf;
+
+                            // Manager
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("manager"))
+                            {
+                                String ManagerDN = ((List<Object>)activeDirectoryEntity.directoryProperties["manager"])
+                                    .Select(i => i.ToString())
+                                    .FirstOrDefault();
+
+                                ActiveDirectoryEntity managerEntity = activeDirectoryContext.SearDirectoryByDN(ManagerDN);
+                                if (managerEntity != null)
+                                {
+                                    ManagerUserPrincipalName = managerEntity.userprincipalName;
+                                }
+                            }
+
+                            // Active Directory Object GUID [Must Exist]
+                            ActiveDirectoryObjectGUID = activeDirectoryEntity.objectGUID;
+
+                            // Active Directory User Principal Name [Must Exist]
+                            UserPrincipalName = activeDirectoryEntity.userprincipalName;
+
+                            // Active Directory Email Address
+                            EmailAddress = activeDirectoryEntity.mail;
+
+                            // Active Directory Display Name
+                            DisplayName = activeDirectoryEntity.displayName;
+
+                            // TDX UID [Must Exist]
+                            TDXUserUID = tdxUser.UID;
+
+                            // TDX Primary Email [Must Exist]
+                            TDXPrimaryEmail = tdxUser.PrimaryEmail;
+                        }
+                    }
+                    catch (Exception exp)
+                    {
+                        Exceptions.Add(exp);
+                    }
+                }
+            }
+        }
+    }
+
+    #endregion --- Class Constructor ---
+
+    #endregion ---- TDX Domain User ----
+
+    #region ---- S111-AUTOMATIONSTATUS Enumeration ----
+    // Automation Status [TDX Custom Attribute: (S111-AUTOMATIONSTATUS)]
+    public static class AUTOMATIONSTATUS
+    {
+        public static readonly String NEW = "NEW";
+        public static readonly String INPROCESS = "INPROCESS";
+        public static readonly String PENDINGAPPROVAL = "PENDINGAPPROVAL";
+        public static readonly String APPROVED = "APPROVED";
+        public static readonly String DECLINED = "DECLINED";
+        public static readonly String CANCELED = "CANCELED";
+        public static readonly String COMPLETE = "COMPLETE";
+    }
+
+    #endregion
 }

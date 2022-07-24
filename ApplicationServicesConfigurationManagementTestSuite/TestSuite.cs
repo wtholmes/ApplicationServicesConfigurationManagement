@@ -4,8 +4,10 @@ using ApplicationServicesConfigurationManagementDatabaseAccess.Models;
 using AuthenticationServices;
 using ListServiceManagement.Models;
 using ServiceEventLoggingManager;
+using PowerShellRunspaceManager;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -21,6 +23,75 @@ namespace ApplicationServicesConfigurationManagementTestSuite
             Boolean Run = true;
             Boolean DoNotRun = false;
             Regex InactiveTicketsRegex = new Regex(@"(Reopened|Resolved|Closed|Canceled)", RegexOptions.IgnoreCase);
+
+            if(Run)
+            {
+                RequestOffice365A3LicenseTDXService office365A3LicenseRequestService = new RequestOffice365A3LicenseTDXService();
+            }
+
+            if(DoNotRun)
+            {
+                DirectoryEntry rootDSE = new DirectoryEntry("LDAP://RootDSE");
+                DirectoryEntry activeDirectory = new DirectoryEntry(String.Format("LDAP://{0}", rootDSE.Properties["defaultNamingContext"][0]));
+
+
+                ExchangeOnPremManager exchangeOnPremManager = new ExchangeOnPremManager("sf-ex-2019-02.exchange.cornell.edu", true);
+                exchangeOnPremManager.NewMailContact("wtholmes+foo@gmail.com", "BillContactTest", "cornell.edu/CITExchangeObjects/Test Objects");
+
+
+                using (DirectorySearcher directorySearcher = new DirectorySearcher(activeDirectory))
+                {
+                    while (true)
+                    {
+                        directorySearcher.PageSize = 1000;
+                        directorySearcher.ServerPageTimeLimit = TimeSpan.FromSeconds(4);
+                        directorySearcher.CacheResults = false;
+                        directorySearcher.Filter = String.Format("(&(objectClass=contact)(name={0}))", "wtholmes+foo");
+                        SearchResultCollection searchResults = directorySearcher.FindAll();
+
+
+                        if (searchResults.Count == 1) // Sync the objectGUID back to the Elist Contacts Database.
+                        {
+                            Guid objectGuid = new Guid((byte[])searchResults[0].Properties["objectGUID"][0]);
+                            if (searchResults[0].Properties["msExchRecipientDisplayType"].Count != 0)
+                            {
+                                Int32 msExchRecipientDisplayType = Convert.ToInt32(searchResults[0].Properties["msExchRecipientDisplayType"][0]);
+                                if (msExchRecipientDisplayType == 6)
+                                {
+                                    exchangeOnPremManager.DisableMailContact("wtholmes+foo");
+                                }
+                            }
+                            else
+                            {
+                                exchangeOnPremManager.EnableMailContact("wtholmes+foo", "wtholmes+foo@gmail.com");
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+
+                exchangeOnPremManager.EnableMailContact("wtholmes+foo", "wtholmes+foo@gmail.com");
+                exchangeOnPremManager.RemoveMailContact("wtholmes+foo@gmail.com");
+            }
+
+
+
+
+
+            if(DoNotRun)
+            {
+                RequestListOwnerTransferTDXService listOwnerTransferTDXService = new RequestListOwnerTransferTDXService();
+                foreach(ListOwnerTransferTicket listOwnerTransferTicket in listOwnerTransferTDXService.TDXListOwnerTransferTickets)
+                {
+                    listOwnerTransferTDXService.TDXListOwnerTransferTicket = listOwnerTransferTicket;
+                }
+            }
+
+
 
             if (DoNotRun)
             {
@@ -585,7 +656,7 @@ namespace ApplicationServicesConfigurationManagementTestSuite
                     Thread.Sleep(Convert.ToInt32(new TimeSpan(0, 0, 15).TotalMilliseconds));
                 }
             }
-            if (Run)
+            if (DoNotRun)
             {
                 TeamDynamixManagementContext db = new TeamDynamixManagementContext();
                 TDXTicketManager tdxTicketManager = new TDXTicketManager();

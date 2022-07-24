@@ -18,7 +18,7 @@ namespace ActiveDirectoryAccess
         public ActiveDirectoryEntity()
         {
             directoryProperties = new Dictionary<String, Object>(StringComparer.OrdinalIgnoreCase);
-            memberOf = new List<ActiveDirectoryEntity>();
+            memberOf = new List<String>();
         }
 
         #endregion Constructors
@@ -196,7 +196,7 @@ namespace ActiveDirectoryAccess
         public string mail { get; set; }
 
         public string mailNickname { get; set; }
-        public List<ActiveDirectoryEntity> memberOf { get; set; }
+        public List<String> memberOf { get; set; }
 
         public string name { get; set; }
 

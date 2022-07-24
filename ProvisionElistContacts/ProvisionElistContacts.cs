@@ -66,7 +66,7 @@ namespace ProvisionElistContacts
                                     directorySearcher.PageSize = 1000;
                                     directorySearcher.ServerPageTimeLimit = TimeSpan.FromSeconds(4);
                                     directorySearcher.CacheResults = false;
-                                    directorySearcher.Filter = String.Format("(&(objectClass=contact)(targetAddress=smtp:{0}@*))", DirectoryContactNames[ContactUsage]);
+                                    directorySearcher.Filter = String.Format("(&(objectClass=contact)(name={0}))", DirectoryContactNames[ContactUsage]);
                                     SearchResultCollection searchResults = directorySearcher.FindAll();
 
                                     if (searchResults.Count == 1) // Sync the objectGUID back to the Elist Contacts Database.
@@ -92,34 +92,83 @@ namespace ProvisionElistContacts
                                                 break;
                                         }
 
-                                        //context.SaveChanges();
+                                        Int32 msExchRecipientDisplayType = 0;
+                                        if (searchResults[0].Properties["msExchRecipientDisplayType"].Count != 0)
+                                        {
+                                            msExchRecipientDisplayType = Convert.ToInt32(searchResults[0].Properties["msExchRecipientDisplayType"][0]);
+                                        }
+                                        else
+                                        {
+                                            msExchRecipientDisplayType = 0;
+                                        }
 
                                         // Get the expected target address and current target address for this list contact.
-                                        String ExpectedContactExternalEmailAddress = String.Format("{0}@{1}", DirectoryContactNames[ContactUsage], elistContact.ListDomainName);
-                                        String CurrentContactExternalEmailAddress = searchResults[0].Properties["targetAddress"][0].ToString().Split(':')[1];
-
-                                        // Check if the expected target email address is differnt than the current target address and if so update the contact.
-                                        if (!ExpectedContactExternalEmailAddress.Equals(CurrentContactExternalEmailAddress, StringComparison.OrdinalIgnoreCase))
+                                        if (elistContact.Enabled)
                                         {
-                                            Console.WriteLine("--- Updating External Email Address to: {0}", ExpectedContactExternalEmailAddress);
-                                            exchangeOnPremManager.SetMailContactNewExternalEmailAddress(searchResults[0].Properties["distinguishedName"][0].ToString(), ExpectedContactExternalEmailAddress, true);
+                                            String ExpectedContactExternalEmailAddress = String.Format("{0}@{1}", DirectoryContactNames[ContactUsage], elistContact.ListDomainName);
+                                            String CurrentContactExternalEmailAddress = "";
+
+                                            if (msExchRecipientDisplayType.Equals(6))
+                                            {
+
+                                                if (searchResults[0].Properties["targetAddress"].Count != 0)
+                                                {
+                                                    CurrentContactExternalEmailAddress = searchResults[0].Properties["targetAddress"][0].ToString().Split(':')[1];
+                                                }
+
+                                                // Check if the expected target email address is differnt than the current target address and if so update the contact.
+                                                if (!ExpectedContactExternalEmailAddress.Equals(CurrentContactExternalEmailAddress, StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    Console.WriteLine("--- Updating External Email Address to: {0}", ExpectedContactExternalEmailAddress);
+                                                    exchangeOnPremManager.SetMailContactNewExternalEmailAddress(searchResults[0].Properties["distinguishedName"][0].ToString(), ExpectedContactExternalEmailAddress, true);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if(msExchRecipientDisplayType.Equals(0))
+                                                {
+                                                    exchangeOnPremManager.EnableMailContact(DirectoryContactNames[ContactUsage], ExpectedContactExternalEmailAddress);
+                                                }
+                                            }
+
+
+                                        }
+
+                                        if (msExchRecipientDisplayType.Equals(6))
+                                        {
+                                            if (elistContact.Enabled.Equals(false))
+                                            {
+                                                exchangeOnPremManager.DisableMailContact(DirectoryContactNames[ContactUsage]);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (elistContact.Enabled.Equals(true))
+                                            {
+                                                MailAddress externalEmailAddress = new MailAddress(String.Format("{0}@{1}", DirectoryContactNames[ContactUsage], elistContact.ListDomainName));
+                                                exchangeOnPremManager.EnableMailContact(DirectoryContactNames[ContactUsage], externalEmailAddress.Address);
+                                            }
                                         }
                                     }
                                     else if (searchResults.Count == 0) // Provision a new mail contact.
                                     {
-                                        Console.WriteLine("Contact for {0} does not exist", DirectoryContactNames[ContactUsage]);
-                                        if (ProvisionContacts)
+                                        if (elistContact.Enabled.Equals(true))
                                         {
-                                            MailAddress externalEmailAddress = new MailAddress(String.Format("{0}@{1}", DirectoryContactNames[ContactUsage], elistContact.ListDomainName));
-                                            var x = exchangeOnPremManager.NewMailContact(externalEmailAddress.Address, elistContact.ListDisplayName, "cornell.edu/CITExchangeObjects/List Service Objects");
-                                            if (externalEmailAddress.User.StartsWith("OWNER-") || externalEmailAddress.User.EndsWith("-REQUEST"))
+                                            Console.WriteLine("Contact for {0} does not exist", DirectoryContactNames[ContactUsage]);
+                                            if (ProvisionContacts)
                                             {
-                                                var z = exchangeOnPremManager.SetMailContactHidden(externalEmailAddress.Address);
+                                                MailAddress externalEmailAddress = new MailAddress(String.Format("{0}@{1}", DirectoryContactNames[ContactUsage], elistContact.ListDomainName));
+                                                var x = exchangeOnPremManager.NewMailContact(externalEmailAddress.Address, elistContact.ListDisplayName, "cornell.edu/CITExchangeObjects/List Service Objects");
+                                                if (externalEmailAddress.User.StartsWith("OWNER-") || externalEmailAddress.User.EndsWith("-REQUEST"))
+                                                {
+                                                    var z = exchangeOnPremManager.SetMailContactHidden(externalEmailAddress.Address);
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
+
                             context.SaveChanges();
                         }
                         catch (Exception exp)
