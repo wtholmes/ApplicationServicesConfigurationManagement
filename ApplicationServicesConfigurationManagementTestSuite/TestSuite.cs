@@ -13,6 +13,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using TDXManager;
+using MicrosoftAzureManager;
+using CornellIdentityManagement;
 
 namespace ApplicationServicesConfigurationManagementTestSuite
 {
@@ -25,6 +27,18 @@ namespace ApplicationServicesConfigurationManagementTestSuite
             Regex InactiveTicketsRegex = new Regex(@"(Reopened|Resolved|Closed|Canceled)", RegexOptions.IgnoreCase);
 
             if(Run)
+            {
+                ProvAccountsManager provAccountsManager = new ProvAccountsManager();
+                provAccountsManager.GetProvAccounts("wth1@cornell.edu");
+            }
+
+
+            if (DoNotRun)
+            {
+                Office365LicensingManager office365LicensingManager = new Office365LicensingManager();
+            }
+
+            if(DoNotRun)
             {
                 RequestOffice365A3LicenseTDXService office365A3LicenseRequestService = new RequestOffice365A3LicenseTDXService();
             }

@@ -88,6 +88,14 @@
       <Project>{780ed095-a647-4f0b-a017-2979fa487e3e}</Project>
       <Name>ApplicationServicesConfigurationManagementDatabaseAccess</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CornellIdentityManagement\CornellIdentityManagement.csproj">
+      <Project>{021b9e4e-94ce-4cbb-a0e2-813858c89e41}</Project>
+      <Name>CornellIdentityManagement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MicrosoftAzureManager\MicrosoftAzureManager.csproj">
+      <Project>{f8bb7da0-4fcc-4bfe-aac4-8c3a10ee8f1e}</Project>
+      <Name>MicrosoftAzureManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

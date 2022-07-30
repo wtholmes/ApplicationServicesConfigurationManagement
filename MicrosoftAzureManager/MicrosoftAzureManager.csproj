@@ -1,23 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{430254C2-4D42-4E6E-9E5F-369FA16220C0}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ApplicationServicesConfigurationManagementTestSuite</RootNamespace>
-    <AssemblyName>ApplicationServicesConfigurationManagementTestSuite</AssemblyName>
+    <ProjectGuid>{F8BB7DA0-4FCC-4BFE-AAC4-8C3A10EE8F1E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MicrosoftAzureManager</RootNamespace>
+    <AssemblyName>MicrosoftAzureManager</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -27,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -38,12 +33,6 @@
   <ItemGroup>
     <Reference Include="Azure.Core, Version=1.18.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
       <HintPath>..\packages\Azure.Core.1.18.0\lib\net461\Azure.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0-preview.7.21377.19\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -82,13 +71,10 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.0-preview.7.21377.19\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
-    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.12.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -100,7 +86,6 @@
     <Reference Include="System.Memory.Data, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.Data.6.0.0-preview.7.21377.19\lib\net461\System.Memory.Data.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
@@ -125,104 +110,16 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TeamDynamix.Api, Version=11.4.10.11, Culture=neutral, PublicKeyToken=6efd145ca78c782e, processorArchitecture=MSIL">
-      <HintPath>..\packages\TeamDynamix.Api.11.4.10.11\lib\net48\TeamDynamix.Api.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestSuite.cs" />
+    <Compile Include="Office365LicensingManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ActiveDirectoryAccess\ActiveDirectoryAccess.csproj">
-      <Project>{af53cb46-b914-43a1-86f8-c4fdced3cd43}</Project>
-      <Name>ActiveDirectoryAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ApplicationServicesConfigurationManagementDatabaseAccess\ApplicationServicesConfigurationManagementDatabaseAccess.csproj">
-      <Project>{780ed095-a647-4f0b-a017-2979fa487e3e}</Project>
-      <Name>ApplicationServicesConfigurationManagementDatabaseAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AuthenticationServices\AuthenticationServices.csproj">
-      <Project>{c410de20-c737-4fc9-9a30-daa8aed73acb}</Project>
-      <Name>AuthenticationServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CornellIdentityManagement\CornellIdentityManagement.csproj">
-      <Project>{021b9e4e-94ce-4cbb-a0e2-813858c89e41}</Project>
-      <Name>CornellIdentityManagement</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MicrosoftAzureManager\MicrosoftAzureManager.csproj">
-      <Project>{f8bb7da0-4fcc-4bfe-aac4-8c3a10ee8f1e}</Project>
-      <Name>MicrosoftAzureManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PowerShellRunspacesManager\PowerShellRunspacesManager.csproj">
-      <Project>{9cb6e7de-b915-4730-b6f0-84804e6a00c6}</Project>
-      <Name>PowerShellRunspacesManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServiceEventLoggingManager\ServiceEventLoggingManager.csproj">
-      <Project>{227b54e9-e0b8-4c63-812f-f16eb7fc3dc2}</Project>
-      <Name>ServiceEventLoggingManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TDXManager\TeamDynamixManager.csproj">
-      <Project>{84d0c77c-d9b6-4bd0-8895-16ce8c53706e}</Project>
-      <Name>TeamDynamixManager</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Messages\InvalidNewOwnerAffiliation.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\ListOwnerTransferCancelled.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\NewListOwnerTransferCompleted.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\PreviousListOwnerTransferCompleted.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestApproved.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestDeclinedByNewOwner.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestDescription.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestNewOwnerAcceptanceMessage.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestNoOwnerSpecifiedTemplate.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestReceivedFromUnauthorizedPerson.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestTitleTemplate.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestWithInvalidListName.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\RequestWorkflowAssigned.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Messages\ListHasBeenRemoveAfterRequest.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
-  </Target>
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
 </Project>

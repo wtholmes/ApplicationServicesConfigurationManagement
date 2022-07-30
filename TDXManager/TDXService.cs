@@ -88,7 +88,7 @@ namespace TDXManager
                 _TDXTicket = value;
                 this.TDXAutomationTicket = new TDXAutomationTicket(_TDXTicket);
                 this.TDXAutomationTicket.SetTicketCreator(new TDXDomainUser(GetTDXUserByUID(_TDXTicket.CreatedUid.ToString())));
-                this.TDXAutomationTicket.SetTicketCreator(new TDXDomainUser(GetTDXUserByUID(_TDXTicket.RequestorUid.ToString())));  
+                this.TDXAutomationTicket.SetTicketRequestor(new TDXDomainUser(GetTDXUserByUID(_TDXTicket.RequestorUid.ToString())));  
                 this.NotifyCreator = false;
                 this.NotifyRequestor = false;
                 this.UpdateTicketStatus = false;
@@ -527,7 +527,7 @@ namespace TDXManager
                         TDXDomainUser CreatedTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault();
                         if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(CreatedTDXDomainUser); }
                         TDXDomainUser RequestorTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault();
-                        if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(RequestorTDXDomainUser); }
+                        if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketRequestor(RequestorTDXDomainUser); }
                         TDXAutomationTickets.Add(tDXAutomationTicket);
                     }
                 }
@@ -579,7 +579,7 @@ namespace TDXManager
                         TDXDomainUser CreatedTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault();
                         if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(CreatedTDXDomainUser); }
                         TDXDomainUser RequestorTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault();
-                        if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(RequestorTDXDomainUser); }
+                        if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketRequestor(RequestorTDXDomainUser); }
                         TDXAutomationTickets.Add(tDXAutomationTicket);
                     }
                 }
@@ -636,7 +636,7 @@ namespace TDXManager
                             TDXDomainUser CreatedTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault();
                             if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(CreatedTDXDomainUser); }
                             TDXDomainUser RequestorTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.RequestorUid)).FirstOrDefault();
-                            if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(RequestorTDXDomainUser); }
+                            if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketRequestor(RequestorTDXDomainUser); }
                             TDXAutomationTickets.Add(tDXAutomationTicket);
                         }
                     }
@@ -656,10 +656,22 @@ namespace TDXManager
         {
             _TDXTicket = TDXTickets.Where(t => t.ID.Equals(Ticket.ID)).FirstOrDefault();
             TDXAutomationTicket = TDXAutomationTickets.Where(t => t.ID.Equals(Ticket.ID)).FirstOrDefault();
+            // Check the Automation ID [TDX Custom Attribute: (S111-AUTOMATIONID)].
+            // If this is NULL assign a new automation ID to the TDX Ticket.
+            if (TDXAutomationTicket.AutomationID == null)
+            {
+                String automationID = Guid.NewGuid().ToString();
+                UpdateAttribute("S111-AUTOMATIONID", automationID);
+                TDXAutomationTicket.AutomationID = automationID;
+            }
+            NotifyCreator = false;
+            NotifyRequestor = false;
+            UpdateTicketStatus = false;
+            NotificationEmails.Clear();
         }
 
         /// <summary>
-        ///
+        /// Get the active ticket's custom attribute by name.
         /// </summary>
         /// <param name="AttributeName"></param>
         public CustomAttribute GetTicketAttributeByName(String AttributeName)
@@ -826,6 +838,45 @@ namespace TDXManager
                 Exceptions.Add(exp);
             }
             return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="automationStatus"></param>
+        /// <returns></returns>
+        public Ticket UpdateAutomationStatus(String automationStatus)
+        {
+            //Set Automation Status [TDX Custom Attribute: (S111-AUTOMATIONSTATUS)]
+            if (typeof(AUTOMATIONSTATUS).GetProperty(automationStatus) != null)
+            {
+                return UpdateDropDownChoiceAttribute("S111-AUTOMATIONSTATUS", automationStatus);
+            }
+            else
+            { 
+                return this.TDXTicket;
+            }
+        }
+
+        /// <summary>
+        /// Updates the automation status details custom attribute for hte active ticket.
+        /// </summary>
+        /// <param name="automationStatusDetail"></param>
+        /// <returns></returns>
+        public Ticket UpdateAutomationStatusDetails(String automationStatusDetails)
+        {
+            // Set Automation Status Details [TDX Custom Attribute: (S111-AUTOMATIONSTATUSDETAILS)]
+            return UpdateAttribute("S111-AUTOMATIONDETAILS", automationStatusDetails);
+        }
+
+        /// <summary>
+        /// Updates the automation status details custom attribute for hte active ticket.
+        /// </summary>
+        /// <param name="automationStatusDetail"></param>
+        /// <returns></returns>
+        public Ticket UpdateAutomationStatusDetails(StringBuilder automationStatusDetails)
+        {
+            return UpdateAutomationStatusDetails(automationStatusDetails.ToString());
         }
 
         /// <summary>
@@ -1011,6 +1062,34 @@ namespace TDXManager
         }
 
         /// <summary>
+        /// Updates the Active Ticket's Title and Description.
+        /// </summary>
+        /// <param name="TicketTitle"></param>
+        /// <param name="TicketDescription"></param>
+        /// <returns></returns>
+        public Ticket UpdateTicketTitleAndDescription(String TicketTitle, String TicketDescription)
+        {
+            Ticket patchTicket = new Ticket
+            {
+                Title = TicketTitle,
+                Description = TicketDescription
+            };
+
+            return PatchTicket(patchTicket);
+        }
+
+        /// <summary>
+        /// Updates the Active Ticket's Title and Description.
+        /// </summary>
+        /// <param name="TicketTitle"></param>
+        /// <param name="TicketDescription"></param>
+        /// <returns></returns>
+        public Ticket UpdateTicketTitleAndDescription(StringBuilder TicketTitle, StringBuilder TicketDescription)
+        {
+            return UpdateTicketTitleAndDescription(TicketTitle.ToString(), TicketDescription.ToString());
+        }
+
+        /// <summary>
         /// Send a Patch Request to update the current TDX ticket.
         /// </summary>
         /// <param name="UpdatedTicket">A TeamDynamix ticket with the updated properties.t</param>
@@ -1095,6 +1174,16 @@ namespace TDXManager
         }
 
         /// <summary>
+        /// Update the TDX Ticket with a public comments retaing the current ticket status.
+        /// This method always notifies the customer.
+        /// </summary>
+        /// <param name="Comments"></param>
+        public void UpdateTicket (StringBuilder Comments)
+        {
+            AddTicketFeedEntry(Comments.ToString(), true, false);
+        }
+
+        /// <summary>
         /// Update the current TDX ticket by addding a new public ticket feed entry and set the ticket's status.
         /// This method always notifies the customer.
         /// </summary>
@@ -1123,6 +1212,18 @@ namespace TDXManager
         }
 
         /// <summary>
+        /// Update the current TDX ticket by addding a new public ticket feed entry and set the ticket's status.
+        /// This method always notifies the customer.
+        /// </summary>
+        /// <param name="Comments"></param>
+        /// <param name="StatusName"></param>
+        public void UpdateTicket(StringBuilder Comments, String StatusName)
+        {
+            UpdateTicket(Comments.ToString(), StatusName);
+        }
+
+
+        /// <summary>
         /// Update the current TDX ticket by adding a new ticket feed entry specifiying as public or private.
         /// </summary>
         /// <param name="Comments">The ticket comment to add to the feed.</param>
@@ -1132,6 +1233,11 @@ namespace TDXManager
             Boolean Notify = true;
             if (IsPrivate) { Notify = false; }
             AddTicketFeedEntry(Comments, Notify, IsPrivate);
+        }
+
+        public void UpdateTicket(StringBuilder Comments, Boolean IsPrivate)
+        {
+            UpdateTicket(Comments.ToString(), IsPrivate);
         }
 
         /// <summary>
@@ -1160,6 +1266,18 @@ namespace TDXManager
             {
                 AddTicketFeedEntry("Ticket Status Updated", false, true);
             }
+        }
+
+        /// <summary>
+        /// Update the current TDX ticket by adding a new ticket feed entry, set the
+        /// status and specify the update as public or private.
+        /// </summary>
+        /// <param name="Comments"></param>
+        /// <param name="StatusName"></param>
+        /// <param name="IsPrivate"></param>
+        public void UpdateTicket(StringBuilder Comments, String StatusName, Boolean IsPrivate)
+        {
+            UpdateTicket(Comments.ToString(), StatusName, IsPrivate);
         }
 
         /// <summary>
