@@ -1,33 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CornellIdentityManagement
 {
     public class ProvAccountsManager
     {
         #region --- Private Properties ---
+
         private NetworkCredential networkCredential;
-        #endregion
+
+        #endregion --- Private Properties ---
 
         #region --- Public Properties ---
+
         public List<String> CornelleduProvAccts { get; private set; }
 
         public List<String> CornelleduMailDelivery { get; private set; }
 
-        #endregion
+        #endregion --- Public Properties ---
 
         #region --- Class Constructors
+
         public ProvAccountsManager()
         {
             // Create a network credential to access the web service.
             networkCredential = new NetworkCredential("messaging", "P7P7Hij*SvmAC9=e(bPqpcaROnUFZKDfl9$NXqD1");
         }
-        #endregion
+
+        #endregion --- Class Constructors
 
         #region --- Public Methods ---
 
@@ -54,11 +57,9 @@ namespace CornellIdentityManagement
 
         public void EnableFacultyA3(String UserPrincipalName)
         {
-
         }
 
-        #endregion
-
+        #endregion --- Public Methods ---
     }
 
     public class CornellActiveDirectoryProperites

@@ -234,6 +234,7 @@ namespace PowerShellRunspaceManager
         {
             return DataSetToJSON(GetMailContactAsDataSet(Identity));
         }
+
         /// <summary>
         /// Create a mail contact
         /// </summary>
@@ -451,7 +452,7 @@ namespace PowerShellRunspaceManager
         /// <param name="Identity"></param>
         /// <param name="ExternalEmailAddress"></param>
         /// <returns></returns>
-        public ObjectProvisioningState EnableMailContact (String Identity, String ExternalEmailAddress)
+        public ObjectProvisioningState EnableMailContact(String Identity, String ExternalEmailAddress)
         {
             ObjectProvisioningState objectProvisioningState = new ObjectProvisioningState();
             objectProvisioningState.RecordTime = DateTime.UtcNow;
@@ -477,6 +478,7 @@ namespace PowerShellRunspaceManager
 
             return objectProvisioningState;
         }
+
         /// <summary>
         ///  Disables the mailcontact specified by by identity
         /// </summary>
@@ -508,7 +510,6 @@ namespace PowerShellRunspaceManager
 
             return objectProvisioningState;
         }
-
 
         /// <summary>
         /// Enable the specified Active Directory User as a RemoteMailbox.

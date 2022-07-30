@@ -28,27 +28,27 @@
                     @using ListServiceManagement.Extensions;
                     @using (Html.BeginForm("Index", Request.Url.LocalPath.Split('/')[1]))
                     {
-                        @Html.AntiForgeryToken()
+                    @Html.AntiForgeryToken()
 
                         var queryOptions = (QueryOptions)ViewBag.QueryOptions;
 
                         if (queryOptions != null)
                         {
-                            <div class="input-group mb-auto">
-                                @{
+                    <div class="input-group mb-auto">
+                        @{
                                     if (queryOptions.SearchString != null)
                                     {
-                                        @Html.TextBox("SearchString", queryOptions.SearchString, new { @class = "form-control", title = "To search for a specific account enter a search string and click the search button" });
+                            @Html.TextBox("SearchString", queryOptions.SearchString, new { @class = "form-control", title = "To search for a specific account enter a search string and click the search button" });
                                     }
                                     else
                                     {
-                                        <input title="To search for a specific account enter a search string and click the search button" type="text" name="SearchString" id="SearchString" class="form-control" placeholder="Search">
+                            <input title="To search for a specific account enter a search string and click the search button" type="text" name="SearchString" id="SearchString" class="form-control" placeholder="Search">
                                     }
-                                }
-                                <div class="input-group-append">
-                                    <input title="Clicking here will search for accounts that match the given search string" type="submit" name="Search" , value="Search" class="form-control btn btn-secondary" />
-                                </div>
-                            </div>
+                        }
+                        <div class="input-group-append">
+                            <input title="Clicking here will search for accounts that match the given search string" type="submit" name="Search" , value="Search" class="form-control btn btn-secondary" />
+                        </div>
+                    </div>
                         }
                     }
                 </form>

@@ -29,24 +29,24 @@
 
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FormId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FormName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.TeamDynamixForm_Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.TeamDynamixForm_Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.TeamDynamixForm_Id })
-            </td>
-        </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FormId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FormName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AppID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsActive)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.TeamDynamixForm_Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.TeamDynamixForm_Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.TeamDynamixForm_Id })
+        </td>
+    </tr>
     }
 </table>

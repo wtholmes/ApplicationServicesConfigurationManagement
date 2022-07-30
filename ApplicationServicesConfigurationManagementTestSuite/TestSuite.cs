@@ -2,9 +2,11 @@
 using ApplicationServicesConfigurationManagementDatabaseAccess;
 using ApplicationServicesConfigurationManagementDatabaseAccess.Models;
 using AuthenticationServices;
+using CornellIdentityManagement;
 using ListServiceManagement.Models;
-using ServiceEventLoggingManager;
+using MicrosoftAzureManager;
 using PowerShellRunspaceManager;
+using ServiceEventLoggingManager;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
@@ -13,8 +15,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using TDXManager;
-using MicrosoftAzureManager;
-using CornellIdentityManagement;
 
 namespace ApplicationServicesConfigurationManagementTestSuite
 {
@@ -26,32 +26,29 @@ namespace ApplicationServicesConfigurationManagementTestSuite
             Boolean DoNotRun = false;
             Regex InactiveTicketsRegex = new Regex(@"(Reopened|Resolved|Closed|Canceled)", RegexOptions.IgnoreCase);
 
-            if(Run)
+            if (Run)
             {
                 ProvAccountsManager provAccountsManager = new ProvAccountsManager();
                 provAccountsManager.GetProvAccounts("wth1@cornell.edu");
             }
-
 
             if (DoNotRun)
             {
                 Office365LicensingManager office365LicensingManager = new Office365LicensingManager();
             }
 
-            if(DoNotRun)
+            if (DoNotRun)
             {
                 RequestOffice365A3LicenseTDXService office365A3LicenseRequestService = new RequestOffice365A3LicenseTDXService();
             }
 
-            if(DoNotRun)
+            if (DoNotRun)
             {
                 DirectoryEntry rootDSE = new DirectoryEntry("LDAP://RootDSE");
                 DirectoryEntry activeDirectory = new DirectoryEntry(String.Format("LDAP://{0}", rootDSE.Properties["defaultNamingContext"][0]));
 
-
                 ExchangeOnPremManager exchangeOnPremManager = new ExchangeOnPremManager("sf-ex-2019-02.exchange.cornell.edu", true);
                 exchangeOnPremManager.NewMailContact("wtholmes+foo@gmail.com", "BillContactTest", "cornell.edu/CITExchangeObjects/Test Objects");
-
 
                 using (DirectorySearcher directorySearcher = new DirectorySearcher(activeDirectory))
                 {
@@ -62,7 +59,6 @@ namespace ApplicationServicesConfigurationManagementTestSuite
                         directorySearcher.CacheResults = false;
                         directorySearcher.Filter = String.Format("(&(objectClass=contact)(name={0}))", "wtholmes+foo");
                         SearchResultCollection searchResults = directorySearcher.FindAll();
-
 
                         if (searchResults.Count == 1) // Sync the objectGUID back to the Elist Contacts Database.
                         {
@@ -83,29 +79,18 @@ namespace ApplicationServicesConfigurationManagementTestSuite
                     }
                 }
 
-
-
-
-
-
                 exchangeOnPremManager.EnableMailContact("wtholmes+foo", "wtholmes+foo@gmail.com");
                 exchangeOnPremManager.RemoveMailContact("wtholmes+foo@gmail.com");
             }
 
-
-
-
-
-            if(DoNotRun)
+            if (DoNotRun)
             {
                 RequestListOwnerTransferTDXService listOwnerTransferTDXService = new RequestListOwnerTransferTDXService();
-                foreach(ListOwnerTransferTicket listOwnerTransferTicket in listOwnerTransferTDXService.TDXListOwnerTransferTickets)
+                foreach (ListOwnerTransferTicket listOwnerTransferTicket in listOwnerTransferTDXService.TDXListOwnerTransferTickets)
                 {
                     listOwnerTransferTDXService.TDXListOwnerTransferTicket = listOwnerTransferTicket;
                 }
             }
-
-
 
             if (DoNotRun)
             {

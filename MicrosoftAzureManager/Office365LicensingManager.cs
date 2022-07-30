@@ -15,7 +15,7 @@ namespace MicrosoftAzureManager
         private GraphServiceClient graphServiceClient;
         private String[] Scopes;
 
-        #endregion
+        #endregion --- Private Class Properties ---
 
         #region --- Public Class Properties ---
 
@@ -23,9 +23,10 @@ namespace MicrosoftAzureManager
 
         public List<Office365Subscription> Office365AssignedSubscriptions { get; private set; }
 
-        #endregion
+        #endregion --- Public Class Properties ---
 
         #region --- Constructors ----
+
         public Office365LicensingManager()
         {
             Scopes = new string[] { "https://graph.microsoft.com/.default" };
@@ -50,9 +51,11 @@ namespace MicrosoftAzureManager
 
             GetOffice365Subscriptions();
         }
-        #endregion
+
+        #endregion --- Constructors ----
 
         #region --- Public Methods ---
+
         /// <summary>
         /// Get the current Azure Licese Subscriptions for the Tenant.
         /// </summary>
@@ -85,12 +88,12 @@ namespace MicrosoftAzureManager
                         ProvisioningStatus = servicePlanInfo.ProvisioningStatus
                     };
                     office365Subscription.ServicePlans.Add(servicePlan);
-
                 }
 
                 Office365Subscriptions.Add(office365Subscription);
             }
         }
+
         /// <summary>
         /// Get the Office 365 Licenses assigned to the user account specified by its UserPrincipalName
         /// </summary>
@@ -109,12 +112,10 @@ namespace MicrosoftAzureManager
 
                 foreach (LicenseDetails licenseDetails in Office365Licenses)
                 {
-
                     Office365Subscription office365Subscription = Office365Subscriptions
                         .Where(s => s.SKU.Equals(licenseDetails.SkuPartNumber)).FirstOrDefault();
 
                     office365Subscription.UserPrincipalName = UserPrincipalName;
-
 
                     foreach (ServicePlanInfo servicePlanInfo in licenseDetails.ServicePlans)
                     {
@@ -139,16 +140,17 @@ namespace MicrosoftAzureManager
             {
                 Console.WriteLine("Exception: {0}", exp);
             }
-
         }
 
-        #endregion
+        #endregion --- Public Methods ---
+
         public class Office365Subscription
         {
             public Office365Subscription()
             {
                 ServicePlans = new List<ServicePlan>();
             }
+
             public String SKU { get; set; }
 
             public Int32 AvailableUnits { get; set; }
@@ -164,7 +166,6 @@ namespace MicrosoftAzureManager
             public List<ServicePlan> ServicePlans { get; set; }
 
             public String UserPrincipalName { get; set; }
-
         }
 
         public class ServicePlan
@@ -174,8 +175,6 @@ namespace MicrosoftAzureManager
             public String ProvisioningStatus { get; set; }
 
             public Boolean UserEnabled { get; set; }
-
         }
     }
 }
-

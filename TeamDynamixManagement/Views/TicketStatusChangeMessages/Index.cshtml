@@ -29,25 +29,25 @@
 
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TeamDynamixIntegration.IntegrationName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrentTeamDynamixStatusClass.TicketStatusName)
-            </td>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TeamDynamixIntegration.IntegrationName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CurrentTeamDynamixStatusClass.TicketStatusName)
+        </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedTeamDynamixStatusClass.TicketStatusName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Message)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.TicketStatusChangeMessage_Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.TicketStatusChangeMessage_Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.TicketStatusChangeMessage_Id })
-            </td>
-        </tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UpdatedTeamDynamixStatusClass.TicketStatusName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Message)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.TicketStatusChangeMessage_Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.TicketStatusChangeMessage_Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.TicketStatusChangeMessage_Id })
+        </td>
+    </tr>
     }
 </table>

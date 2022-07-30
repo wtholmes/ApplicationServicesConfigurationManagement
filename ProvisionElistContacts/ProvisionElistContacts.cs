@@ -110,7 +110,6 @@ namespace ProvisionElistContacts
 
                                             if (msExchRecipientDisplayType.Equals(6))
                                             {
-
                                                 if (searchResults[0].Properties["targetAddress"].Count != 0)
                                                 {
                                                     CurrentContactExternalEmailAddress = searchResults[0].Properties["targetAddress"][0].ToString().Split(':')[1];
@@ -125,13 +124,11 @@ namespace ProvisionElistContacts
                                             }
                                             else
                                             {
-                                                if(msExchRecipientDisplayType.Equals(0))
+                                                if (msExchRecipientDisplayType.Equals(0))
                                                 {
                                                     exchangeOnPremManager.EnableMailContact(DirectoryContactNames[ContactUsage], ExpectedContactExternalEmailAddress);
                                                 }
                                             }
-
-
                                         }
 
                                         if (msExchRecipientDisplayType.Equals(6))
