@@ -10,7 +10,7 @@ namespace ListServiceManagement.Controllers.WebView
     [Authorize(Roles = "ElistServiceAdminRole")]
     public class ElistContactsController : Controller
     {
-        private ListServiceManagmentContext db = new ListServiceManagmentContext();
+        private ListServiceManagementContext db = new ListServiceManagementContext();
 
         // GET: ElistContacts
         public ActionResult Index()

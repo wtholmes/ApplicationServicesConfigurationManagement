@@ -96,6 +96,16 @@ namespace PowerShellRunspaceManager
 
         #region ---- Public Methods ----
 
+        public void AddDistributionGroupMember(String DistributionGroupName, String MemberIdentity)
+        {
+            List<PSCommandParameter<String, Object>> pSCommandParameters = new List<PSCommandParameter<String, Object>>();
+            PowerShellCommand powerShellCommand = new PowerShellCommand("Add-DistributionGroupMember");
+            powerShellCommand.AddCommandParameter("Identity", DistributionGroupName);
+            powerShellCommand.AddCommandParameter("Member", MemberIdentity);
+            powerShellCommand.AddCommandParameter("BypassSecurityGroupManagerCheck", true);
+            Collection<PSObject> addDistributionGroupMemberResult = InvokeCommand(powerShellCommand);
+        }
+
         /// <summary>
         /// Collection<PSObject> GetMailbox(String Identity)
         ///

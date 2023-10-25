@@ -33,8 +33,8 @@ namespace TDXManager
 
         private String sLocationOrigin = "https://tdx.cornell.edu/";
 
-        private String sWebApiBasePathname = "SBTDWebApi/api/";
-        //private String sWebApiBasePathname = "TDWebApi/api/";
+        //private String sWebApiBasePathname = "SBTDWebApi/api/";
+        private String sWebApiBasePathname = "TDWebApi/api/";
 
         private String ApplicationID = "32";
         private String sUsername = "messagingteam-api-01@cornell.edu";
@@ -69,7 +69,8 @@ namespace TDXManager
 
         public List<Exception> Exceptions { get; private set; }
 
-        public Exception LastException { get { return Exceptions.LastOrDefault(); } }
+        public Exception LastException
+        { get { return Exceptions.LastOrDefault(); } }
 
         #endregion ---- List or MultiValue Properties ----
 
@@ -87,14 +88,20 @@ namespace TDXManager
             {
                 _TDXTicket = value;
                 this.TDXAutomationTicket = new TDXAutomationTicket(_TDXTicket);
+
                 this.TDXAutomationTicket.SetTicketCreator(new TDXDomainUser(GetTDXUserByUID(_TDXTicket.CreatedUid.ToString())));
-                this.TDXAutomationTicket.SetTicketRequestor(new TDXDomainUser(GetTDXUserByUID(_TDXTicket.RequestorUid.ToString())));  
+                this.CreatingUser = GetTDXUserByUID(_TDXTicket.CreatedUid.ToString());
+
+                this.TDXAutomationTicket.SetTicketRequestor(new TDXDomainUser(GetTDXUserByUID(_TDXTicket.RequestorUid.ToString())));
+                this.RequestingUser = GetTDXUserByUID(_TDXTicket.RequestorUid.ToString());
+
                 this.NotifyCreator = false;
                 this.NotifyRequestor = false;
                 this.UpdateTicketStatus = false;
                 this.NotificationEmails.Clear();
             }
         }
+
         public Service TDXService { get; private set; }
 
         public Account TDXAccount { get; private set; }
@@ -341,7 +348,7 @@ namespace TDXManager
                 String ApiUri = String.Format("reports", ApplicationID);
                 HttpResponseMessage httpResponseMessage = oHttpClientX.GetAsync(ApiUri).Result;
 
-                var x = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                //var x = httpResponseMessage.Content.ReadAsStringAsync().Result;
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     String httpResponseMessageContent = httpResponseMessage.Content.ReadAsStringAsync().Result;
@@ -591,10 +598,10 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Get all tickets from TDX that are included in the specified report whoes status do not match the spcified Regular Expression
+        /// Get all tickets from TDX that are included in the specified report whose status do not match the specified Regular Expression
         /// </summary>
         /// <param name="ReportName">The name of an existing report in TDX</param>
-        /// <param name="TicketStatusRegex">A Regex that matches the desired status names.</param>
+        /// <param name="TicketStatusRegex">A REGEX that matches the desired status names.</param>
         public void GetTicketsUsingReport(String ReportName, System.Text.RegularExpressions.Regex IgnoredTicketStatusRegex)
         {
             try
@@ -620,7 +627,6 @@ namespace TDXManager
                         {
                             TDXTickets.Add(ticket);
 
-                            
                             if (TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault() == null)
                             {
                                 TDXDomainUsers.Add(new TDXDomainUser(GetUserByUid(ticket.CreatedUid)));
@@ -631,7 +637,6 @@ namespace TDXManager
                                 TDXDomainUsers.Add(new TDXDomainUser(GetUserByUid(ticket.RequestorUid)));
                             }
 
-                            
                             TDXAutomationTicket tDXAutomationTicket = new TDXAutomationTicket(ticket);
                             TDXDomainUser CreatedTDXDomainUser = TDXDomainUsers.Where(u => u.TDXUserUID.Equals(ticket.CreatedUid)).FirstOrDefault();
                             if (CreatedTDXDomainUser != null) { tDXAutomationTicket.SetTicketCreator(CreatedTDXDomainUser); }
@@ -647,7 +652,7 @@ namespace TDXManager
                 Exceptions.Add(exp);
             }
         }
-        
+
         /// <summary>
         /// Set the current active ticket.
         /// </summary>
@@ -656,6 +661,7 @@ namespace TDXManager
         {
             _TDXTicket = TDXTickets.Where(t => t.ID.Equals(Ticket.ID)).FirstOrDefault();
             TDXAutomationTicket = TDXAutomationTickets.Where(t => t.ID.Equals(Ticket.ID)).FirstOrDefault();
+
             // Check the Automation ID [TDX Custom Attribute: (S111-AUTOMATIONID)].
             // If this is NULL assign a new automation ID to the TDX Ticket.
             if (TDXAutomationTicket.AutomationID == null)
@@ -689,7 +695,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Get a single tikcet from TeamDynamix By ID.
+        /// Get a single ticket from TeamDynamix By ID.
         /// </summary>
         /// <param name="TDXTicketID"></param>
         public Ticket GetTicketByID(Int32 TDXTicketID)
@@ -841,25 +847,19 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="automationStatus"></param>
         /// <returns></returns>
         public Ticket UpdateAutomationStatus(String automationStatus)
         {
             //Set Automation Status [TDX Custom Attribute: (S111-AUTOMATIONSTATUS)]
-            if (typeof(AUTOMATIONSTATUS).GetProperty(automationStatus) != null)
-            {
-                return UpdateDropDownChoiceAttribute("S111-AUTOMATIONSTATUS", automationStatus);
-            }
-            else
-            { 
-                return this.TDXTicket;
-            }
+
+            return UpdateDropDownChoiceAttribute("S111-AUTOMATIONSTATUS", automationStatus);
         }
 
         /// <summary>
-        /// Updates the automation status details custom attribute for hte active ticket.
+        /// Updates the automation status details custom attribute for the active ticket.
         /// </summary>
         /// <param name="automationStatusDetail"></param>
         /// <returns></returns>
@@ -870,7 +870,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Updates the automation status details custom attribute for hte active ticket.
+        /// Updates the automation status details custom attribute for the active ticket.
         /// </summary>
         /// <param name="automationStatusDetail"></param>
         /// <returns></returns>
@@ -880,7 +880,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Updates the selected choice in a custom dropdown custom attribute.
+        /// Updates the selected choice in a custom drop-down custom attribute.
         /// </summary>
         /// <param name="AttributeName"></param>
         /// <param name="Choice"></param>
@@ -1021,7 +1021,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Send a Patch Request to update the current TDX ticket's descripion.
+        /// Send a Patch Request to update the current TDX ticket's description.
         /// </summary>
         /// <param name="TicketDescription"></param>
         /// <returns></returns>
@@ -1099,7 +1099,7 @@ namespace TDXManager
             // List of properties in a TeamDynamix Ticket.
             List<PropertyInfo> properties = typeof(Ticket).GetProperties().ToList();
 
-            // List of properies that can be updated in a TeamDynamix Ticket.
+            // List of properties that can be updated in a TeamDynamix Ticket.
             List<String> UpdatableProperties = new List<String>() { "Title", "Description", "Attributes" };
 
             // Create a patch document.
@@ -1164,7 +1164,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Update the TDX Ticket with a public comments retaing the current ticket status.
+        /// Update the TDX Ticket with a public comments retain the current ticket status.
         /// This method always notifies the customer.
         /// </summary>
         /// <param name="Comments">The ticket comment to add to the feed.</param>
@@ -1174,17 +1174,17 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Update the TDX Ticket with a public comments retaing the current ticket status.
+        /// Update the TDX Ticket with a public comments retain the current ticket status.
         /// This method always notifies the customer.
         /// </summary>
         /// <param name="Comments"></param>
-        public void UpdateTicket (StringBuilder Comments)
+        public void UpdateTicket(StringBuilder Comments)
         {
             AddTicketFeedEntry(Comments.ToString(), true, false);
         }
 
         /// <summary>
-        /// Update the current TDX ticket by addding a new public ticket feed entry and set the ticket's status.
+        /// Update the current TDX ticket by adding a new public ticket feed entry and set the ticket's status.
         /// This method always notifies the customer.
         /// </summary>
         /// <param name="Comments">The ticket comment to add to the feed.</param>
@@ -1212,7 +1212,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Update the current TDX ticket by addding a new public ticket feed entry and set the ticket's status.
+        /// Update the current TDX ticket by adding a new public ticket feed entry and set the ticket's status.
         /// This method always notifies the customer.
         /// </summary>
         /// <param name="Comments"></param>
@@ -1222,9 +1222,8 @@ namespace TDXManager
             UpdateTicket(Comments.ToString(), StatusName);
         }
 
-
         /// <summary>
-        /// Update the current TDX ticket by adding a new ticket feed entry specifiying as public or private.
+        /// Update the current TDX ticket by adding a new ticket feed entry specifying as public or private.
         /// </summary>
         /// <param name="Comments">The ticket comment to add to the feed.</param>
         /// <param name="IsPrivate">Private flag.</param>
@@ -1244,7 +1243,7 @@ namespace TDXManager
         /// Update the current TDX ticket by adding a new ticket feed entry, set the
         /// status and specify the update as public or private.
         /// </summary>
-        /// <param name="Comments">The ticket comment to tadd to the feed.</param>
+        /// <param name="Comments">The ticket comment to add to the feed.</param>
         /// <param name="StatusName">The ticket status</param>
         /// <param name="Private">Private flag.</param>
         public void UpdateTicket(String Comments, String StatusName, Boolean IsPrivate)
@@ -1417,7 +1416,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Set the Ticket Soruce by name.
+        /// Set the Ticket Source by name.
         /// </summary>
         /// <param name="SourceName"></param>
         /// <returns></returns>
@@ -1454,7 +1453,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Sets the Acive Ticket's Status
+        /// Sets the Active Ticket's Status
         /// </summary>
         /// <param name="StatusName"></param>
         public TicketStatus SetTicketStatusByName(String StatusName)
@@ -1661,7 +1660,7 @@ namespace TDXManager
         }
 
         /// <summary>
-        /// Creates a ticket in the TDX Applicaiton using the current TDXTicket.
+        /// Creates a ticket in the TDX Application using the current TDXTicket.
         /// </summary>
         /// <param name="EnableNotifyReviewer"></param>
         /// <param name="NotifyRequestor"></param>
@@ -1718,6 +1717,9 @@ namespace TDXManager
         // TDX Custom Attribute: (S111-AUTOMATIONDETAILS)
         public String AutomationDetails { get; set; }
 
+        // TDX Custom Attribute: (Alternate Email Address)
+        public String AlternateEmailAddress { get; set; }
+
         public TDXDomainUser TicketCreator { get; private set; }
 
         public TDXDomainUser TicketRequestor { get; private set; }
@@ -1741,6 +1743,8 @@ namespace TDXManager
             // Automation Status [TDX Custom Attribute: (S111-AUTOMATIONDETAILS)]
             AutomationDetails = ticket.Attributes.Where(a => a.Name.Equals("S111-AUTOMATIONDETAILS")).Select(a => a.ValueText).FirstOrDefault();
 
+            // Alternate Email Address [TDX Custom Attribute: (Alternate Email Address)]
+            AlternateEmailAddress = ticket.Attributes.Where(a => a.Name.Equals("Alternate Email Address")).Select(a => a.ValueText).FirstOrDefault();
         }
 
         public void SetTicketCreator(TDXDomainUser tDXDomainUser)
@@ -1762,6 +1766,8 @@ namespace TDXManager
     {
         #region ---- Public Properties ----
 
+        public Boolean IsValid { get; private set; }
+
         public String UserID
         { get { return UserPrincipalName.Split('@')[0]; } }
 
@@ -1778,6 +1784,8 @@ namespace TDXManager
         public List<String> Entitlements { get; private set; }
 
         public List<String> ProvAccts { get; private set; }
+
+        public List<String> MailDelivery { get; private set; }
 
         public List<String> MemberOf { get; private set; }
 
@@ -1807,12 +1815,13 @@ namespace TDXManager
 
             using (ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext())
             {
-                activeDirectoryContext.IncludeNestedGroupMembership = true; 
+                activeDirectoryContext.IncludeNestedGroupMembership = true;
                 activeDirectoryContext.PropertiesToLoad = new List<string>();
                 activeDirectoryContext.PropertiesToLoad.Add("cornelleduPrimaryAffiliation");
                 activeDirectoryContext.PropertiesToLoad.Add("cornelleduAffiliation");
                 activeDirectoryContext.PropertiesToLoad.Add("cornelleduEntitlements");
                 activeDirectoryContext.PropertiesToLoad.Add("cornelleduProvAccts");
+                activeDirectoryContext.PropertiesToLoad.Add("cornelleduMailDelivery");
                 activeDirectoryContext.PropertiesToLoad.Add("manager");
 
                 String userPrincipalName = tdxUser.UserName;
@@ -1827,6 +1836,9 @@ namespace TDXManager
                         ActiveDirectoryEntity activeDirectoryEntity = activeDirectoryContext.SearchDirectory(userPrincipalName);
                         if (activeDirectoryEntity != null)
                         {
+                            // This is a valid Active Directory User.
+                            this.IsValid = true;
+
                             // Cornell Primary Affiliation
                             if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduPrimaryAffiliation"))
                             {
@@ -1834,28 +1846,57 @@ namespace TDXManager
                                     .Select(i => i.ToString())
                                     .FirstOrDefault();
                             }
+
                             // Cornell Affiliations
                             if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduAffiliation"))
                             {
                                 Affiliations = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduAffiliation"])
-                                   .Select(i => i.ToString())
-                                   .ToList();
+                                    .DefaultIfEmpty(new List<String>())
+                                    .Select(i => i.ToString())
+                                    .ToList();
+                            }
+                            else
+                            {
+                                Affiliations = new List<String>();
                             }
 
-                            // Cornell Entitlments
+                            // Cornell Entitlements
                             if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduEntitlements"))
                             {
                                 Entitlements = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduEntitlements"])
+                                    .DefaultIfEmpty(new List<String>())
                                     .Select(i => i.ToString())
                                     .ToList();
+                            }
+                            else
+                            {
+                                Entitlements = new List<String>();
                             }
 
                             // Cornell ProvAccounts
                             if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduProvAccts"))
                             {
                                 ProvAccts = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduProvAccts"])
+                                    .DefaultIfEmpty(new List<String>())
                                     .Select(i => i.ToString())
                                     .ToList();
+                            }
+                            else
+                            {
+                                ProvAccts = new List<String>();
+                            }
+
+                            // Cornell MailDelivery
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduMailDelivery"))
+                            {
+                                MailDelivery = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduMailDelivery"])
+                                    .DefaultIfEmpty(new List<String>())
+                                    .Select(i => i.ToString())
+                                    .ToList();
+                            }
+                            else
+                            {
+                                MailDelivery = new List<String>();
                             }
 
                             // Group Membership
@@ -1869,7 +1910,7 @@ namespace TDXManager
                                     .Select(i => i.ToString())
                                     .FirstOrDefault();
 
-                                ActiveDirectoryEntity managerEntity = activeDirectoryContext.SearDirectoryByDN(ManagerDN);
+                                ActiveDirectoryEntity managerEntity = activeDirectoryContext.SearchDirectoryByDN(ManagerDN);
                                 if (managerEntity != null)
                                 {
                                     ManagerUserPrincipalName = managerEntity.userprincipalName;
@@ -1894,9 +1935,14 @@ namespace TDXManager
                             // TDX Primary Email [Must Exist]
                             TDXPrimaryEmail = tdxUser.PrimaryEmail;
                         }
+                        else
+                        {
+                            this.IsValid = false;
+                        }
                     }
                     catch (Exception exp)
                     {
+                        this.IsValid = false;
                         Exceptions.Add(exp);
                     }
                 }
@@ -1909,6 +1955,7 @@ namespace TDXManager
     #endregion ---- TDX Domain User ----
 
     #region ---- S111-AUTOMATIONSTATUS Enumeration ----
+
     // Automation Status [TDX Custom Attribute: (S111-AUTOMATIONSTATUS)]
     public static class AUTOMATIONSTATUS
     {
@@ -1921,5 +1968,5 @@ namespace TDXManager
         public static readonly String COMPLETE = "COMPLETE";
     }
 
-    #endregion
+    #endregion ---- S111-AUTOMATIONSTATUS Enumeration ----
 }

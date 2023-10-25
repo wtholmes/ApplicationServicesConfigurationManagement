@@ -18,7 +18,7 @@ namespace ProvisionElistContacts
             Boolean DeltaSync = true;
             Boolean Unsynced = false;
 
-            ListServiceManagmentContext context = new ListServiceManagmentContext();
+            ListServiceManagementContext context = new ListServiceManagementContext();
 
             DirectoryEntry rootDSE = new DirectoryEntry("LDAP://RootDSE");
             DirectoryEntry activeDirectory = new DirectoryEntry(String.Format("LDAP://{0}", rootDSE.Properties["defaultNamingContext"][0]));
@@ -51,8 +51,8 @@ namespace ProvisionElistContacts
                         Thread.Sleep(new TimeSpan(0, 0, 5).Milliseconds);
                         try
                         {
-                            logfile.WriteLine("[{0} UTC]: Synchonizing Elist Contact: {1}", DateTime.UtcNow.ToString(), elistContact.ListName);
-                            Console.WriteLine("Synchonizing Elist Contact: {0}", elistContact.ListName);
+                            logfile.WriteLine("[{0} UTC]: Synchronizing Elist Contact: {1}", DateTime.UtcNow.ToString(), elistContact.ListName);
+                            Console.WriteLine("Synchronizing Elist Contact: {0}", elistContact.ListName);
                             Dictionary<String, String> DirectoryContactNames = new Dictionary<String, String>();
                             DirectoryContactNames.Add("ListContact", elistContact.ListName.Trim());
                             DirectoryContactNames.Add("OwnerContact", string.Format("OWNER-{0}", elistContact.ListName.Trim()));
@@ -175,6 +175,12 @@ namespace ProvisionElistContacts
                             logfile.WriteLine("      %%%%%%% -An exception has occurred -%%%%%%\n\n");
                         }
                     }
+
+                    // E-list Contact De-provisioning...
+
+
+
+
                 }
                 catch (Exception exp)
                 {

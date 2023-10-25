@@ -17,7 +17,7 @@ namespace ListServiceManagement.Controllers
     /// </summary>
     public class ElistContactsController : ApiController
     {
-        private ListServiceManagmentContext db = new ListServiceManagmentContext();
+        private ListServiceManagementContext db = new ListServiceManagementContext();
 
         /// <summary>
         /// Get a table (of type ElistContact) of all Elist Contacts.

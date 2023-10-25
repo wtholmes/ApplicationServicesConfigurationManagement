@@ -28,6 +28,107 @@ namespace ApplicationServicesConfigurationManagementTestSuite
 
             if (Run)
             {
+                String PrimaryAffiliation;
+                List<String> Affiliations;
+                List<String> Entitlements;
+                List<String> ProvAccts;
+                List<String> MailDelivery;
+
+                using (ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext())
+                {
+                    activeDirectoryContext.IncludeNestedGroupMembership = true;
+                    activeDirectoryContext.PropertiesToLoad = new List<string>();
+                    activeDirectoryContext.PropertiesToLoad.Add("cornelleduPrimaryAffiliation");
+                    activeDirectoryContext.PropertiesToLoad.Add("cornelleduAffiliation");
+                    activeDirectoryContext.PropertiesToLoad.Add("cornelleduEntitlements");
+                    activeDirectoryContext.PropertiesToLoad.Add("cornelleduProvAccts");
+                    activeDirectoryContext.PropertiesToLoad.Add("cornelleduMailDelivery");
+                    activeDirectoryContext.PropertiesToLoad.Add("manager");
+
+                    String userPrincipalName = "perdition@cornell.edu";
+
+                    try
+                    {
+                        ActiveDirectoryEntity activeDirectoryEntity = activeDirectoryContext.SearchDirectory(userPrincipalName);
+                        if (activeDirectoryEntity != null)
+                        {
+                            // Cornell Primary Affiliation
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduPrimaryAffiliation"))
+                            {
+                                PrimaryAffiliation = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduPrimaryAffiliation"])
+                                    .Select(i => i.ToString())
+                                    .FirstOrDefault();
+                            }
+
+                            // Cornell Affiliations
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduAffiliation"))
+                            {
+                                Affiliations = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduAffiliation"])
+                                    .DefaultIfEmpty(new List<String>())
+                                    .Select(i => i.ToString())
+                                    .ToList();
+                            }
+                            else
+                            {
+                                Affiliations = new List<String>();
+                            }
+
+                            // Cornell Entitlments
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduEntitlements"))
+                            {
+                                Entitlements = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduEntitlements"])
+                                    .DefaultIfEmpty(new List<String>())
+                                    .Select(i => i.ToString())
+                                    .ToList();
+                            }
+                            else
+                            {
+                                Entitlements = new List<String>();
+                            }
+
+                            // Cornell ProvAccounts
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduProvAccts"))
+                            {
+                                ProvAccts = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduProvAccts"])
+                                    .DefaultIfEmpty(new List<String>())
+                                    .Select(i => i.ToString())
+                                    .ToList();
+                            }
+                            else
+                            {
+                                ProvAccts = new List<String>();
+                            }
+
+                            // Cornell MailDelivery
+                            if (activeDirectoryEntity.directoryProperties.ContainsKey("cornelleduMailDelivery"))
+                            {
+                                MailDelivery = ((List<Object>)activeDirectoryEntity.directoryProperties["cornelleduMailDelivery"])
+                                    .DefaultIfEmpty(new List<String>())
+                                    .Select(i => i.ToString())
+                                    .ToList();
+                            }
+                            else
+                            {
+                                MailDelivery = new List<String>();
+                            }
+                        }
+                    }
+                    catch (Exception exp)
+                    { }
+                }
+            }
+
+            if (DoNotRun)
+            {
+                ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext();
+                if (activeDirectoryContext.CheckGroupMembership("mr262@cornell.edu", "RequestFacultyA3LicenseDelegate", "cornell"))
+                {
+                    Console.WriteLine("Is Member");
+                }
+            }
+
+            if (DoNotRun)
+            {
                 ProvAccountsManager provAccountsManager = new ProvAccountsManager();
                 provAccountsManager.GetProvAccounts("wth1@cornell.edu");
             }
@@ -97,7 +198,7 @@ namespace ApplicationServicesConfigurationManagementTestSuite
                 while (true)
                 {
                     TDXTicketManager tDXTicketManager = new TDXTicketManager();
-                    ListServiceManagmentContext context = new ListServiceManagmentContext();
+                    ListServiceManagementContext context = new ListServiceManagementContext();
                     ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext();
 
                     tDXTicketManager.GetTicketsUsingReport("Automated Transfer e-List Owner Transfer Requests");
@@ -744,7 +845,7 @@ namespace ApplicationServicesConfigurationManagementTestSuite
 
             if (DoNotRun)
             {
-                using (ListServiceManagmentContext context = new ListServiceManagmentContext())
+                using (ListServiceManagementContext context = new ListServiceManagementContext())
                 {
                     ElistOwnerTransfer elistOwnerTransfer;
 

@@ -53,10 +53,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>25917EA4A6983F3C0BC25231EF44B795BF1C2471</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>7CE8D90D6E65C5D7A68401ED7525F9330A835755</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>ProvisionElistContacts_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>ProvisionElistContacts_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -89,7 +89,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="ProvisionElistContacts_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActiveDirectoryAccess\ActiveDirectoryAccess.csproj">

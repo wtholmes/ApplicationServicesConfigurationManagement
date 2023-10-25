@@ -14,7 +14,7 @@ namespace ListServiceManagement.Controllers
     /// </summary>
     public class ElistOwnerTransfersController : ApiController
     {
-        private ListServiceManagmentContext db = new ListServiceManagmentContext();
+        private ListServiceManagementContext db = new ListServiceManagementContext();
 
         // GET: api/ElistOwnerTransfers
         /// <summary>
@@ -30,7 +30,7 @@ namespace ListServiceManagement.Controllers
 
         // GET: api/ElistOwnerTransfers
         /// <summary>
-        /// Get the list of approved owner list tranfers.
+        /// Get the list of approved owner list transfers.
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "ListServiceOwnerTransferWebAPIReadWrite")]

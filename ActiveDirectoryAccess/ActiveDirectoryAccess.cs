@@ -132,7 +132,7 @@ namespace ActiveDirectoryAccess
         /// </summary>
         /// <param name="DistinguishedName"></param>
         /// <returns></returns>
-        public ActiveDirectoryEntity SearDirectoryByDN(String DistinguishedName)
+        public ActiveDirectoryEntity SearchDirectoryByDN(String DistinguishedName)
         {
             String directorySearchFilter = String.Format("(&(distinguishedName={0}))", DistinguishedName);
             return SearchDirectory(directorySearchFilter, false, null).FirstOrDefault();
@@ -190,16 +190,16 @@ namespace ActiveDirectoryAccess
                     directorySearcher.SizeLimit = 1;
                 }
                 directorySearcher.PageSize = 1000;
-                directorySearcher.ServerPageTimeLimit = TimeSpan.FromSeconds(4);
+                directorySearcher.ServerPageTimeLimit = TimeSpan.FromSeconds(60);
                 directorySearcher.CacheResults = true;
                 directorySearcher.Filter = SearchFilter;
 
-                // Peform the search and save the result.
+                // Perform the search and save the result.
                 SearchResultCollection searchResults = directorySearcher.FindAll();
 
                 if (searchResults.Count > 0) // Save the results to the Dynamic Collection and Return.
                 {
-                    // Peform the search and save the result to the ActiveDirectory Entities Collection.
+                    // Perform the search and save the result to the ActiveDirectory Entities Collection.
                     foreach (SearchResult searchResult in searchResults)
                     {
                         dynamic activeDirectoryEntity = PopulateEntity(searchResult);
@@ -235,7 +235,7 @@ namespace ActiveDirectoryAccess
                         // Peform the search and save the result to the ActiveDirectory Entities Collection.
                         foreach (SearchResult searchResult in searchResults)
                         {
-                            dynamic activeDirectoryEntity = PopulateEntity(searchResult);
+                            dynamic activeDirectoryEntity = (searchResult);
                             activeDirectoryEntities.Add(activeDirectoryEntity);
                         }
                         return activeDirectoryEntities;
@@ -247,6 +247,24 @@ namespace ActiveDirectoryAccess
                 }
             }
         }
+
+        public Boolean CheckGroupMembership(String UserPrincipalName, String GroupName, String Domain)
+        {
+            bool isMember = false;
+
+            PrincipalContext principalContext = new PrincipalContext(ContextType.Domain, Domain);
+            UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(principalContext, UserPrincipalName);
+            GroupPrincipal groupPrincipal = GroupPrincipal.FindByIdentity(principalContext, GroupName);
+
+            if ((userPrincipal != null) && (groupPrincipal != null))
+            {
+                isMember = groupPrincipal.GetMembers(true).Contains(userPrincipal);
+            }
+
+            return isMember;
+        }
+
+
 
         #endregion ---- Public Methods ----
 

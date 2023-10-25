@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -34,7 +35,7 @@ namespace CornellIdentityManagement
 
         #region --- Public Methods ---
 
-        public void GetProvAccounts(String UserPrincipalName)
+        public NetIDProperties GetProvAccounts(String UserPrincipalName)
         {
             Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}", UserPrincipalName.Split('@')[0]));
             CredentialCache myCredentialCache = new CredentialCache();
@@ -53,19 +54,213 @@ namespace CornellIdentityManagement
 
             webResponseStream.Close();
             webResponse.Close();
+
+            NetIDProperties netIDProperties = JsonConvert.DeserializeObject<NetIDProperties>(webRequestResponse);
+            return netIDProperties;
         }
 
         public void EnableFacultyA3(String UserPrincipalName)
         {
+            if (!GetProvAccounts(UserPrincipalName).provision_accts.Contains("office365-a3"))
+            {
+                Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}&action=add&attribute=provision_acct&value=office365-a3", UserPrincipalName.Split('@')[0]));
+                CredentialCache myCredentialCache = new CredentialCache();
+                myCredentialCache.Add(uri, "Basic", networkCredential);
+
+                WebRequest webRequest = HttpWebRequest.Create(uri);
+                webRequest.PreAuthenticate = true;
+                webRequest.Credentials = myCredentialCache;
+                webRequest.Method = "POST";
+
+                try
+                {
+                    WebResponse webResponse = webRequest.GetResponse();
+                    Stream webResponseStream = webResponse.GetResponseStream();
+                    StreamReader streamReader = new StreamReader(webResponseStream, Encoding.Default);
+                    String webRequestResponse = streamReader.ReadToEnd();
+
+                    webResponseStream.Close();
+                    webResponse.Close();
+                }
+                catch (WebException exp)
+                {
+                }
+            }
+        }
+
+        public void DisableFacultyA3(String UserPrincipalName)
+        {
+            if (GetProvAccounts(UserPrincipalName).provision_accts.Contains("office365-a3"))
+            {
+                Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}&action=remove&attribute=provision_acct&value=office365-a3", UserPrincipalName.Split('@')[0]));
+                CredentialCache myCredentialCache = new CredentialCache();
+                myCredentialCache.Add(uri, "Basic", networkCredential);
+
+                WebRequest webRequest = HttpWebRequest.Create(uri);
+                webRequest.PreAuthenticate = true;
+                webRequest.Credentials = myCredentialCache;
+                webRequest.Method = "POST";
+
+                try
+                {
+                    WebResponse webResponse = webRequest.GetResponse();
+                    Stream webResponseStream = webResponse.GetResponseStream();
+                    StreamReader streamReader = new StreamReader(webResponseStream, Encoding.Default);
+                    String webRequestResponse = streamReader.ReadToEnd();
+
+                    webResponseStream.Close();
+                    webResponse.Close();
+                }
+                catch (WebException exp)
+                {
+                }
+            }
+        }
+
+        public void EnableOffice365Exchange(String UserPrincipalName)
+        {
+            Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}&action=add&attribute=provision_acct&value=exchange", UserPrincipalName.Split('@')[0]));
+            CredentialCache myCredentialCache = new CredentialCache();
+            myCredentialCache.Add(uri, "Basic", networkCredential);
+
+            WebRequest webRequest = HttpWebRequest.Create(uri);
+            webRequest.PreAuthenticate = true;
+            webRequest.Credentials = myCredentialCache;
+            webRequest.Method = "POST";
+
+            try
+            {
+                WebResponse webResponse = webRequest.GetResponse();
+                Stream webResponseStream = webResponse.GetResponseStream();
+                StreamReader streamReader = new StreamReader(webResponseStream, Encoding.Default);
+                String webRequestResponse = streamReader.ReadToEnd();
+
+                webResponseStream.Close();
+                webResponse.Close();
+            }
+            catch (WebException exp)
+            {
+            }
+        }
+
+        public void EnableGoogleWorkspaceAccount(String UserPrincipalName)
+        {
+            Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}&action=add&attribute=provision_acct&value=gsuite", UserPrincipalName.Split('@')[0]));
+            CredentialCache myCredentialCache = new CredentialCache();
+            myCredentialCache.Add(uri, "Basic", networkCredential);
+
+            WebRequest webRequest = HttpWebRequest.Create(uri);
+            webRequest.PreAuthenticate = true;
+            webRequest.Credentials = myCredentialCache;
+            webRequest.Method = "POST";
+
+            WebResponse webResponse;
+            try
+            {
+                webResponse = webRequest.GetResponse();
+                Stream webResponseStream = webResponse.GetResponseStream();
+                StreamReader streamReader = new StreamReader(webResponseStream, Encoding.Default);
+                String webRequestResponse = streamReader.ReadToEnd();
+
+                webResponseStream.Close();
+                webResponse.Close();
+            }
+            catch (WebException exp)
+            {
+
+            }
+        }
+
+        public void DisableGoogleWorkspaceAccount(String UserPrincipalName)
+        {
+            Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}&action=remove&attribute=provision_acct&value=gsuite", UserPrincipalName.Split('@')[0]));
+            CredentialCache myCredentialCache = new CredentialCache();
+            myCredentialCache.Add(uri, "Basic", networkCredential);
+
+            WebRequest webRequest = HttpWebRequest.Create(uri);
+            webRequest.PreAuthenticate = true;
+            webRequest.Credentials = myCredentialCache;
+            webRequest.Method = "POST";
+
+            WebResponse webResponse;
+            try
+            {
+                webResponse = webRequest.GetResponse();
+                Stream webResponseStream = webResponse.GetResponseStream();
+                StreamReader streamReader = new StreamReader(webResponseStream, Encoding.Default);
+                String webRequestResponse = streamReader.ReadToEnd();
+
+                webResponseStream.Close();
+                webResponse.Close();
+            }
+            catch (WebException exp)
+            {
+
+            }
+        }
+
+        public void EnableMailRouting(String UserPrincipalName)
+        {
+            if (GetProvAccounts(UserPrincipalName).maildelivery.Contains("norouting"))
+            {
+                Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}&action=remove&attribute=maildelivery&value=norouting", UserPrincipalName.Split('@')[0]));
+                CredentialCache myCredentialCache = new CredentialCache();
+                myCredentialCache.Add(uri, "Basic", networkCredential);
+
+                WebRequest webRequest = HttpWebRequest.Create(uri);
+                webRequest.PreAuthenticate = true;
+                webRequest.Credentials = myCredentialCache;
+                webRequest.Method = "POST";
+
+                try
+                {
+                    WebResponse webResponse = webRequest.GetResponse();
+                    Stream webResponseStream = webResponse.GetResponseStream();
+                    StreamReader streamReader = new StreamReader(webResponseStream, Encoding.Default);
+                    String webRequestResponse = streamReader.ReadToEnd();
+
+                    webResponseStream.Close();
+                    webResponse.Close();
+                }
+                catch (WebException exp)
+                {
+                }
+            }
+        }
+
+        public void DisableMailRouting(String UserPrincipalName)
+        {
+            Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}&action=add&attribute=maildelivery&value=norouting", UserPrincipalName.Split('@')[0]));
+            CredentialCache myCredentialCache = new CredentialCache();
+            myCredentialCache.Add(uri, "Basic", networkCredential);
+
+            WebRequest webRequest = HttpWebRequest.Create(uri);
+            webRequest.PreAuthenticate = true;
+            webRequest.Credentials = myCredentialCache;
+            webRequest.Method = "POST";
+
+            try
+            {
+                WebResponse webResponse = webRequest.GetResponse();
+                Stream webResponseStream = webResponse.GetResponseStream();
+                StreamReader streamReader = new StreamReader(webResponseStream, Encoding.Default);
+                String webRequestResponse = streamReader.ReadToEnd();
+
+                webResponseStream.Close();
+                webResponse.Close();
+            }
+            catch (WebException exp)
+            {
+            }
         }
 
         #endregion --- Public Methods ---
     }
 
-    public class CornellActiveDirectoryProperites
+    public class NetIDProperties
     {
+        String  netid { get; set; }
         public List<String> provision_accts { get; set; }
-
         public List<String> maildelivery { get; set; }
     }
 }

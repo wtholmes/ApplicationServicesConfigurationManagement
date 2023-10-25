@@ -14,7 +14,7 @@ namespace TDXManager
     {
         #region ---- Private Class Properties ----
 
-        private ListServiceManagmentContext context;
+        private ListServiceManagementContext context;
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace TDXManager
             Regex InactiveTicketsRegex = new Regex(@"(Reopened|Resolved|Closed|Canceled)", RegexOptions.IgnoreCase);
 
             // List services management database context.
-            context = new ListServiceManagmentContext();
+            context = new ListServiceManagementContext();
 
             // ------
             // Get the list of tickets from TDX using the Automated E-List Owner Transfer Requests report.

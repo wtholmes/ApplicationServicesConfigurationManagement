@@ -1,9 +1,12 @@
-﻿using CornellIdentityManagement;
+﻿using ActiveDirectoryAccess;
+using CornellIdentityManagement;
 using MicrosoftAzureManager;
 using System;
 using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
+using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using TeamDynamix.Api.Tickets;
@@ -11,19 +14,22 @@ using TeamDynamix.Api.Tickets;
 namespace TDXManager
 {
     /// <summary>
-    /// This derived class reads Office 365 A3 Licnese Requests from TeamDynamix and if
-    /// appropriate assigns an Office 365 Faculty A3 Licnese to the Ticket's Requestor.
+    /// This derived class reads Office 365 A3 License Requests from TeamDynamix and if
+    /// appropriate assigns an Office 365 Faculty A3 License to the Ticket's Requester.
     /// </summary>
     public class RequestOffice365A3LicenseTDXService : TDXTicketManager
     {
         public RequestOffice365A3LicenseTDXService()
         {
-            // Start the Office 365 Licening Manager to Lookup License Usage in Azure.
+            // Create an Active Directory Context.
+            ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext();
+
+            // Start the Office 365 Licensing Manager to Lookup License Usage in Azure.
             Office365LicensingManager office365LicensingManager = new Office365LicensingManager();
 
             // Start a ProvAccounts Manager.
             ProvAccountsManager provAccountsManager = new ProvAccountsManager();
-            
+
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -43,7 +49,7 @@ namespace TDXManager
                     String ticketStatus = ticket.StatusName;
                     if (!InactiveTicketsRegex.IsMatch(ticketStatus))
                     {
-                        // Set the Active Ticket, this sets the scope for all fuctions and methods.
+                        // Set the Active Ticket, this sets the scope for all functions and methods.
                         this.SetActiveTicket(ticket);
 
                         // Get Automation Status Details [TDX Custom Attribute: (S111-AUTOMATIONDETAILS)] in a StringBuilder
@@ -55,22 +61,21 @@ namespace TDXManager
 
                         // ------
                         // Get Automation Status [TDX Custom Attribute: (S111-AUTOMATIONSTATUS)]. The Automation Status Attribute is used
-                        // to direct automation processing. It is intended that it be updated by this class and by TeamDynamix Workflows.
+                        // to direct automation processing. It is intended that it be updated by this class and by TeamDynamix Work-flows.
                         // The standard configuration of TDX forms should not allow for manual updates to (S111-AUTOMATIONSTATUS) unless
                         // every possible state change can be handled by this class or its parent(s). As with allowing manual updates, when
-                        // creating TeamDynamix workflow consideration must be given to setting (S111-AUTOMATIONSTATUS) such that the follow
+                        // creating TeamDynamix work-flow consideration must be given to setting (S111-AUTOMATIONSTATUS) such that the follow
                         // processing steps will run in the desired order or that the processing steps are order independent.
                         // ------
 
                         switch (this.TDXAutomationTicket.AutomationStatus)
                         {
-                            // Initiate Processing of newely submitted tickets.
+                            // Initiate Processing of newly submitted tickets.
                             case null:
                                 {
                                     // Setup the Request Title.
                                     StringBuilder RequestTitle = new StringBuilder("Office 365 License Request for:");
-                                    RequestTitle.AppendFormat(" {0} <{1}>",
-                                        this.TDXAutomationTicket.TicketRequestor.DisplayName,
+                                    RequestTitle.AppendFormat(" {0}",
                                         this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                     // Setup the request Description.
@@ -112,33 +117,37 @@ namespace TDXManager
                             // Automation Processing for INPROCESS Tickets.
                             case var value when value == AUTOMATIONSTATUS.INPROCESS:
                                 {
+                                    Boolean ProvisionBookings = false;
+                                    if (this.TDXAutomationTicket.ServiceOfferingName.Equals("Bookings Access"))
+                                    {
+                                        ProvisionBookings = true;
+                                    }
+
                                     Boolean RequestAllowed = false;
 
-                                    // Is the creator of this ticket equal to the requestor (Target).
+                                    // Is the creator of this ticket equal to the requester (Target).
                                     if (this.TDXAutomationTicket.TicketCreator.UserPrincipalName == this.TDXAutomationTicket.TicketRequestor.UserPrincipalName)
                                     {
-                                        AutomationDetails.AppendFormat(" , [{0}]: The requestor is the creator.   ", DateTime.UtcNow.ToString());
+                                        AutomationDetails.AppendFormat(" , [{0}]: The requester is the creator.   ", DateTime.UtcNow.ToString());
                                         RequestAllowed = true;
                                     }
-                                    // The creator is not the requestor (Target)
+                                    // The creator is not the requester (Target)
                                     else
                                     {
                                         // Update the automation status.
-                                        AutomationDetails.AppendFormat(" , [{0}]: This request was made on behalf of the requestor.", DateTime.UtcNow.ToString());
+                                        AutomationDetails.AppendFormat(" , [{0}]: This request was made on behalf of the requester.", DateTime.UtcNow.ToString());
 
                                         // If the creator is in A3 Delegate (TSP) Group then the request is allowed.
-                                        if (this.TDXAutomationTicket.TicketCreator.MemberOf.Contains("RequestFacultyA3LicenseDelegate"))
+                                        if(activeDirectoryContext.CheckGroupMembership(this.TDXAutomationTicket.TicketCreator.UserPrincipalName, "RequestFacultyA3LicenseDelegate", "cornell"))
+                                        //if (this.TDXAutomationTicket.TicketCreator.MemberOf.Contains("RequestFacultyA3LicenseDelegate"))
                                         {
                                             RequestAllowed = true;
                                         }
-                                        // Request denied as ticket creator equal to the requestor and is not allowed to request on behalf of the customer.
+                                        // Request denied as ticket creator equal to the requester and is not allowed to request on behalf of the customer.
                                         else
                                         {
                                             // Disallow the request.
                                             RequestAllowed = false;
-
-                                            // Assign the cancelled request to L3
-                                            this.UpdateResponsibleGroup(45);
 
                                             // Update the Automation Status and Automation Status Details.
                                             this.UpdateAutomationStatus(AUTOMATIONSTATUS.DECLINED);
@@ -147,60 +156,91 @@ namespace TDXManager
                                                 this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
 
                                             // Update the ticket and notify the customer.
-                                            TicketComments.AppendFormat("{0} {1} is not authorized to request an Office 365 Licnese on your behalf. No changes have been made to your account.",
+                                            TicketComments.AppendFormat("{0} {1} is not authorized to request an Office 365 License on your behalf. No changes have been made to your account.",
                                                 this.TDXAutomationTicket.TicketCreator.DisplayName,
                                                 this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
 
                                             this.NotifyCreator = true;
                                             this.NotifyRequestor = true;
                                             this.UpdateTicket(TicketComments, "Cancelled");
+
+                                            // Assign the cancelled request to L3
+                                            this.UpdateResponsibleGroup(45);
                                         }
                                     }
 
                                     // Does the target already have an Office 365 A3 License?
                                     if (RequestAllowed)
                                     {
-                                        if (this.TDXAutomationTicket.TicketRequestor.ProvAccts.Contains("office365-a3")) // Requestor already has an Office 365 A3 Licnese.
+                                        if (this.TDXAutomationTicket.TicketRequestor.ProvAccts.Contains("office365-a3")) // Requester already has an Office 365 A3 License.
                                         {
-                                            // Disallow the request
-                                            RequestAllowed = false;
+                                            // Bookings has been requested so add the user to the O365-Bookings Licensing Group.
+                                            if (ProvisionBookings)
+                                            {
+                                                try
+                                                {
+                                                    using (PrincipalContext principalContext = new PrincipalContext(ContextType.Domain))
+                                                    {
+                                                        GroupPrincipal group = GroupPrincipal.FindByIdentity(principalContext, "O365-Bookings");
+                                                        group.Members.Add(principalContext, IdentityType.UserPrincipalName, this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                        group.Save();
+                                                    }
+                                                }
+                                                catch (Exception exp)
+                                                {
+                                                    //doSomething with E.Message.ToString(); 
+                                                }
 
-                                            // Assign the cancelled request to L3
-                                            this.UpdateResponsibleGroup(45);
+                                                // Update the Automation Status and Automation Status Details.
+                                                this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
+                                                AutomationDetails.AppendFormat(" , [{0}]: Microsoft Bookings has been provisioned.",
+                                                    DateTime.UtcNow.ToString());
 
-                                            // Update the Automation Status and Automation Status Details.
-                                            this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                            AutomationDetails.AppendFormat(" , [{0}]: The requestor already has an Office 365 A3 License. Their affiliation is: {1}. This request has been cancelled.",
-                                                DateTime.UtcNow.ToString(),
-                                                this.TDXAutomationTicket.TicketRequestor.PrimaryAffiliation);
+                                                // Update the ticket and notify the customer.
+                                                TicketComments.AppendFormat("Your Office 365 Bookings License Request has been approved and is currently being assigned. We will notify you when the license assignment is complete.");
+                                                this.NotifyCreator = true;
+                                                this.NotifyRequestor = true;
+                                                this.UpdateTicket(TicketComments);
+                                            }
+                                            else
+                                            {
+                                                // Disallow the request
+                                                RequestAllowed = false;
 
-                                            // Update the ticket and notify the customer.
-                                            TicketComments.AppendFormat("Your account has already been provisioned with the Office 365 License you have requested. No changes have been made to your account.");
-                                            this.NotifyCreator = true;
-                                            this.NotifyRequestor = true;
-                                            this.UpdateTicket(TicketComments, "Cancelled");
+                                                // Update the Automation Status and Automation Status Details.
+                                                this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
+                                                AutomationDetails.AppendFormat(" , [{0}]: The requester already has an Office 365 A3 License. Their affiliation is: {1}. This request has been cancelled.",
+                                                    DateTime.UtcNow.ToString(),
+                                                    this.TDXAutomationTicket.TicketRequestor.PrimaryAffiliation);
+
+                                                // Update the ticket and notify the customer.
+                                                TicketComments.AppendFormat("Your account has already been provisioned with the Office 365 License you have requested. No changes have been made to your account.");
+                                                this.NotifyCreator = true;
+                                                this.NotifyRequestor = true;
+                                                this.UpdateTicket(TicketComments, "Cancelled");
+
+                                                // Assign the cancelled request to L3
+                                                this.UpdateResponsibleGroup(45);
+                                            }
                                         }
                                     }
 
-                                    // Is the requestor entitled to an Office 365 A3 License.
+                                    // Is the requester entitled to an Office 365 A3 License.
                                     if (RequestAllowed)
                                     {
                                         if (this.TDXAutomationTicket.TicketRequestor.Entitlements.Contains("office365-a3"))
                                         {
                                             RequestAllowed = true;
                                         }
-                                        // Requestor's affiliation does not include the Office 365 A3 License.
+                                        // Requester's affiliation does not include the Office 365 A3 License.
                                         else
                                         {
                                             // Disallow the request.
                                             RequestAllowed = false;
 
-                                            // Assign the cancelled request to L3
-                                            this.UpdateResponsibleGroup(45);
-
                                             // Update the Automation Status and Automation Status Details.
                                             this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                            AutomationDetails.AppendFormat(" , [{0}]: The requestor does not qualify for an Office 365 A3 License. Their affiliation is: {1}. The request has been cancelled.",
+                                            AutomationDetails.AppendFormat(" , [{0}]: The requester does not qualify for an Office 365 A3 License. Their affiliation is: {1}. The request has been cancelled.",
                                                 DateTime.UtcNow.ToString(),
                                                 this.TDXAutomationTicket.TicketRequestor.PrimaryAffiliation);
 
@@ -209,6 +249,9 @@ namespace TDXManager
                                             this.NotifyCreator = true;
                                             this.NotifyRequestor = true;
                                             this.UpdateTicket(TicketComments, "Cancelled");
+
+                                            // Assign the cancelled request to L3
+                                            this.UpdateResponsibleGroup(45);
                                         }
                                     }
 
@@ -231,26 +274,45 @@ namespace TDXManager
                                             // Disallow the request.
                                             RequestAllowed = false;
 
-                                            // Escalate the ticket to (L3).
-                                            this.UpdateResponsibleGroup(45);
-
                                             // Update the Automation Status and Automation Status Details.
                                             this.UpdateAutomationStatus(AUTOMATIONSTATUS.PENDINGAPPROVAL);
-                                            AutomationDetails.AppendFormat(" , [{0}]: There are currently: {1} Office 365 A3 Licenses Available. This request has been assinged to Level 3 support.",
+                                            AutomationDetails.AppendFormat(" , [{0}]: There are currently: {1} Office 365 A3 Licenses Available. This request has been assigned to Level 3 support.",
                                                 DateTime.UtcNow.ToString(),
                                                 office365Subscription.AvailableUnits);
- 
+
                                             // Update the ticket and notify the customer.
-                                            TicketComments.AppendFormat("There are currently insufficient Office 365 Licneses available. Automated license assignment is suspended. To fullfill this request the licnese will need to be manually assinged.");
+                                            TicketComments.AppendFormat("There are currently insufficient Office 365 Licenses available. Automated license assignment is suspended. To fulfill this request the license will need to be manually assigned.");
                                             this.NotifyCreator = false;
                                             this.NotifyRequestor = false;
                                             this.UpdateTicket(TicketComments, "In Process", true);
+
+                                            // Escalate the ticket to (L3).
+                                            this.UpdateResponsibleGroup(45);
                                         }
                                     }
 
                                     // This is a valid request so we can assign the ENTERPRISEPACKPLUS_FACULTY (A3) to the customer.
                                     if (RequestAllowed)
                                     {
+                                        // Bookings has been requested so add the user to the O365-Bookings Licensing Group.
+                                        if (ProvisionBookings)
+                                        {
+                                            try
+                                            {
+                                                using (PrincipalContext principalContext = new PrincipalContext(ContextType.Domain))
+                                                {
+                                                    GroupPrincipal group = GroupPrincipal.FindByIdentity(principalContext, "O365-Bookings");
+                                                    group.Members.Add(principalContext, IdentityType.UserPrincipalName, this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                    group.Save();
+                                                    TicketComments.AppendFormat("Microsoft Bookings has been added to your account. ");
+                                                }
+                                            }
+                                            catch (Exception exp)
+                                            {
+                                                
+                                            }
+                                        }
+
                                         // Update the Automation Status and Automation Status Details.
                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
                                         AutomationDetails.AppendFormat(" , [{0}]: An Office 365 ENTERPRISEPACKPLUS_FACULTY (A3) is being assigned.",
@@ -288,47 +350,66 @@ namespace TDXManager
                                     // If the license has been successfully assigned then resolve the request.
                                     if (office365Subscription != null)
                                     {
-                                        // Assign the resolved ticket to (L3).
-                                        this.UpdateResponsibleGroup(45);
-
                                         // Update the Automation Status and Automation Status Details.
                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.COMPLETE);
                                         AutomationDetails.AppendFormat(" , [{0}]: Office License Successfully Assigned.",
                                             DateTime.UtcNow.ToString());
-                                
+
                                         // Update the ticket and notify the customer.
                                         TicketComments.AppendFormat("The requested Office 365 License has been successfully assigned to your account. We are resolving this request.");
                                         this.NotifyCreator = true;
                                         this.NotifyRequestor = true;
                                         this.UpdateTicket(TicketComments, "Resolved");
-                                    }
 
+                                        // Assign the resolved ticket to (L3).
+                                        this.UpdateResponsibleGroup(45);
+                                    }
                                     break;
                                 }
                             // Automation Processing for COMPLETE Tickets.
                             case var value when value == AUTOMATIONSTATUS.COMPLETE:
                                 {
-                                    // No actions required for this automation state.
+                                    if (ticket.ResponsibleGroupID != 45)
+                                    {
+                                        // Escalate the ticket to (L3).
+                                        this.UpdateResponsibleGroup(45);
+                                    }
                                     break;
                                 }
                             // Automation Processing for CANCELED Tickets.
                             case var value when value == AUTOMATIONSTATUS.CANCELED:
                                 {
-                                    // No actions requrired for the automation state.
+                                    if (ticket.ResponsibleGroupID != 45)
+                                    {
+                                        // Escalate the ticket to (L3).
+                                        this.UpdateResponsibleGroup(45);
+                                    }
                                     break;
                                 }
                             // Automation Processing for DECLINED Tickets.
                             case var value when value == AUTOMATIONSTATUS.DECLINED:
                                 {
-                                    // No Actions required for this automation state.
+                                    if(ticket.ResponsibleGroupID != 45)
+                                    {
+                                        // Escalate the ticket to (L3).
+                                        this.UpdateResponsibleGroup(45);
+                                    }
+
                                     break;
                                 }
                             default:
                                 break;
-                        }
 
+                        }
                         // Update the Automation Status Details [TDX Custom Attribute: (S111-AUTOMATIONSTATUSDETAILS)]
                         this.UpdateAutomationStatusDetails(AutomationDetails);
+                        String logfile = String.Format(".\\LogFiles\\{0}_FacultyA3LicensingAutomation.log", DateTime.UtcNow.ToString("yyyyMMdd_hh"));
+                        using (StreamWriter streamWriter = new StreamWriter(logfile, true))
+                        {
+                            streamWriter.WriteLine("\n[{0}] Processing Office 365 A3 License Request For: {1}", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                            streamWriter.WriteLine("TDX Request: {0}", this.TDXAutomationTicket.ID);
+                            streamWriter.WriteLine(AutomationDetails.ToString());
+                        }
                     }
                 }
             }

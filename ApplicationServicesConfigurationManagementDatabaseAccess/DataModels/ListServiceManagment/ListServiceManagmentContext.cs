@@ -1,3 +1,5 @@
+// Ignore Spelling: Elist
+
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,16 +10,16 @@ using System.Text.RegularExpressions;
 namespace ListServiceManagement.Models
 {
     /// <summary>
-    ///     List Service Mangagement Database Context
+    ///     List Service Management Database Context
     /// </summary>
-    public partial class ListServiceManagmentContext : DbContext
+    public partial class ListServiceManagementContext : DbContext
     {
         /// <summary>
-        /// List Service Mangement Deatabase Context Constructor
+        /// List Service Management Database Context Constructor
         /// </summary>
-        public ListServiceManagmentContext() : base("name=ListServiceManagement")
+        public ListServiceManagementContext() : base("name=ListServiceManagement")
         {
-            Database.SetInitializer<ListServiceManagmentContext>(new ListServiceManagmentDBInitializer());
+            Database.SetInitializer<ListServiceManagementContext>(new ListServiceManagmentDBInitializer());
         }
 
         /// <summary>
@@ -51,13 +53,13 @@ namespace ListServiceManagement.Models
         /// <summary>
         ///
         /// </summary>
-        public class ListServiceManagmentDBInitializer : CreateDatabaseIfNotExists<ListServiceManagmentContext>
+        public class ListServiceManagmentDBInitializer : CreateDatabaseIfNotExists<ListServiceManagementContext>
         {
             /// <summary>
             ///
             /// </summary>
             /// <param name="context"></param>
-            protected override void Seed(ListServiceManagmentContext context)
+            protected override void Seed(ListServiceManagementContext context)
             {
                 List<String> HistoryTableTriggers = new List<String>() { "ElistContact", "ElistOwnerTransfer" };
                 foreach (String HistoryTableTrigger in HistoryTableTriggers)
