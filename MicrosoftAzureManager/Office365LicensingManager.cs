@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 
 namespace MicrosoftAzureManager
 {
@@ -194,8 +196,8 @@ namespace MicrosoftAzureManager
 
         public MicrosoftGraphManager()
         {
-            X509Certificate2 x509Certificate2 = new X509Certificate2();
-            x509Certificate2.Import(CertificateFile);
+
+            X509Certificate2 x509Certificate2 = new X509Certificate2(CertificateFile);
 
             Scopes = new string[] { "https://graph.microsoft.com/.default" };
 
@@ -203,11 +205,12 @@ namespace MicrosoftAzureManager
                     .Create(ApplicationID)
                     .WithTenantId(TennantID)
                     .WithCertificate(x509Certificate2)
+                    .WithAuthority(AadAuthorityAudience.AzureAdMyOrg, true)
                     .Build();
 
             graphServiceClient = new GraphServiceClient(new DelegateAuthenticationProvider(async (requestMessage) =>
             {
-            // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
+                // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
 
                 AuthenticationResult authenticationResult = await confidentialClientApplication
                         .AcquireTokenForClient(Scopes)
@@ -218,37 +221,106 @@ namespace MicrosoftAzureManager
             }));
         }
 
-  
-
-        public async void GetGroupMembers(String GroupID)
+        /// <summary>
+        /// Get Group Members using the GroupID
+        /// </summary>
+        /// <param name="GroupID">The Group's ID</param>
+        /// <returns></returns>
+        public List<String> GetGroupMembers(String GroupID)
         {
+            List<String> GroupMembers = new List<String>();
             try
             {
                 try
                 {
-                    var result = await graphServiceClient.Groups["{1590ba97-d5c7-4b76-bef4-39d2c75f51ea}"].Members.Request().GetAsync();
+                    var result = graphServiceClient.Groups[GroupID].Members.Request().GetAsync().Result;
                     do
                     {
-                        foreach (var user in result)
+                        foreach (var groupMember in result)
                         {
-                            Console.WriteLine($"{user.Id}");
+                            GroupMembers.Add(groupMember.Id);
                         }
                     }
-                    while (result.NextPageRequest != null && (result = await result.NextPageRequest.GetAsync()).Count > 0);
-
+                    while (result.NextPageRequest != null && (result = result.NextPageRequest.GetAsync().Result).Count > 0);
+                    return GroupMembers;
                 }
                 catch
                 {
-
-                    throw;
+                    return null;
                 }
             }
-            catch(Exception exp)
+            catch (Exception exp)
             {
-
+                return null;
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="GroupID"></param>
+        /// <param name="MemberID"></param>
+        public void AddGroupMember(String GroupID, String MemberID)
+        {
+            List<String> CurrentGroupMembers = GetGroupMembers(GroupID);
+            if (!CurrentGroupMembers.Contains(MemberID))
+            {
+                var requestBody = new Group
+                {
+                    AdditionalData = new Dictionary<string, object>
+                {
+                    {
+                        "members@odata.bind" , new List<string>
+                        {
+                            String.Format("https://graph.microsoft.com/v1.0/directoryObjects/{0}", MemberID)
+                        }
+                    },
+                },
+                };
+                try
+                {
+                    var result = graphServiceClient.Groups[GroupID].Request().UpdateAsync(requestBody).Result;
+                }
+                catch (Exception exp)
+                {
+
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Find the User's ID using the given search string.
+        /// </summary>
+        /// <param name="SearchString"></param>
+        /// <returns></returns>
+        public String GetUser(String SearchString)
+        {
+            User user = null;
+            try
+            {
+                user = graphServiceClient
+                    .Users[SearchString]
+                    .Request()
+                    .GetAsync().Result;
+                if (user != null)
+                {
+                    return user.Id;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the list of Office365 Subscriptions
+        /// </summary>
         public void GetOffice365Subscriptions()
         {
             Office365Subscriptions = new List<Office365Subscription>();
@@ -283,6 +355,7 @@ namespace MicrosoftAzureManager
                 Office365Subscriptions.Add(office365Subscription);
             }
         }
+
         public class Office365Subscription
         {
             public Office365Subscription()

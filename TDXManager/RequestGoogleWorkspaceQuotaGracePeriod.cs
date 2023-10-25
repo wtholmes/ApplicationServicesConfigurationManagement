@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using MicrosoftAzureManager;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,6 +19,9 @@ namespace TDXManager
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+
+            // Start a new Microsoft Graph Manager
+            MicrosoftGraphManager microsoftGraphManager = new MicrosoftGraphManager();
 
             // Inactive Ticket Statuses
             Regex InactiveTicketsRegex = new Regex(@"(Reopened|Resolved|Closed|Canceled)", RegexOptions.IgnoreCase);
@@ -151,10 +155,10 @@ namespace TDXManager
                                             AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Quota Grace Period is allowed and is being processed.",
                                                 DateTime.UtcNow.ToString());
 
-
-                                            //TODO:  Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
-
-
+                                            //Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
+                                            String GroupID = "1590ba97-d5c7-4b76-bef4-39d2c75f51ea";
+                                            String MemberID = microsoftGraphManager.GetUser(this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
+                                            microsoftGraphManager.AddGroupMember(GroupID, MemberID);
                                         }
                                         else
                                         {
