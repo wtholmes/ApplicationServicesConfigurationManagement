@@ -27,7 +27,7 @@ using TeamDynamix.Api.Users;
 
 namespace TDXManager
 {
-    public partial class TDXTicketManager
+    public class TDXTicketManager
     {
         #region ---- Private Class Properties ----
 
@@ -659,10 +659,11 @@ namespace TDXManager
         /// <summary>
         /// Get the list of tickets using the specified forms and requesters.
         /// </summary>
-        /// <param name="RequestorIDs">The list of Requestors IDs</param>
+        /// <param name="RequestorIDs">The list of Requesters IDs</param>
         /// <param name="FormIDs">The list of FormIDs</param>
         public void GetAllRequestorTicketsByForm(Guid[] RequestorIDs, Int32[] FormIDs)
         {
+            AllRequestorTickets.Clear();
             if (RequestorIDs != null)
             {
                 if (oHttpClientX != null)
@@ -684,7 +685,10 @@ namespace TDXManager
                                 Object deserializedObject = JsonConvert.DeserializeObject<List<Ticket>>(httpResponseMessageContent);
                                 if (deserializedObject != null)
                                 {
-                                    AllRequestorTickets.AddRange((List<Ticket>)deserializedObject);
+                                    foreach(Ticket ticket in (List<Ticket>)deserializedObject)
+                                    {
+                                        AllRequestorTickets.Add(GetTicketByID(ticket.ID));
+                                    }
                                 }
                             }
                         }

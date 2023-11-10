@@ -5,10 +5,12 @@ using System.IO;
 using System.Linq;
 using MicrosoftAzureManager;
 using System.Reflection;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using TeamDynamix.Api.Tickets;
 using TeamDynamix.Api.Users;
+using TeamDynamix.Api.Forms;
 
 namespace TDXManager
 {
@@ -111,87 +113,105 @@ namespace TDXManager
                                         if (this.TDXAutomationTicket.TicketCreator.UserPrincipalName == this.TDXAutomationTicket.TicketRequestor.UserPrincipalName)
                                         {
                                             //AutomationDetails.AppendFormat(" , [{0}]: The requester is the creator.   ", DateTime.UtcNow.ToString());
-                                            
-                                            // Check the current Google Directory OU for this customer
-                                            GoogleWorkspaceUser googleWorkspaceUser = googleDirectoryManager.GetGoogleUser(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
-                                            if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"/PendingDeletion/Stage1", RegexOptions.IgnoreCase))
+                                            // Check if a request has already been completed for this user and form.
+                                            User requestingUser = this.GetTDXUserByUserPrincipalName(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                            Form requestForm = this.TDXTicketForms.Where(f => f.Name.Equals("Google Workspace Account Reinstatement Grace Period")).FirstOrDefault();
+                                            this.GetAllRequestorTicketsByForm(new Guid[] { requestingUser.UID }, new Int32[] { requestForm.ID });
+                                            List<Ticket> PreviouslyCompletedRequests = (from t in this.AllRequestorTickets
+                                                                                        from attribute in t.Attributes
+                                                                                        where attribute.Name.Equals("S111-AUTOMATIONSTATUS") 
+                                                                                        && attribute.ValueText.Equals("COMPLETE")
+                                                                                        select ticket).ToList();
+
+                                            if (PreviouslyCompletedRequests.Count.Equals(0))
                                             {
-                                                // Update the Automation Status and Automation Status Details.
-                                                this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
-                                                AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Account is eligible for reinstatement. Adding this user to the reinstatement Group",
-                                                    DateTime.UtcNow.ToString());
+                                                // Check the current Google Directory OU for this customer
+                                                GoogleWorkspaceUser googleWorkspaceUser = googleDirectoryManager.GetGoogleUser(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
-                                                //Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
-                                                String GroupID = "90f484a5-6029-4460-902c-4f6c89f39dd8";
-                                                String MemberID = microsoftGraphManager.GetUser(this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
-                                                microsoftGraphManager.AddGroupMember(GroupID, MemberID);
+                                                if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"/PendingDeletion/Stage1", RegexOptions.IgnoreCase))
+                                                {
+                                                    // Update the Automation Status and Automation Status Details.
+                                                    this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
+                                                    AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Account is eligible for reinstatement. Adding this user to the reinstatement Group",
+                                                        DateTime.UtcNow.ToString());
 
+                                                    //Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
+                                                    String GroupID = "90f484a5-6029-4460-902c-4f6c89f39dd8";
+                                                    String MemberID = microsoftGraphManager.GetUser(this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
+                                                    microsoftGraphManager.AddGroupMember(GroupID, MemberID);
+
+                                                }
+                                                else if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"/PendingDeletion/Stage2", RegexOptions.IgnoreCase))
+                                                {
+                                                    this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
+                                                    AutomationDetails.AppendFormat(" , [{0}]: {1} is no longer eligible for reinstatement. The request has been cancelled.",
+                                                        DateTime.UtcNow.ToString(),
+                                                        this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+
+                                                    // Update the ticket and notify the customer.
+                                                    TicketComments.AppendFormat("Your Google Workspace Account is no longer eligible for reinstatement. This request has been cancelled",
+                                                        this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+
+                                                    this.NotifyCreator = true;
+                                                    this.NotifyRequestor = true;
+                                                    this.UpdateTicket(TicketComments, "Cancelled");
+                                                }
+                                                else
+                                                {
+                                                    if (this.TDXAutomationTicket.TicketRequestor.ProvAccts.Contains("gsuite"))
+                                                    {
+                                                        this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
+                                                        AutomationDetails.AppendFormat(" , [{0}]: {1} is not yet eligible for reinstatement. The account is not currently disabled. The request has been cancelled.",
+                                                            DateTime.UtcNow.ToString(),
+                                                            this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+
+                                                        // Update the ticket and notify the customer.
+                                                        TicketComments.AppendFormat("Your Google Workspace Account is not yet eligible for reinstatement. Your account is not currently disabled. This request has been cancelled.",
+                                                            this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                    }
+                                                    else
+                                                    {
+                                                        if (this.TDXAutomationTicket.CreatedDate < DateTime.Now.AddDays(-3))
+                                                        {
+                                                            this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
+                                                            AutomationDetails.AppendFormat(" , [{0}]: {1} is missing the GSuite value in cornelleduProvAccounts but has not yet started the de-provisioning process.",
+                                                                DateTime.UtcNow.ToString(),
+                                                                this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+
+                                                            // Update the ticket and notify the customer.
+                                                            TicketComments.AppendFormat("A time out has occurred processing your request. Please respond back to this ticket so we may investigate the issue.",
+                                                                this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                        }
+                                                    }
+
+                                                }
                                             }
-                                            else if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"/PendingDeletion/Stage2", RegexOptions.IgnoreCase))
+                                            else
                                             {
+                                                // Assign the cancelled request to L3
+                                                this.UpdateResponsibleGroup(45);
+
+                                                // Update the Automation Status and Automation Status Details.
                                                 this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                AutomationDetails.AppendFormat(" , [{0}]: {1} is no longer eligible for reinstatement. The request has been cancelled.",
+                                                AutomationDetails.AppendFormat(" , [{0}]: The creator {1} is not allowed to request to reinstatement of your Google Workspace Account on behalf of. The request has been cancelled.",
                                                     DateTime.UtcNow.ToString(),
-                                                    this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                    this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
 
                                                 // Update the ticket and notify the customer.
-                                                TicketComments.AppendFormat("Your Google Workspace Account is no longer eligible for reinstatement. This request has been cancelled",
-                                                    this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                TicketComments.AppendFormat("{0} {1} is not authorized to request to request to reinstatement of your Google Workspace Account on your behalf. You must make these requests directly. No changes have been made to your account.",
+                                                    this.TDXAutomationTicket.TicketCreator.DisplayName,
+                                                    this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
 
                                                 this.NotifyCreator = true;
                                                 this.NotifyRequestor = true;
                                                 this.UpdateTicket(TicketComments, "Cancelled");
                                             }
-                                            else
-                                            {
-                                                if(this.TDXAutomationTicket.TicketRequestor.ProvAccts.Contains("gsuite"))
-                                                {
-                                                    this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                    AutomationDetails.AppendFormat(" , [{0}]: {1} is not yet eligible for reinstatement. The account is not currently disabled. The request has been cancelled.",
-                                                        DateTime.UtcNow.ToString(),
-                                                        this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
-
-                                                    // Update the ticket and notify the customer.
-                                                    TicketComments.AppendFormat("Your Google Workspace Account is not yet eligible for reinstatement. Your account is not currently disabled. This request has been cancelled.",
-                                                        this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
-                                                }
-                                                else 
-                                                {
-                                                    if(this.TDXAutomationTicket.CreatedDate < DateTime.Now.AddDays(-3))
-                                                    {
-                                                        this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                        AutomationDetails.AppendFormat(" , [{0}]: {1} is missing the GSuite value in cornelleduProvAccounts but has not yet started the de-provisioning process.",
-                                                            DateTime.UtcNow.ToString(),
-                                                            this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
-
-                                                        // Update the ticket and notify the customer.
-                                                        TicketComments.AppendFormat("A time out has occurred processing your request. Please respond back to this ticket so we may investigate the issue.",
-                                                            this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
-                                                    }
-                                                }
-
-                                            }
                                         }
                                         else
                                         {
-                                            // Assign the cancelled request to L3
-                                            this.UpdateResponsibleGroup(45);
-
-                                            // Update the Automation Status and Automation Status Details.
-                                            this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                            AutomationDetails.AppendFormat(" , [{0}]: The creator {1} is not allowed to request to reinstatement of your Google Workspace Account on behalf of. The request has been cancelled.",
-                                                DateTime.UtcNow.ToString(),
-                                                this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
-
-                                            // Update the ticket and notify the customer.
-                                            TicketComments.AppendFormat("{0} {1} is not authorized to request to request to reinstatement of your Google Workspace Account on your behalf. You must make these requests directly. No changes have been made to your account.",
-                                                this.TDXAutomationTicket.TicketCreator.DisplayName,
-                                                this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
-
-                                            this.NotifyCreator = true;
-                                            this.NotifyRequestor = true;
-                                            this.UpdateTicket(TicketComments, "Cancelled");
+                                            // Customer has exceeded the maximum number of allowed requests.
+                                            this.UpdateAutomationStatus(AUTOMATIONSTATUS.DECLINED);
                                         }
                                         break;
                                     }
