@@ -48,7 +48,7 @@ namespace GoogleWorkspaceManager
 
         #endregion --- Private Properties ---
 
-        #region --- Constructors & Finalaizers ---
+        #region --- Constructors & Finalizes ---
 
         /// <summary>
         /// Default Class Constructor
@@ -62,7 +62,7 @@ namespace GoogleWorkspaceManager
             });
         }
 
-        #endregion --- Constructors & Finalaizers ---
+        #endregion --- Constructors & Finalizes ---
 
         #region --- Public Methods ---
 
