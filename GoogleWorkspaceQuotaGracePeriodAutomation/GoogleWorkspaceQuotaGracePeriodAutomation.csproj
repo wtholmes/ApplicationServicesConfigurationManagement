@@ -79,6 +79,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GoogleWorkspaceManager\GoogleWorkspaceManager.csproj">
+      <Project>{567bd02f-e9b1-4732-bae7-34c5b33ade79}</Project>
+      <Name>GoogleWorkspaceManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TDXManager\TeamDynamixManager.csproj">
       <Project>{84d0c77c-d9b6-4bd0-8895-16ce8c53706e}</Project>
       <Name>TeamDynamixManager</Name>

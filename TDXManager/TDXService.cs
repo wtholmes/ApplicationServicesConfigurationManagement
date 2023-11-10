@@ -1,4 +1,6 @@
-﻿using ActiveDirectoryAccess;
+﻿// Ignore Spelling: Requestor
+
+using ActiveDirectoryAccess;
 using ApplicationServicesConfigurationManagementDatabaseAccess;
 using Marvin.JsonPatch;
 using Marvin.JsonPatch.Dynamic;
@@ -66,6 +68,7 @@ namespace TDXManager
         public List<TDXDomainUser> TDXDomainUsers { get; private set; }
 
         public List<Form> TDXTicketForms { get; private set; }
+        public List<Ticket> AllRequestorTickets { get; private set; } = new List<Ticket>();
 
         public List<Exception> Exceptions { get; private set; }
 
@@ -650,6 +653,47 @@ namespace TDXManager
             catch (Exception exp)
             {
                 Exceptions.Add(exp);
+            }
+        }
+
+        /// <summary>
+        /// Get the list of tickets using the specified forms and requesters.
+        /// </summary>
+        /// <param name="RequestorIDs">The list of Requestors IDs</param>
+        /// <param name="FormIDs">The list of FormIDs</param>
+        public void GetAllRequestorTicketsByForm(Guid[] RequestorIDs, Int32[] FormIDs)
+        {
+            if (RequestorIDs != null)
+            {
+                if (oHttpClientX != null)
+                {
+                    try
+                    {
+
+                        String ApiUri = String.Format("{0}/tickets/search", ApplicationID);
+                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, ApiUri);
+                        String TicketSearch = JsonConvert.SerializeObject(new TicketSearch() { RequestorUids = RequestorIDs, FormIDs = FormIDs });
+                        request.Content = new StringContent(TicketSearch, Encoding.UTF8, "application/json");
+
+                        HttpResponseMessage httpResponseMessage = oHttpClientX.SendAsync(request).Result;
+                        if (httpResponseMessage.IsSuccessStatusCode)
+                        {
+                            String httpResponseMessageContent = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                            if (httpResponseMessageContent != null)
+                            {
+                                Object deserializedObject = JsonConvert.DeserializeObject<List<Ticket>>(httpResponseMessageContent);
+                                if (deserializedObject != null)
+                                {
+                                    AllRequestorTickets.AddRange((List<Ticket>)deserializedObject);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Exceptions.Add(ex);
+                    }
+                }
             }
         }
 

@@ -79,6 +79,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMicrosoftGraphManager",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Office365SafeLinksOptOutAutomation", "Office365SafeLinksOptOutAutomation\Office365SafeLinksOptOutAutomation.csproj", "{C7AA8427-6582-4D53-A11A-D4D6351CC721}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleWorkspaceManager", "GoogleWorkspaceManager\GoogleWorkspaceManager.csproj", "{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleWorkspaceAccountReinstatementAutomation", "GoogleWorkspaceAccountReinstatementAutomation\GoogleWorkspaceAccountReinstatementAutomation.csproj", "{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -327,6 +331,22 @@ Global
 		{C7AA8427-6582-4D53-A11A-D4D6351CC721}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7AA8427-6582-4D53-A11A-D4D6351CC721}.Release|x64.ActiveCfg = Release|Any CPU
 		{C7AA8427-6582-4D53-A11A-D4D6351CC721}.Release|x64.Build.0 = Release|Any CPU
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}.Debug|x64.Build.0 = Debug|Any CPU
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}.Release|x64.ActiveCfg = Release|Any CPU
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79}.Release|x64.Build.0 = Release|Any CPU
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}.Debug|x64.Build.0 = Debug|Any CPU
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}.Release|x64.ActiveCfg = Release|Any CPU
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -362,6 +382,8 @@ Global
 		{75B8543E-B0F6-4828-A16D-0D7CC5691EC6} = {2BF1BD10-E7CE-4862-918B-A3FB630CA42D}
 		{D5FD1B9C-D82E-444B-9157-8CFA51A8EF4C} = {D85BDCC6-FA5A-4A09-8706-A0171F71F393}
 		{C7AA8427-6582-4D53-A11A-D4D6351CC721} = {2BF1BD10-E7CE-4862-918B-A3FB630CA42D}
+		{567BD02F-E9B1-4732-BAE7-34C5B33ADE79} = {6FBB92EA-9156-4E94-8177-9E8C96C74694}
+		{CCC69732-4234-4D1E-ACD0-3E905EF04C7F} = {2BF1BD10-E7CE-4862-918B-A3FB630CA42D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D674A524-3B40-404D-9C5A-0F0246579204}

@@ -15,7 +15,7 @@ namespace ProvisionElistContacts
         private static void Main(string[] args)
         {
             Boolean ProvisionContacts = true;
-            Boolean DeltaSync = true;
+            Boolean DeltaSync = false;
             Boolean Unsynced = false;
 
             ListServiceManagementContext context = new ListServiceManagementContext();
@@ -31,14 +31,15 @@ namespace ProvisionElistContacts
                     // This is the default Guid when a new database entry is created.
                     List<ElistContact> elistContacts;
 
+                    Guid NonSyncedGuid = Guid.Parse("00000000-0000-0000-0000-000000000000");
                     if (DeltaSync)
                     {
-                        DateTime UpdateSince = DateTime.UtcNow.AddSeconds(new TimeSpan(24, 0, 0).TotalSeconds * -1);
-                        elistContacts = context.ElistContacts.Where(c => c.WhenModified > UpdateSince).ToList();
+                        DateTime UpdateSince = DateTime.UtcNow.AddSeconds(new TimeSpan(24*7, 0, 0).TotalSeconds * -1);
+                        elistContacts = context.ElistContacts.Where(c => c.WhenModified > UpdateSince && 
+                        c.ListContactDirectory_Id == NonSyncedGuid).ToList();
                     }
                     else if (Unsynced)
                     {
-                        Guid NonSyncedGuid = Guid.Parse("00000000-0000-0000-0000-000000000000");
                         elistContacts = context.ElistContacts.Where(c => c.ListContactDirectory_Id == NonSyncedGuid).ToList();
                     }
                     else
@@ -177,10 +178,6 @@ namespace ProvisionElistContacts
                     }
 
                     // E-list Contact De-provisioning...
-
-
-
-
                 }
                 catch (Exception exp)
                 {
