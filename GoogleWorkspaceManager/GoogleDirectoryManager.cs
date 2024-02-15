@@ -114,27 +114,29 @@ namespace GoogleWorkspaceManager
                     request.MaxResults = 10;
                     request.OrderBy = GSuiteDirectory.UsersResource.ListRequest.OrderByEnum.Email;
                     IList<User> users = request.Execute().UsersValue;
-
-                    if (users.Count == 1)
+                    if (users != null)
                     {
-                        // Check for an expired cached user.
-                        cachedUser = CachedUsers.Where(u => u.Emails.Select(n => n.Address).Contains(EmailAddress)).FirstOrDefault();
-                        if (cachedUser != null)
+                        if (users.Count == 1)
                         {
-                            // Remove the expired cached user
-                            //Console.WriteLine("Removing Expired Cached User");
-                            CachedUsers.Remove(cachedUser);
+                            // Check for an expired cached user.
+                            cachedUser = CachedUsers.Where(u => u.Emails.Select(n => n.Address).Contains(EmailAddress)).FirstOrDefault();
+                            if (cachedUser != null)
+                            {
+                                // Remove the expired cached user
+                                //Console.WriteLine("Removing Expired Cached User");
+                                CachedUsers.Remove(cachedUser);
+                            }
+                            // Trim the cache if it has exceeded the max count
+                            if (CachedUsers.Count >= UserCacheSize)
+                            {
+                                if (CachedUsers.Count > 0) { CachedUsers.RemoveAt(0); }
+                            }
+                            // Cache and return the new/updated user
+                            //Console.WriteLine("Returning User from Google Workspace Directory and Caching");
+                            cachedUser = new CachedUser(users.First());
+                            if (UserCacheSize > 0) { CachedUsers.Add(cachedUser); }
+                            return PopulateGoogleWorkspaceUser(cachedUser);
                         }
-                        // Trim the cache if it has exceeded the max count
-                        if (CachedUsers.Count >= UserCacheSize)
-                        {
-                            if (CachedUsers.Count > 0) { CachedUsers.RemoveAt(0); }
-                        }
-                        // Cache and return the new/updated user
-                        //Console.WriteLine("Returning User from Google Workspace Directory and Caching");
-                        cachedUser = new CachedUser(users.First());
-                        if (UserCacheSize > 0) { CachedUsers.Add(cachedUser); }
-                        return PopulateGoogleWorkspaceUser(cachedUser);
                     }
                 }
             }

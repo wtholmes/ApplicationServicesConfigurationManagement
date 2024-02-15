@@ -15,7 +15,7 @@ namespace ProvisionElistContacts
         private static void Main(string[] args)
         {
             Boolean ProvisionContacts = true;
-            Boolean DeltaSync = false;
+            Boolean DeltaSync = true;
             Boolean Unsynced = false;
 
             ListServiceManagementContext context = new ListServiceManagementContext();
@@ -35,8 +35,7 @@ namespace ProvisionElistContacts
                     if (DeltaSync)
                     {
                         DateTime UpdateSince = DateTime.UtcNow.AddSeconds(new TimeSpan(24*7, 0, 0).TotalSeconds * -1);
-                        elistContacts = context.ElistContacts.Where(c => c.WhenModified > UpdateSince && 
-                        c.ListContactDirectory_Id == NonSyncedGuid).ToList();
+                        elistContacts = context.ElistContacts.Where(c => c.WhenModified > UpdateSince).ToList();
                     }
                     else if (Unsynced)
                     {
@@ -116,7 +115,7 @@ namespace ProvisionElistContacts
                                                     CurrentContactExternalEmailAddress = searchResults[0].Properties["targetAddress"][0].ToString().Split(':')[1];
                                                 }
 
-                                                // Check if the expected target email address is differnt than the current target address and if so update the contact.
+                                                // Check if the expected target email address is different than the current target address and if so update the contact.
                                                 if (!ExpectedContactExternalEmailAddress.Equals(CurrentContactExternalEmailAddress, StringComparison.OrdinalIgnoreCase))
                                                 {
                                                     Console.WriteLine("--- Updating External Email Address to: {0}", ExpectedContactExternalEmailAddress);

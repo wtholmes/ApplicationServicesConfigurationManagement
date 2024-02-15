@@ -11,11 +11,14 @@ namespace CornellIdentityManagement
     {
         #region --- Private Properties ---
 
-        private NetworkCredential networkCredential;
+        private NetworkCredential networkCredential = new NetworkCredential("messaging", "P7P7Hij*SvmAC9=e(bPqpcaROnUFZKDfl9$NXqD1");
+        private String BaseURI = "https://idmws.cit.cornell.edu";
 
         #endregion --- Private Properties ---
 
         #region --- Public Properties ---
+
+        public Boolean Test { get; set; } = false;
 
         public List<String> CornelleduProvAccts { get; private set; }
 
@@ -24,20 +27,25 @@ namespace CornellIdentityManagement
         #endregion --- Public Properties ---
 
         #region --- Class Constructors
-
         public ProvAccountsManager()
         {
+
+
             // Create a network credential to access the web service.
-            networkCredential = new NetworkCredential("messaging", "P7P7Hij*SvmAC9=e(bPqpcaROnUFZKDfl9$NXqD1");
+            //networkCredential = new NetworkCredential("messaging", "P7P7Hij*SvmAC9=e(bPqpcaROnUFZKDfl9$NXqD1");
         }
 
         #endregion --- Class Constructors
 
         #region --- Public Methods ---
+        public void UseTest()
+        {
+            BaseURI = "https://idmws-test.cit.cornell.edu";
+        }
 
         public NetIDProperties GetProvAccounts(String UserPrincipalName)
         {
-            Uri uri = new Uri(String.Format("https://idmws.cit.cornell.edu/provacctsws/?netid={0}", UserPrincipalName.Split('@')[0]));
+            Uri uri = new Uri(String.Format("{0}/provacctsws/?netid={1}", BaseURI, UserPrincipalName.Split('@')[0]));
             CredentialCache myCredentialCache = new CredentialCache();
             myCredentialCache.Add(uri, "Basic", networkCredential);
 
@@ -259,7 +267,7 @@ namespace CornellIdentityManagement
 
     public class NetIDProperties
     {
-        String  netid { get; set; }
+        public String  netid { get; set; }
         public List<String> provision_accts { get; set; }
         public List<String> maildelivery { get; set; }
     }

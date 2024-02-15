@@ -431,21 +431,28 @@ namespace PowerShellRunspaceManager
 
             if (MailContacts.Count == 1)
             {
+                // Collect the current external email address.
+                String CurrentExternalEmailAddress = MailContacts[0].Properties["ExternalEmailAddress"].Value.ToString().Split(':')[1];
+
                 objectProvisioningState.CurrentState = "MailContact";
 
                 powerShellCommand = new PowerShellCommand("Set-MailContact");
                 powerShellCommand.AddCommandParameter("Identity", Identity);
                 powerShellCommand.AddCommandParameter("ExternalEmailAddress", NewExternalEmailAddress);
-                if (!RetainCurrentAddressAsProxy)
+
+                // Add back the current external email address as a proxy if we want to retain it.
+                if(RetainCurrentAddressAsProxy)
                 {
-                    String CurrentExternalEmailAddress = MailContacts[0].Properties["ExternalEmailAddress"].Value.ToString().Split(':')[1];
                     Hashtable ProxyUpdate = new Hashtable();
-                    ProxyUpdate.Add("Remove", CurrentExternalEmailAddress);
+                    ProxyUpdate.Add("Add", CurrentExternalEmailAddress);
                     powerShellCommand.AddCommandParameter("EmailAddresses", ProxyUpdate);
                 }
+
+                // Invoke the command.
+                Collection<PSObject> CommandResults = InvokeCommand(powerShellCommand);
+
                 this.ClearExceptions();
                 this.ClearLoggedMessages();
-                Collection<PSObject> CommandResults = InvokeCommand(powerShellCommand);
                 LogProcessMessages(true, true);
             }
             else

@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TeamDynamix.Api.Tickets;
 using TeamDynamix.Api.Users;
+using TeamDynamix.Api.Forms;
 
 namespace TDXManager
 {
@@ -114,58 +115,76 @@ namespace TDXManager
                                     {
                                         Boolean RequestAllowed = false;
 
-                                        // Is the creator of this ticket equal to the requester (Target).
-                                        if (this.TDXAutomationTicket.TicketCreator.UserPrincipalName == this.TDXAutomationTicket.TicketRequestor.UserPrincipalName)
+                                        // Check if a request has already been completed for this user and form.
+                                        User requestingUser = this.GetTDXUserByUserPrincipalName(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                        Form requestForm = this.TDXTicketForms.Where(f => f.Name.Equals("Email Accounts / Google Workspace Email Delivery Grace Period")).FirstOrDefault();
+                                        this.GetAllRequestorTicketsByForm(new Guid[] { requestingUser.UID }, new Int32[] { requestForm.ID });
+                                        List<Ticket> PreviouslyCompletedRequests = (from t in this.AllRequestorTickets
+                                                                                    from attribute in t.Attributes
+                                                                                    where attribute.Name.Equals("S111-AUTOMATIONSTATUS")
+                                                                                    && attribute.ValueText.Equals("COMPLETE")
+                                                                                    select ticket).ToList();
+
+                                        if (PreviouslyCompletedRequests.Count.Equals(0))
                                         {
-                                            AutomationDetails.AppendFormat(" , [{0}]: The requester is the creator.   ", DateTime.UtcNow.ToString());
-                                            RequestAllowed = true;
+
+                                            // Is the creator of this ticket equal to the requester (Target).
+                                            if (this.TDXAutomationTicket.TicketCreator.UserPrincipalName == this.TDXAutomationTicket.TicketRequestor.UserPrincipalName)
+                                            {
+                                                AutomationDetails.AppendFormat(" , [{0}]: The requester is the creator.   ", DateTime.UtcNow.ToString());
+                                                RequestAllowed = true;
+                                            }
+                                            else
+                                            {
+                                                // Disallow the request.
+                                                RequestAllowed = false;
+
+                                                // Assign the cancelled request to L3
+                                                this.UpdateResponsibleGroup(45);
+
+                                                // Update the Automation Status and Automation Status Details.
+                                                this.UpdateAutomationStatus(AUTOMATIONSTATUS.DECLINED);
+                                                AutomationDetails.AppendFormat(" , [{0}]: The creator {1} is not allowed to request a Google Workspace Quota Grace Period on behalf of. The request has been cancelled.",
+                                                    DateTime.UtcNow.ToString(),
+                                                    this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
+
+                                                // Update the ticket and notify the customer.
+                                                TicketComments.AppendFormat("{0} {1} is not authorized to request a Google Workspace Quota Grace Period on your behalf. You must make these requests directly. No changes have been made to your account.",
+                                                    this.TDXAutomationTicket.TicketCreator.DisplayName,
+                                                    this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
+
+                                                this.NotifyCreator = true;
+                                                this.NotifyRequestor = true;
+                                                this.UpdateTicket(TicketComments, "Cancelled");
+                                            }
+                                            if (this.TDXAutomationTicket.StatusName.Equals("On Hold"))
+                                            {
+                                                RequestAllowed = false;
+                                            }
+                                            // If this is a valid request we can enable the grace period.
+                                            if (RequestAllowed)
+                                            {
+                                                // Update the Automation Status and Automation Status Details.
+                                                this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
+                                                AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Quota Grace Period is allowed and is being processed.",
+                                                    DateTime.UtcNow.ToString());
+
+                                                //Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
+                                                String GroupID = "1590ba97-d5c7-4b76-bef4-39d2c75f51ea";
+                                                String MemberID = microsoftGraphManager.GetUser(this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
+                                                microsoftGraphManager.AddGroupMember(GroupID, MemberID);
+                                            }
+                                            else
+                                            {
+                                                // Update the Automation Status and Automation Status Details.
+                                                this.UpdateAutomationStatus(AUTOMATIONSTATUS.DECLINED);
+                                                AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Quota Grace Period is not allowed. The customer has exceeded the allowed number of grace period requests.",
+                                                    DateTime.UtcNow.ToString());
+                                            }
                                         }
                                         else
                                         {
-                                            // Disallow the request.
-                                            RequestAllowed = false;
-
-                                            // Assign the cancelled request to L3
-                                            this.UpdateResponsibleGroup(45);
-
-                                            // Update the Automation Status and Automation Status Details.
                                             this.UpdateAutomationStatus(AUTOMATIONSTATUS.DECLINED);
-                                            AutomationDetails.AppendFormat(" , [{0}]: The creator {1} is not allowed to request a Google Workspace Quota Grace Period on behalf of. The request has been cancelled.",
-                                                DateTime.UtcNow.ToString(),
-                                                this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
-
-                                            // Update the ticket and notify the customer.
-                                            TicketComments.AppendFormat("{0} {1} is not authorized to request a Google Workspace Quota Grace Period on your behalf. You must make these requests directly. No changes have been made to your account.",
-                                                this.TDXAutomationTicket.TicketCreator.DisplayName,
-                                                this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
-
-                                            this.NotifyCreator = true;
-                                            this.NotifyRequestor = true;
-                                            this.UpdateTicket(TicketComments, "Cancelled");
-                                        }
-                                        if(this.TDXAutomationTicket.StatusName.Equals("On Hold"))
-                                        {
-                                            RequestAllowed = false;
-                                        }
-                                        // If this is a valid request we can enable the grace period.
-                                        if (RequestAllowed)
-                                        {
-                                            // Update the Automation Status and Automation Status Details.
-                                            this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
-                                            AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Quota Grace Period is allowed and is being processed.",
-                                                DateTime.UtcNow.ToString());
-
-                                            //Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
-                                            String GroupID = "1590ba97-d5c7-4b76-bef4-39d2c75f51ea";
-                                            String MemberID = microsoftGraphManager.GetUser(this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
-                                            microsoftGraphManager.AddGroupMember(GroupID, MemberID);
-                                        }
-                                        else
-                                        {
-                                            // Update the Automation Status and Automation Status Details.
-                                            this.UpdateAutomationStatus(AUTOMATIONSTATUS.DECLINED);
-                                            AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Quota Grace Period is not allowed. The customer has exceeded the allowed number of grace period requests.",
-                                                DateTime.UtcNow.ToString());
                                         }
                                         break;
                                     }
@@ -223,7 +242,7 @@ namespace TDXManager
 
                                         // Update the Automation Status and Automation Status Details.
                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.COMPLETE);
-                                        AutomationDetails.AppendFormat(" , [{0}]: The Google Workspace Quota Grace Period has bee declined: {1} has exceeded the allowed number of requests.", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                        AutomationDetails.AppendFormat(" , [{0}]: The Google Workspace Quota Grace Period has been declined: {1} has exceeded the allowed number of requests.", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                         // Update the ticket and notify the customer.
                                         TicketComments.AppendFormat("Your Google Workspace Quota Grace Period Request has been rejected. You are only permitted one such request.");
