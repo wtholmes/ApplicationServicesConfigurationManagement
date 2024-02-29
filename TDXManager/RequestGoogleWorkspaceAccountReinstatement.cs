@@ -128,8 +128,8 @@ namespace TDXManager
                                                 GoogleWorkspaceUser googleWorkspaceUser = googleDirectoryManager.GetGoogleUser(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
                                                 if (googleWorkspaceUser != null)
                                                 {
-                                                    // Customer is in stage one deletion and can be restored.
-                                                    if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"(/PendingDeletion/Stage1|/PendingDeletion/Stage2)", RegexOptions.IgnoreCase))
+                                                    // Customer is in stage one or stage two deletion and can be restored.
+                                                    if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"(/PendingDeletion/Stage1|/PendingDeletion/Stage2)$", RegexOptions.IgnoreCase))
                                                     {
                                                         // Update the Automation Status and Automation Status Details.
                                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
