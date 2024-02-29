@@ -3,12 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using TeamDynamix.Api.Tickets;
-using TeamDynamix.Api.Users;
 
 namespace TDXManager
 {
@@ -138,49 +135,17 @@ namespace TDXManager
                                         }
 
                                         this.UpdateTicket(TicketComments, "Cancelled");
-
                                     }
                                     // Is the requestor entitled to no mail routing.
                                     if (RequestAllowed)
                                     {
-                                        if (this.TDXAutomationTicket.TicketRequestor.Entitlements.Contains("norouting"))
-                                        { 
-                                            List<String> allowedAffiliations = new List<String>() { "alumni", "retiree" };
-                                            if(allowedAffiliations.Contains(this.TDXAutomationTicket.TicketRequestor.PrimaryAffiliation))
-                                            {
-                                                RequestAllowed = true;
-                                            }
-                                            else
-                                            {
-                                                RequestAllowed = false;
-
-                                                // Assign the cancelled request to L3
-                                                this.UpdateResponsibleGroup(45);
-
-                                                // Update the Automation Status and Automation Status Details.
-                                                this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                AutomationDetails.AppendFormat(" , [{0}]: The requester is not permitted to disable mail routing. Their affiliation is: {1}. The request has been cancelled.",
-                                                    DateTime.UtcNow.ToString(),
-                                                    this.TDXAutomationTicket.TicketRequestor.PrimaryAffiliation);
-
-                                                // Update the ticket and notify the customer.
-                                                TicketComments.AppendFormat("Your Cornell affiliation does not allow you to disable mail routing. No changes have been made to your account.");
-                                                this.NotifyCreator = true;
-                                                this.NotifyRequestor = true;
-
-                                                // If there is an alternate address specified in the ticket make sure they get notified.
-                                                if (this.TDXAutomationTicket.AlternateEmailAddress != null)
-                                                {
-                                                    this.NotificationEmails.Add(this.TDXAutomationTicket.AlternateEmailAddress);
-                                                }
-
-                                                this.UpdateTicket(TicketComments, "Cancelled");
-                                            }
+                                        List<String> allowedAffiliations = new List<String>() { "alumni", "retiree" };
+                                        if (allowedAffiliations.Contains(this.TDXAutomationTicket.TicketRequestor.PrimaryAffiliation))
+                                        {
+                                            RequestAllowed = true;
                                         }
-                                        // Requester's affiliation does not allow no mail routing..
                                         else
                                         {
-                                            // Disallow the request.
                                             RequestAllowed = false;
 
                                             // Assign the cancelled request to L3
@@ -202,10 +167,10 @@ namespace TDXManager
                                             {
                                                 this.NotificationEmails.Add(this.TDXAutomationTicket.AlternateEmailAddress);
                                             }
+
                                             this.UpdateTicket(TicketComments, "Cancelled");
                                         }
                                     }
-
 
                                     // This is a valid request so we can assign the ENTERPRISEPACKPLUS_FACULTY (A3) to the customer.
                                     if (RequestAllowed)
@@ -251,14 +216,14 @@ namespace TDXManager
                                     // Call the ProvAccounts Web Service to remove mail routing.
                                     // ------
                                     // Note:  This implicitly removes the Office 365 Mailbox or MailUser.  The removal is handled
-                                    //        by the Exchange Email Account Provisioning process.  When this process finds the 
+                                    //        by the Exchange Email Account Provisioning process.  When this process finds the
                                     //        norouting value in maildelivery, it updates the on-premises recipient type to a User.
                                     //        This is not ideal.  It would make more sense to have an entitlement value for a
-                                    //        MailUser or base it on the existence of a Google Workspace Account.  However this 
+                                    //        MailUser or base it on the existence of a Google Workspace Account.  However this
                                     //        Another consideration would be use cases for MailUsers that route mail to something
-                                    //        other than Google Workspace.  This would be ideal for forwarding only scenarios for 
+                                    //        other than Google Workspace.  This would be ideal for forwarding only scenarios for
                                     //        alumni or other users such as retirees or former post docs. (06/18/2022).
-                                    // ------          
+                                    // ------
                                     provAccountsManager.DisableMailRouting(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                     // Assign the resolved ticket to (L3).
@@ -303,7 +268,6 @@ namespace TDXManager
                                 }
                             default:
                                 break;
-
                         }
                         // Update the Automation Status Details [TDX Custom Attribute: (S111-AUTOMATIONSTATUSDETAILS)]
                         this.UpdateAutomationStatusDetails(AutomationDetails);
@@ -321,4 +285,3 @@ namespace TDXManager
         }
     }
 }
-
