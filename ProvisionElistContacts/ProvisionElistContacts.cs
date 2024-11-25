@@ -15,7 +15,7 @@ namespace ProvisionElistContacts
         private static void Main(string[] args)
         {
             Boolean ProvisionContacts = true;
-            Boolean DeltaSync = true;
+            Boolean DeltaSync = false;
             Boolean Unsynced = false;
 
             ListServiceManagementContext context = new ListServiceManagementContext();

@@ -29,8 +29,6 @@ namespace CornellIdentityManagement
         #region --- Class Constructors
         public ProvAccountsManager()
         {
-
-
             // Create a network credential to access the web service.
             //networkCredential = new NetworkCredential("messaging", "P7P7Hij*SvmAC9=e(bPqpcaROnUFZKDfl9$NXqD1");
         }

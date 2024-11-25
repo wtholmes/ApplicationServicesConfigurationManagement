@@ -13,6 +13,8 @@ namespace TDXManager
         {
             this.SetAccountByName("CIO - CIT Enterprise Services");
             this.SetTicketFormByName("CIT - COEA Form");
+            // Change Required for form rename (TDX Service Request #1408574)
+            // this.SetTicketFormByName("Email Alias / COEA Request");
             this.SetServiceByName("Email Alias");
             this.SetTicketStatusByName("New");
             this.SetTicketPriorityByName("Medium");

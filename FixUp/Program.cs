@@ -13,6 +13,12 @@ namespace FixUp
         static void Main(string[] args)
         {
             ProvAccountsManager provAccountsManager = new ProvAccountsManager();
+      
+
+
+
+
+
             ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext();
             String directoryFilter = "(&(cornelleduProvAccts=office365-a3)(!(cornelleduentitlements=office365-a3)))";
             activeDirectoryContext.SearchDirectory(directoryFilter, true, 50);

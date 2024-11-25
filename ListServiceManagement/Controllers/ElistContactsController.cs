@@ -226,7 +226,6 @@ namespace ListServiceManagement.Controllers
                     }
                 }
             }
-
             if (db.Entry(elistContact).State == EntityState.Modified)
             {
                 elistContact.WhenModified = System.DateTime.UtcNow;

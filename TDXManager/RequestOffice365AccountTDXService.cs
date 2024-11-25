@@ -1,12 +1,7 @@
-﻿using ActiveDirectoryAccess;
-using CornellIdentityManagement;
-using MicrosoftAzureManager;
+﻿using CornellIdentityManagement;
 using System;
 using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using TeamDynamix.Api.Tickets;
@@ -65,31 +60,37 @@ namespace TDXManager
                             // Initiate Processing of newly submitted tickets.
                             case null:
                                 {
-                                    // Setup the Request Title.
-                                    StringBuilder RequestTitle = new StringBuilder("Office 365 Exchange Account Request for:");
-                                    RequestTitle.AppendFormat(" {0}", this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                    if (this.TDXAutomationTicket.TicketRequestor != null)
+                                    {
+                                        // Setup the Request Title.
+                                        StringBuilder RequestTitle = new StringBuilder("Office 365 Exchange Account Request for:");
+                                        RequestTitle.AppendFormat(" {0}", this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
-                                    // Setup the request Description.
-                                    StringBuilder RequestDescription = new StringBuilder();
-                                    RequestDescription.Append("You have requested a new Office 365 Exchange Account. Your request is being processed.");
+                                        // Setup the request Description.
+                                        StringBuilder RequestDescription = new StringBuilder();
+                                        RequestDescription.Append("You have requested a new Office 365 Exchange Account. Your request is being processed.");
 
-                                    // Update the Ticket Title and Description.
-                                    this.UpdateTicketTitleAndDescription(RequestTitle, RequestDescription);
+                                        // Update the Ticket Title and Description.
+                                        this.UpdateTicketTitleAndDescription(RequestTitle, RequestDescription);
 
-                                    // Update the Automation Status and Automation Status Details.
-                                    this.UpdateAutomationStatus(AUTOMATIONSTATUS.INPROCESS);
+                                        // Update the Automation Status and Automation Status Details.
+                                        this.UpdateAutomationStatus(AUTOMATIONSTATUS.INPROCESS);
 
-                                    // Update the ticket and notify the customer.
-                                    TicketComments.AppendFormat("We have received your request for a new Office 365 Exchange account. Your request is in process.");
-                                    this.NotifyCreator = true;
-                                    this.NotifyRequestor = true;
-                                    // If there is an alternate address specified in the ticket make sure they get notified.
-                                    if(this.TDXAutomationTicket.AlternateEmailAddress != null) 
-                                    { 
-                                        this.NotificationEmails.Add(this.TDXAutomationTicket.AlternateEmailAddress); 
+                                        // Update the ticket and notify the customer.
+                                        TicketComments.AppendFormat("We have received your request for a new Office 365 Exchange account. Your request is in process.");
+                                        this.NotifyCreator = true;
+                                        this.NotifyRequestor = true;
+                                        // If there is an alternate address specified in the ticket make sure they get notified.
+                                        if (this.TDXAutomationTicket.AlternateEmailAddress != null)
+                                        {
+                                            this.NotificationEmails.Add(this.TDXAutomationTicket.AlternateEmailAddress);
+                                        }
+                                        this.UpdateTicket(TicketComments, "In Process");
                                     }
-                                    this.UpdateTicket(TicketComments, "In Process");
-
+                                    else
+                                    {
+                                        continue;
+                                    }
                                     break;
                                 }
                             // Automation Processing for NEW Tickets.
@@ -169,7 +170,6 @@ namespace TDXManager
                                             }
 
                                             this.UpdateTicket(TicketComments, "Resolved");
-                                            
                                         }
                                     }
 
@@ -210,7 +210,6 @@ namespace TDXManager
                                         }
                                     }
 
-                                    
                                     // This is a valid request so we can assign create an Office 365 Exchange account for the customer.
                                     if (RequestAllowed)
                                     {
@@ -246,11 +245,11 @@ namespace TDXManager
                             // Automation Processing for APPROVED Tickets.
                             case var value when value == AUTOMATIONSTATUS.APPROVED:
                                 {
+                                    //Call the ProvAccounts Web Service to remove the "norouting" value for mail delivery if that has been set.
+                                    provAccountsManager.EnableMailRouting(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+
                                     //Call the ProvAccounts Web Service to add the exchange value to it.
                                     provAccountsManager.EnableOffice365Exchange(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
-
-                                    //Call the ProvAccounts Web Service to remote the norouting value for mail delivery if that has been set.
-                                    provAccountsManager.EnableMailRouting(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                     // Assign the resolved ticket to (L3).
                                     this.UpdateResponsibleGroup(45);
@@ -279,7 +278,7 @@ namespace TDXManager
                                     }
 
                                     this.UpdateTicket(TicketComments, "Resolved");
-                                    
+
                                     break;
                                 }
                             // Automation Processing for COMPLETE Tickets.
@@ -302,7 +301,6 @@ namespace TDXManager
                                 }
                             default:
                                 break;
-
                         }
                         // Update the Automation Status Details [TDX Custom Attribute: (S111-AUTOMATIONSTATUSDETAILS)]
                         this.UpdateAutomationStatusDetails(AutomationDetails);
@@ -310,14 +308,13 @@ namespace TDXManager
                         using (StreamWriter streamWriter = new StreamWriter(logfile, true))
                         {
                             try
-                            { 
+                            {
                                 streamWriter.WriteLine("\n[{0}] Processing Office 365 Exchange Account Request For: {1}", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
                                 streamWriter.WriteLine("TDX Request: {0}", this.TDXAutomationTicket.ID);
                                 streamWriter.WriteLine(AutomationDetails.ToString());
                             }
                             catch
                             {
-
                             }
                         }
                     }

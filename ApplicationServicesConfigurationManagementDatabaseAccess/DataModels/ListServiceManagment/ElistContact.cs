@@ -144,7 +144,7 @@ namespace ListServiceManagement.Models
         public DateTime WhenCreated { get; set; }
 
         /// <summary>
-        /// Spefices when the contact was last modified. This will match the contact modification time in Active Directory.
+        /// Specifies when the contact was last modified. This will match the contact modification time in Active Directory.
         /// </summary>
         public DateTime WhenModified { get; set; }
     }

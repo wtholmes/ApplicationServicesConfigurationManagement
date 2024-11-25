@@ -12,7 +12,7 @@ namespace TeamDynamixManagement.Controllers
 {
     public class TicketStatusChangeMessagesController : Controller
     {
-        private TeamDynamixManagementContext db = new TeamDynamixManagementContext();
+        private readonly TeamDynamixManagementContext db = new TeamDynamixManagementContext();
 
         // GET: TicketStatusChangeMessages
         public ActionResult Index(int? id)

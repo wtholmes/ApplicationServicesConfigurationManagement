@@ -80,6 +80,7 @@ namespace ListServiceManagement.Controllers.WebView
         {
             if (ModelState.IsValid)
             {
+                elistContact.WhenModified = System.DateTime.UtcNow;
                 db.Entry(elistContact).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

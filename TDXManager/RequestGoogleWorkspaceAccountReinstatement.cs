@@ -114,7 +114,7 @@ namespace TDXManager
 
                                             // Check if a request has already been completed for this user using this form.
                                             User requestingUser = this.GetTDXUserByUserPrincipalName(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
-                                            Form requestForm = this.TDXTicketForms.Where(f => f.Name.Equals("Google Workspace Account Reinstatement Grace Period")).FirstOrDefault();
+                                            Form requestForm = this.TDXTicketForms.Where(f => f.Name.Equals("Email Accounts / Google Workspace Account Reinstatement Grace Period")).FirstOrDefault();
                                             this.GetAllRequestorTicketsByForm(new Guid[] { requestingUser.UID }, new Int32[] { requestForm.ID });
                                             List<Ticket> PreviouslyCompletedRequests = (from t in this.AllRequestorTickets
                                                                                         from attribute in t.Attributes

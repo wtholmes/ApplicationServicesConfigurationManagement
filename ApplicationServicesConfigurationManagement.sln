@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddA3ProvAccounts", "AddA3P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegexWithGoogleOUTester", "RegexWithGoogleOUTester\RegexWithGoogleOUTester.csproj", "{379B6077-33FD-4228-8BB1-41CB7EBDDE5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnableMailRouting", "EnableMailRouting\EnableMailRouting.csproj", "{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -389,6 +391,14 @@ Global
 		{379B6077-33FD-4228-8BB1-41CB7EBDDE5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{379B6077-33FD-4228-8BB1-41CB7EBDDE5E}.Release|x64.ActiveCfg = Release|Any CPU
 		{379B6077-33FD-4228-8BB1-41CB7EBDDE5E}.Release|x64.Build.0 = Release|Any CPU
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}.Debug|x64.Build.0 = Debug|Any CPU
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}.Release|x64.ActiveCfg = Release|Any CPU
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -430,6 +440,7 @@ Global
 		{D075DB41-2F6A-4A26-B370-4A4049A7AF6E} = {D85BDCC6-FA5A-4A09-8706-A0171F71F393}
 		{1F321C04-AD16-49C9-8378-5AB487DAF1FE} = {57D0FFE5-3C69-4947-A8A4-E71F023333CB}
 		{379B6077-33FD-4228-8BB1-41CB7EBDDE5E} = {D85BDCC6-FA5A-4A09-8706-A0171F71F393}
+		{DB2B288D-F5D0-4A50-AC34-D8A9669ED2E0} = {57D0FFE5-3C69-4947-A8A4-E71F023333CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D674A524-3B40-404D-9C5A-0F0246579204}

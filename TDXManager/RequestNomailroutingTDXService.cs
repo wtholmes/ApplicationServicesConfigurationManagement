@@ -136,7 +136,7 @@ namespace TDXManager
 
                                         this.UpdateTicket(TicketComments, "Cancelled");
                                     }
-                                    // Is the requestor entitled to no mail routing.
+                                    // Is the requester entitled to no mail routing. They must be an alumni or retiree.
                                     if (RequestAllowed)
                                     {
                                         List<String> allowedAffiliations = new List<String>() { "alumni", "retiree" };
