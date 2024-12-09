@@ -24,6 +24,8 @@ namespace TDXManager
 
             // Start a new Microsoft Graph Manager
             MicrosoftGraphManager microsoftGraphManager = new MicrosoftGraphManager();
+            // Start a new Google Directory Manager
+            GoogleDirectoryManager googleDirectoryManager = new GoogleDirectoryManager(@"E:\GSuiteManagerCredentials\gsuitemanager-edit.json");
 
             // Inactive Ticket Statuses
             Regex InactiveTicketsRegex = new Regex(@"(Reopened|Resolved|Closed|Canceled)", RegexOptions.IgnoreCase);
@@ -170,10 +172,32 @@ namespace TDXManager
                                                 AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Quota Grace Period is allowed and is being processed.",
                                                     DateTime.UtcNow.ToString());
 
-                                                //Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
-                                                String GroupID = "1590ba97-d5c7-4b76-bef4-39d2c75f51ea";
+                                                //Add the customer to the overquota-grace EntraID Group.
+                                                String GroupID = "1590ba97-d5c7-4b76-bef4-39d2c75f51ea"; // overquota-grace
                                                 String MemberID = microsoftGraphManager.GetUser(this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
                                                 microsoftGraphManager.AddGroupMember(GroupID, MemberID);
+
+                                                // In addition to re-enabling the customer's email check if the customer has entered
+                                                // the deprovisioning process, and if they have add them to the googleworkspaceaccountaccessgraceperiod
+                                                // EntraID Group.  This will allow them to access their account as well.
+                                                // Check the current Google Directory OU for this customer
+                                                GoogleWorkspaceUser googleWorkspaceUser = googleDirectoryManager.GetGoogleUser(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                if (googleWorkspaceUser != null)
+                                                {
+                                                    // Customer is in stage one or stage two deletion and can be restored.
+                                                    if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"(/PendingDeletion/Stage1|/PendingDeletion/Stage2)$", RegexOptions.IgnoreCase))
+                                                    {
+                                                        // Update the Automation Status and Automation Status Details.
+                                                        this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
+                                                        AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Account is eligible for reinstatement. Adding this user to the reinstatement Group",
+                                                            DateTime.UtcNow.ToString());
+
+                                                        //Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
+                                                        GroupID = "90f484a5-6029-4460-902c-4f6c89f39dd8"; // googleworkspaceaccountaccessgraceperiod
+                                                        MemberID = microsoftGraphManager.GetUser(this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
+                                                        microsoftGraphManager.AddGroupMember(GroupID, MemberID);
+                                                    }
+                                                }
                                             }
                                             else
                                             {
