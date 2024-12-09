@@ -257,7 +257,7 @@ namespace TDXManager
 
                                         // Update the ticket and notify the customer.
                                         //TicketComments.AppendFormat("Your Google Workspace account has been created. To login, please go to https://mail.google.com/ This request is complete.");
-                                        TicketComments.AppendFormat("Your Google Workspace account is on the way! It can take up to 24 hours for your account to be available in Google.");
+                                        TicketComments.AppendFormat("A new Google Workspace account has been created for you, which will soon be available to you at https://mail.google.com . It can take up to 24 hours for your new account to be available in Google. Please be patient. This is your final message.");
                                         this.NotifyCreator = true;
                                         this.NotifyRequestor = true;
 

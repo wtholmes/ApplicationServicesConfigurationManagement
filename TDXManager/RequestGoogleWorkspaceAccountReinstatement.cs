@@ -274,7 +274,7 @@ namespace TDXManager
 
                                         // Update the Automation Status and Automation Status Details.
                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.COMPLETE);
-                                        AutomationDetails.AppendFormat(" , [{0}]: The Google Workspace Quota Grace Period has been reinstated by adding: {1} to the googleworkspaceaccountaccessgraceperiod Azure Security Group.", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                        AutomationDetails.AppendFormat(" , [{0}]: The Google Workspace Account has been reinstated by adding: {1} to the googleworkspaceaccountaccessgraceperiod Azure Security Group.", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                         // Update the ticket and notify the customer.
                                         TicketComments.AppendFormat("Your Google Workspace Reinstatement is being processed. It will take up to one hour for your Google Workspace account to be reinstated.");
