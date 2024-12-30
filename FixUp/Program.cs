@@ -2,6 +2,7 @@
 using CornellIdentityManagement;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,20 +14,29 @@ namespace FixUp
         static void Main(string[] args)
         {
             ProvAccountsManager provAccountsManager = new ProvAccountsManager();
-      
+            string path = @"NoRoutingwithGsuite.txt";
 
+            // Read all lines from the file into a string array
+            string[] lines = File.ReadAllLines(path);
 
-
-
-
-            ActiveDirectoryContext activeDirectoryContext = new ActiveDirectoryContext();
-            String directoryFilter = "(&(cornelleduProvAccts=office365-a3)(!(cornelleduentitlements=office365-a3)))";
-            activeDirectoryContext.SearchDirectory(directoryFilter, true, 50);
-            foreach (ActiveDirectoryEntity activeDirectoryEntity in activeDirectoryContext.ActiveDirectoryEntities)
+            // Display each line
+            foreach (string line in lines)
             {
-                Console.WriteLine("UserPrincipalName: {0}", activeDirectoryEntity.userprincipalName);
-                provAccountsManager.DisableFacultyA3(activeDirectoryEntity.userprincipalName);
+                Console.WriteLine(line);
+                provAccountsManager.EnableMailRouting(line);
+
             }
+
+           
+            //provAccountsManager.EnableMailRouting("dy328@cornell.edu");
+
+            
+
+
+
+
+
+
 
         }
     }

@@ -139,7 +139,7 @@ namespace TDXManager
                                         // Does the target already have an a Google Workspace Account.
                                         if (RequestAllowed)
                                         {
-                                            if (this.TDXAutomationTicket.TicketRequestor.ProvAccts.Contains("gsuite")) // Requester already has an exchange account.
+                                            if (this.TDXAutomationTicket.TicketRequestor.ProvAccts.Contains("gsuite")) // Requester already has a Google Workspace account.
                                             {
                                                 // Disallow the request
                                                 RequestAllowed = false;
@@ -152,6 +152,10 @@ namespace TDXManager
                                                 AutomationDetails.AppendFormat(" , [{0}]: The requester already has an Google Workspace Account. Their affiliation is: {1}. This request has been cancelled.",
                                                     DateTime.UtcNow.ToString(),
                                                     this.TDXAutomationTicket.TicketRequestor.PrimaryAffiliation);
+
+                                                // Call the ProvAccounts Web Service to remove the norouting flag.  This may be set for some people.
+                                                provAccountsManager.EnableMailRouting(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+
 
                                                 // Update the ticket and notify the customer.
                                                 TicketComments.AppendFormat("Your Google Workspace Account has already been provisioned. No changes have been made to your account.");
@@ -207,7 +211,7 @@ namespace TDXManager
                                         }
 
 
-                                        // This is a valid request so we can assign the ENTERPRISEPACKPLUS_FACULTY (A3) to the customer.
+                                        // This is a valid request so we can provision a Google Workspace Account for the person.
                                         if (RequestAllowed)
                                         {
                                             // Update the Automation Status and Automation Status Details.
@@ -216,9 +220,6 @@ namespace TDXManager
                                                 DateTime.UtcNow.ToString());
 
                                             // Update the ticket and notify the customer.
-
-
-
                                             TicketComments.AppendFormat("Your Google Workspace account request has been approved. We will notify you when your account has been created.");
                                             this.NotifyCreator = true;
                                             this.NotifyRequestor = true;
@@ -247,6 +248,9 @@ namespace TDXManager
                                     {
                                         //Call the ProvAccounts Web Service to add the gsuite (Google Workspace) value.
                                         provAccountsManager.EnableGoogleWorkspaceAccount(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                        
+                                        // Call the ProvAccounts Web Service to remove the norouting flag.  This may be set for some people.
+                                        provAccountsManager.EnableMailRouting(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                         // Assign the resolved ticket to (L3).
                                         this.UpdateResponsibleGroup(45);

@@ -101,7 +101,7 @@ namespace TDXManager
                                         // This automation status currently has no actions associated with it.
                                         // Update the Automation Status and Automation Status Details to move the request into INPROCESS State.
                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.INPROCESS);
-                                        AutomationDetails.AppendFormat("[{0}]: AutomationStatus has been set to INPROCESS.", DateTime.UtcNow.ToString());
+                                        AutomationDetails.AppendFormat("<p>[{0}]: AutomationStatus has been set to INPROCESS.</p>", DateTime.UtcNow.ToString());
                                         break;
                                     }
                                 // Automation Processing for INPROCESS Tickets.
@@ -110,13 +110,14 @@ namespace TDXManager
                                         // Is the creator of this ticket equal to the requester (Target).
                                         if (this.TDXAutomationTicket.TicketCreator.UserPrincipalName == this.TDXAutomationTicket.TicketRequestor.UserPrincipalName)
                                         {
-                                            //AutomationDetails.AppendFormat(" , [{0}]: The requester is the creator.   ", DateTime.UtcNow.ToString());
+                                            AutomationDetails.AppendFormat("<p>[{0}]: The requester is the creator.</p>", DateTime.UtcNow.ToString());
 
                                             // Check if a request has already been completed for this user using this form.
                                             User requestingUser = this.GetTDXUserByUserPrincipalName(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
                                             Form requestForm = this.TDXTicketForms.Where(f => f.Name.Equals("Email Accounts / Google Workspace Account Reinstatement Grace Period")).FirstOrDefault();
                                             this.GetAllRequestorTicketsByForm(new Guid[] { requestingUser.UID }, new Int32[] { requestForm.ID });
                                             List<Ticket> PreviouslyCompletedRequests = (from t in this.AllRequestorTickets
+                                                                                        where t.CompletedDate < DateTime.UtcNow.AddDays(-10)
                                                                                         from attribute in t.Attributes
                                                                                         where attribute.Name.Equals("S111-AUTOMATIONSTATUS")
                                                                                         && attribute.ValueText.Equals("COMPLETE")
@@ -133,10 +134,10 @@ namespace TDXManager
                                                     {
                                                         // Update the Automation Status and Automation Status Details.
                                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
-                                                        AutomationDetails.AppendFormat(" , [{0}]: The requested Google Workspace Account is eligible for reinstatement. Adding this user to the reinstatement Group",
+                                                        AutomationDetails.AppendFormat("<p>[{0}]: The requested Google Workspace Account is eligible for reinstatement. Adding this user to the reinstatement Group</p>",
                                                             DateTime.UtcNow.ToString());
 
-                                                        //Add Microsoft Graph Code Here to add this customer to the Grace Period Group.
+                                                        //Add the person to the "googleworkspaceaccountaccessgraceperiod" EntraID Group.
                                                         String GroupID = "90f484a5-6029-4460-902c-4f6c89f39dd8";
                                                         String MemberID = microsoftGraphManager.GetUser(this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
                                                         microsoftGraphManager.AddGroupMember(GroupID, MemberID);
@@ -145,7 +146,7 @@ namespace TDXManager
                                                     else if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"/PendingDeletion/Stage2", RegexOptions.IgnoreCase))
                                                     {
                                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                        AutomationDetails.AppendFormat(" , [{0}]: {1} is no longer eligible for reinstatement. The request has been cancelled.",
+                                                        AutomationDetails.AppendFormat("<p>[{0}]: {1} is no longer eligible for reinstatement. The request has been cancelled.</p>",
                                                             DateTime.UtcNow.ToString(),
                                                             this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
@@ -162,7 +163,7 @@ namespace TDXManager
                                                         if (this.TDXAutomationTicket.TicketRequestor.ProvAccts.Contains("gsuite"))
                                                         {
                                                             this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                            AutomationDetails.AppendFormat(" , [{0}]: {1} is not yet eligible for reinstatement. The account is not currently disabled. The request has been cancelled.",
+                                                            AutomationDetails.AppendFormat("<p>[{0}]: {1} is not yet eligible for reinstatement. The account is not currently disabled. The request has been cancelled.</p>",
                                                                 DateTime.UtcNow.ToString(),
                                                                 this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
@@ -181,7 +182,7 @@ namespace TDXManager
                                                                 // Assign the cancelled request to L3
                                                                 this.UpdateResponsibleGroup(45);
                                                                 this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                                AutomationDetails.AppendFormat(" , [{0}]: {1} is missing the GSuite value in cornelleduProvAccounts but has not yet started the deletion process.",
+                                                                AutomationDetails.AppendFormat("<p>[{0}]: {1} is missing the GSuite value in cornelleduProvAccounts but has not yet started the deletion process.</p>",
                                                                     DateTime.UtcNow.ToString(),
                                                                     this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
@@ -202,7 +203,7 @@ namespace TDXManager
                                                     this.UpdateResponsibleGroup(45);
 
                                                     this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                    AutomationDetails.AppendFormat(" , [{0}]: {1} does not currently have a Google Workspace Account. Canceling this request.",
+                                                    AutomationDetails.AppendFormat("<p>[{0}]: {1} does not currently have a Google Workspace Account. Canceling this request.</p>",
                                                         DateTime.UtcNow.ToString(),
                                                         this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
@@ -222,7 +223,7 @@ namespace TDXManager
 
                                                 // Update the Automation Status and Automation Status Details.
                                                 this.UpdateAutomationStatus(AUTOMATIONSTATUS.COMPLETE);
-                                                AutomationDetails.AppendFormat(" , [{0}]: The Google Workspace Account reinstatement has been declined: {1} has exceeded the allowed number of requests.", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                AutomationDetails.AppendFormat("<p>[{0}]: The Google Workspace Account reinstatement has been declined: {1} has exceeded the allowed number of requests.</p>", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                                 // Update the ticket and notify the customer.
                                                 TicketComments.AppendFormat("Your Google Workspace Account Reinstatement has been declined. You are only permitted one such request.");
@@ -245,7 +246,7 @@ namespace TDXManager
 
                                             // Update the Automation Status and Automation Status Details.
                                             this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                            AutomationDetails.AppendFormat(" , [{0}]: The creator {1} is not allowed to request to reinstatement of your Google Workspace Account on behalf of. The request has been cancelled.",
+                                            AutomationDetails.AppendFormat("<p>[{0}]: The creator {1} is not allowed to request to reinstatement of your Google Workspace Account on behalf of. The request has been cancelled.</p>",
                                                 DateTime.UtcNow.ToString(),
                                                 this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
 
@@ -274,10 +275,33 @@ namespace TDXManager
 
                                         // Update the Automation Status and Automation Status Details.
                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.COMPLETE);
-                                        AutomationDetails.AppendFormat(" , [{0}]: The Google Workspace Account has been reinstated by adding: {1} to the googleworkspaceaccountaccessgraceperiod Azure Security Group.", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                        AutomationDetails.AppendFormat("<p>[{0}]: The Google Workspace Account has been reinstated by adding: {1} to the googleworkspaceaccountaccessgraceperiod Azure Security Group.</p>", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                         // Update the ticket and notify the customer.
-                                        TicketComments.AppendFormat("Your Google Workspace Reinstatement is being processed. It will take up to one hour for your Google Workspace account to be reinstated.");
+                                        String NotificationMessage;
+
+                                        if (this.TDXAutomationTicket.TicketCreator.PrimaryAffiliation.Equals("alumni"))
+                                        {
+                                            NotificationMessage = String.Concat(
+                                                "Your Google Workspace reinstatement is currently being processed and should be completed ",
+                                                "within one hour.\n During the seven-day reinstatement period, you will have access to your ",
+                                                "account to reduce your storage usage below 5GB.\n Until you reduce your storage below the 5GB ",
+                                                "quota, your account name will be prefixed with 'DELETED USER,' and you will not be able to ",
+                                                "send or receive emails.\n Once your storage usage is below the 5GB quota, the 'DELETED USER' ",
+                                                "prefix will be removed, and your ability to send and receive emails will be restored. \n",
+                                                "Please note that full restoration of your account can take up to 24 hours after reducing your",
+                                                "storage usage below 5GB."
+                                            );
+                                        }
+                                        else
+                                        {
+                                            NotificationMessage = String.Concat(
+                                                "Your Google Workspace reinstatement is currently being processed and should be completed ",
+                                                "within one hour.\n"
+                                            );
+                                        }
+
+                                        TicketComments.AppendFormat(NotificationMessage);
                                         this.NotifyCreator = true;
                                         this.NotifyRequestor = true;
 
@@ -331,7 +355,7 @@ namespace TDXManager
                             {
                                 streamWriter.WriteLine("\n[{0}] Processing Google Workspace Account Request For: {1}", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
                                 streamWriter.WriteLine("TDX Request: {0}", this.TDXAutomationTicket.ID);
-                                streamWriter.WriteLine(AutomationDetails.ToString());
+                                streamWriter.WriteLine(AutomationDetails.ToString().Replace("<p>","").Replace("</p>","\n"));
                             }
                         }
                     }
