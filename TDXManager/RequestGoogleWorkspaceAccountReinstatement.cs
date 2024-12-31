@@ -101,7 +101,7 @@ namespace TDXManager
                                         // This automation status currently has no actions associated with it.
                                         // Update the Automation Status and Automation Status Details to move the request into INPROCESS State.
                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.INPROCESS);
-                                        AutomationDetails.AppendFormat("<p>[{0}]: AutomationStatus has been set to INPROCESS.</p>", DateTime.UtcNow.ToString());
+                                        AutomationDetails.AppendFormat(" [{0}]: AutomationStatus has been set to INPROCESS.", DateTime.UtcNow.ToString());
                                         break;
                                     }
                                 // Automation Processing for INPROCESS Tickets.
@@ -110,7 +110,7 @@ namespace TDXManager
                                         // Is the creator of this ticket equal to the requester (Target).
                                         if (this.TDXAutomationTicket.TicketCreator.UserPrincipalName == this.TDXAutomationTicket.TicketRequestor.UserPrincipalName)
                                         {
-                                            AutomationDetails.AppendFormat("<p>[{0}]: The requester is the creator.</p>", DateTime.UtcNow.ToString());
+                                            AutomationDetails.AppendFormat(" [{0}]: The requester is the creator.", DateTime.UtcNow.ToString());
 
                                             // Check if a request has already been completed for this user using this form.
                                             User requestingUser = this.GetTDXUserByUserPrincipalName(this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
@@ -134,7 +134,7 @@ namespace TDXManager
                                                     {
                                                         // Update the Automation Status and Automation Status Details.
                                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.APPROVED);
-                                                        AutomationDetails.AppendFormat("<p>[{0}]: The requested Google Workspace Account is eligible for reinstatement. Adding this user to the reinstatement Group</p>",
+                                                        AutomationDetails.AppendFormat(" [{0}]: The requested Google Workspace Account is eligible for reinstatement. Adding this user to the reinstatement Group.",
                                                             DateTime.UtcNow.ToString());
 
                                                         //Add the person to the "googleworkspaceaccountaccessgraceperiod" EntraID Group.
@@ -146,7 +146,7 @@ namespace TDXManager
                                                     else if (Regex.IsMatch(googleWorkspaceUser.OrgUnitPath, @"/PendingDeletion/Stage2", RegexOptions.IgnoreCase))
                                                     {
                                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                        AutomationDetails.AppendFormat("<p>[{0}]: {1} is no longer eligible for reinstatement. The request has been cancelled.</p>",
+                                                        AutomationDetails.AppendFormat(" [{0}]: {1} is no longer eligible for reinstatement. The request has been cancelled.",
                                                             DateTime.UtcNow.ToString(),
                                                             this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
@@ -163,7 +163,7 @@ namespace TDXManager
                                                         if (this.TDXAutomationTicket.TicketRequestor.ProvAccts.Contains("gsuite"))
                                                         {
                                                             this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                            AutomationDetails.AppendFormat("<p>[{0}]: {1} is not yet eligible for reinstatement. The account is not currently disabled. The request has been cancelled.</p>",
+                                                            AutomationDetails.AppendFormat(" [{0}]: {1} is not yet eligible for reinstatement. The account is not currently disabled. The request has been cancelled.",
                                                                 DateTime.UtcNow.ToString(),
                                                                 this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
@@ -182,7 +182,7 @@ namespace TDXManager
                                                                 // Assign the cancelled request to L3
                                                                 this.UpdateResponsibleGroup(45);
                                                                 this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                                                AutomationDetails.AppendFormat("<p>[{0}]: {1} is missing the GSuite value in cornelleduProvAccounts but has not yet started the deletion process.</p>",
+                                                                AutomationDetails.AppendFormat(" [{0}]: {1} is missing the GSuite value in cornelleduProvAccounts but has not yet started the deletion process.",
                                                                     DateTime.UtcNow.ToString(),
                                                                     this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
@@ -223,7 +223,7 @@ namespace TDXManager
 
                                                 // Update the Automation Status and Automation Status Details.
                                                 this.UpdateAutomationStatus(AUTOMATIONSTATUS.COMPLETE);
-                                                AutomationDetails.AppendFormat("<p>[{0}]: The Google Workspace Account reinstatement has been declined: {1} has exceeded the allowed number of requests.</p>", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                                AutomationDetails.AppendFormat(" [{0}]: The Google Workspace Account reinstatement has been declined: {1} has exceeded the allowed number of requests.", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                                 // Update the ticket and notify the customer.
                                                 TicketComments.AppendFormat("Your Google Workspace Account Reinstatement has been declined. You are only permitted one such request.");
@@ -246,7 +246,7 @@ namespace TDXManager
 
                                             // Update the Automation Status and Automation Status Details.
                                             this.UpdateAutomationStatus(AUTOMATIONSTATUS.CANCELED);
-                                            AutomationDetails.AppendFormat("<p>[{0}]: The creator {1} is not allowed to request to reinstatement of your Google Workspace Account on behalf of. The request has been cancelled.</p>",
+                                            AutomationDetails.AppendFormat(" [{0}]: The creator {1} is not allowed to request to reinstatement of your Google Workspace Account on behalf of. The request has been cancelled.",
                                                 DateTime.UtcNow.ToString(),
                                                 this.TDXAutomationTicket.TicketCreator.UserPrincipalName);
 
@@ -275,7 +275,7 @@ namespace TDXManager
 
                                         // Update the Automation Status and Automation Status Details.
                                         this.UpdateAutomationStatus(AUTOMATIONSTATUS.COMPLETE);
-                                        AutomationDetails.AppendFormat("<p>[{0}]: The Google Workspace Account has been reinstated by adding: {1} to the googleworkspaceaccountaccessgraceperiod Azure Security Group.</p>", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
+                                        AutomationDetails.AppendFormat(" [{0}]: The Google Workspace Account has been reinstated by adding: {1} to the googleworkspaceaccountaccessgraceperiod Azure Security Group.", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
 
                                         // Update the ticket and notify the customer.
                                         String NotificationMessage;
@@ -355,7 +355,7 @@ namespace TDXManager
                             {
                                 streamWriter.WriteLine("\n[{0}] Processing Google Workspace Account Request For: {1}", DateTime.UtcNow.ToString(), this.TDXAutomationTicket.TicketRequestor.UserPrincipalName);
                                 streamWriter.WriteLine("TDX Request: {0}", this.TDXAutomationTicket.ID);
-                                streamWriter.WriteLine(AutomationDetails.ToString().Replace("<p>","").Replace("</p>","\n"));
+                                streamWriter.WriteLine(AutomationDetails.ToString().Replace("[","\n"));
                             }
                         }
                     }
